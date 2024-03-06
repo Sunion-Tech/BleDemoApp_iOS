@@ -1,0 +1,11 @@
+framework module SunionBluetoothTool {
+  umbrella header "SunionBluetoothTool.h"
+  export *
+
+  module * { export * }
+}
+
+module SunionBluetoothTool.Swift {
+  header "SunionBluetoothTool-Swift.h"
+  requires objc
+}

@@ -1,24 +1,145 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13122.16" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="22155" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="YXs-8g-psx">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13104.12"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22131"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--View Controller-->
+        <!--BLEDemo-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="ViewController" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="BleDemoApp_iOS" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" xcode11CocoaTouchSystemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="1Qq-Nw-iuN">
+                                <rect key="frame" x="39.333333333333343" y="103" width="314.33333333333326" height="1"/>
+                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="1" id="TjI-oj-RiE"/>
+                                </constraints>
+                            </view>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Qy1-ey-Uiy">
+                                <rect key="frame" x="19.666666666666657" y="104" width="353.66666666666674" height="664"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <color key="textColor" systemColor="labelColor"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                            </textView>
+                            <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Command" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="9qs-Je-LY6">
+                                <rect key="frame" x="39.333333333333343" y="776" width="314.33333333333326" height="34"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                                <connections>
+                                    <outlet property="delegate" destination="BYZ-38-t0r" id="P4f-7g-75C"/>
+                                </connections>
+                            </textField>
+                        </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="1Qq-Nw-iuN" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="0dB-iM-U4C"/>
+                            <constraint firstItem="9qs-Je-LY6" firstAttribute="top" secondItem="Qy1-ey-Uiy" secondAttribute="bottom" constant="8" id="5I1-k7-NUN"/>
+                            <constraint firstItem="1Qq-Nw-iuN" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="8UH-ey-yTb"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="9qs-Je-LY6" secondAttribute="bottom" constant="8" id="K7L-k6-pOn"/>
+                            <constraint firstItem="9qs-Je-LY6" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="Kzh-M7-MtO"/>
+                            <constraint firstItem="9qs-Je-LY6" firstAttribute="width" secondItem="8bC-Xf-vdC" secondAttribute="width" multiplier="0.8" id="hb4-qo-Zwn"/>
+                            <constraint firstItem="1Qq-Nw-iuN" firstAttribute="width" secondItem="6Tk-OE-BBY" secondAttribute="width" multiplier="0.8" id="hdr-qj-T4m"/>
+                            <constraint firstItem="Qy1-ey-Uiy" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="lh2-OR-tNf"/>
+                            <constraint firstItem="Qy1-ey-Uiy" firstAttribute="width" secondItem="8bC-Xf-vdC" secondAttribute="width" multiplier="0.9" id="qks-Kq-nYb"/>
+                            <constraint firstItem="Qy1-ey-Uiy" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="1" id="v51-bB-fbO"/>
+                        </constraints>
                     </view>
+                    <navigationItem key="navigationItem" title="BLEDemo" id="qbx-PL-UZB">
+                        <rightBarButtonItems>
+                            <barButtonItem image="qr-code" id="91E-Gl-gs6">
+                                <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <connections>
+                                    <segue destination="UTS-bL-GMX" kind="show" identifier="qrcode" id="hCA-AP-SGb"/>
+                                </connections>
+                            </barButtonItem>
+                            <barButtonItem enabled="NO" image="bluetooth_disconnected" id="VOh-Ha-KFb">
+                                <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </barButtonItem>
+                        </rightBarButtonItems>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="BLEIMG" destination="VOh-Ha-KFb" id="Jc8-6J-p21"/>
+                        <outlet property="bleBarButtonItem" destination="VOh-Ha-KFb" id="7WY-3v-bYg"/>
+                        <outlet property="qrCodeBarButtonItem" destination="91E-Gl-gs6" id="APE-Kt-e0Z"/>
+                        <outlet property="textField" destination="9qs-Je-LY6" id="lGg-2B-aRU"/>
+                        <outlet property="textView" destination="Qy1-ey-Uiy" id="VxH-o5-4MH"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
+            <point key="canvasLocation" x="1063.3587786259541" y="4.9295774647887329"/>
+        </scene>
+        <!--Scan View Controller-->
+        <scene sceneID="tfb-ag-Nmb">
+            <objects>
+                <viewController id="UTS-bL-GMX" customClass="ScanViewController" customModule="BleDemoApp_iOS" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="PWa-tq-dCP">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="YKC-vo-Rdc" customClass="CameraView" customModule="BleDemoApp_iOS" customModuleProvider="target">
+                                <rect key="frame" x="78.666666666666671" y="342.66666666666669" width="235.66666666666663" height="235.66666666666669"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="YKC-vo-Rdc" secondAttribute="height" multiplier="1:1" id="dlh-f0-7Qr"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="6Uj-2B-afq"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="YKC-vo-Rdc" firstAttribute="centerY" secondItem="6Uj-2B-afq" secondAttribute="centerY" id="CPG-Rh-ABk"/>
+                            <constraint firstItem="YKC-vo-Rdc" firstAttribute="width" secondItem="PWa-tq-dCP" secondAttribute="width" multiplier="0.6" id="SdA-xm-sth"/>
+                            <constraint firstItem="YKC-vo-Rdc" firstAttribute="centerX" secondItem="6Uj-2B-afq" secondAttribute="centerX" id="nsX-Ag-xgg"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" id="dsQ-Un-chY"/>
+                    <connections>
+                        <outlet property="scanView" destination="YKC-vo-Rdc" id="jdo-GD-JGj"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="lNF-kN-i4U" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1926" y="5"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="Zfg-Iv-3My">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="YXs-8g-psx" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="nFd-Vy-wGo">
+                        <rect key="frame" x="0.0" y="59" width="393" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="BYZ-38-t0r" kind="relationship" relationship="rootViewController" id="Bo3-0B-ZhD"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="LIt-pa-lPv" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="136.64122137404578" y="4.9295774647887329"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="bluetooth_disconnected" width="32" height="32"/>
+        <image name="qr-code" width="32" height="32"/>
+        <systemColor name="labelColor">
+            <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
 </document>
