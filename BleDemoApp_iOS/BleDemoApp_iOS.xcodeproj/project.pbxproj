@@ -18,6 +18,10 @@
 		6006D5DE2B983800004AC7CC /* SunionBluetoothTool.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6006D5DD2B983800004AC7CC /* SunionBluetoothTool.framework */; };
 		6006D5E02B9838EC004AC7CC /* Ex+UIViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6006D5DF2B9838EC004AC7CC /* Ex+UIViewController.swift */; };
 		6006D5E42B9840F3004AC7CC /* PickerOption.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6006D5E32B9840F3004AC7CC /* PickerOption.swift */; };
+		60EF0D0F2B99A63000819AF4 /* VC+AddAdminCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60EF0D0E2B99A63000819AF4 /* VC+AddAdminCode.swift */; };
+		60EF0D112B99A8FD00819AF4 /* VC+EditAdminCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60EF0D102B99A8FD00819AF4 /* VC+EditAdminCode.swift */; };
+		60EF0D132B99AC1B00819AF4 /* VC+FactoryReset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60EF0D122B99AC1B00819AF4 /* VC+FactoryReset.swift */; };
+		60EF0D152B99ACF500819AF4 /* VC+DeviceName.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60EF0D142B99ACF500819AF4 /* VC+DeviceName.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -34,6 +38,10 @@
 		6006D5DD2B983800004AC7CC /* SunionBluetoothTool.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SunionBluetoothTool.framework; sourceTree = "<group>"; };
 		6006D5DF2B9838EC004AC7CC /* Ex+UIViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Ex+UIViewController.swift"; sourceTree = "<group>"; };
 		6006D5E32B9840F3004AC7CC /* PickerOption.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickerOption.swift; sourceTree = "<group>"; };
+		60EF0D0E2B99A63000819AF4 /* VC+AddAdminCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VC+AddAdminCode.swift"; sourceTree = "<group>"; };
+		60EF0D102B99A8FD00819AF4 /* VC+EditAdminCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VC+EditAdminCode.swift"; sourceTree = "<group>"; };
+		60EF0D122B99AC1B00819AF4 /* VC+FactoryReset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VC+FactoryReset.swift"; sourceTree = "<group>"; };
+		60EF0D142B99ACF500819AF4 /* VC+DeviceName.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VC+DeviceName.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -71,6 +79,7 @@
 				6006D5812B97FB29004AC7CC /* SceneDelegate.swift */,
 				6006D5832B97FB29004AC7CC /* ViewController.swift */,
 				6006D5972B980ADA004AC7CC /* ScanViewController.swift */,
+				6006D5E32B9840F3004AC7CC /* PickerOption.swift */,
 				6006D5852B97FB29004AC7CC /* Main.storyboard */,
 				6006D5882B97FB2A004AC7CC /* Assets.xcassets */,
 				6006D58A2B97FB2A004AC7CC /* LaunchScreen.storyboard */,
@@ -78,7 +87,10 @@
 				6006D5DB2B981469004AC7CC /* Ex+UIView.swift */,
 				6006D5DD2B983800004AC7CC /* SunionBluetoothTool.framework */,
 				6006D5DF2B9838EC004AC7CC /* Ex+UIViewController.swift */,
-				6006D5E32B9840F3004AC7CC /* PickerOption.swift */,
+				60EF0D0E2B99A63000819AF4 /* VC+AddAdminCode.swift */,
+				60EF0D102B99A8FD00819AF4 /* VC+EditAdminCode.swift */,
+				60EF0D122B99AC1B00819AF4 /* VC+FactoryReset.swift */,
+				60EF0D142B99ACF500819AF4 /* VC+DeviceName.swift */,
 			);
 			path = BleDemoApp_iOS;
 			sourceTree = "<group>";
@@ -159,11 +171,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				6006D5DC2B981469004AC7CC /* Ex+UIView.swift in Sources */,
+				60EF0D0F2B99A63000819AF4 /* VC+AddAdminCode.swift in Sources */,
 				6006D5842B97FB29004AC7CC /* ViewController.swift in Sources */,
 				6006D5802B97FB29004AC7CC /* AppDelegate.swift in Sources */,
+				60EF0D152B99ACF500819AF4 /* VC+DeviceName.swift in Sources */,
 				6006D5822B97FB29004AC7CC /* SceneDelegate.swift in Sources */,
+				60EF0D132B99AC1B00819AF4 /* VC+FactoryReset.swift in Sources */,
 				6006D5E42B9840F3004AC7CC /* PickerOption.swift in Sources */,
 				6006D5982B980ADA004AC7CC /* ScanViewController.swift in Sources */,
+				60EF0D112B99A8FD00819AF4 /* VC+EditAdminCode.swift in Sources */,
 				6006D5E02B9838EC004AC7CC /* Ex+UIViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

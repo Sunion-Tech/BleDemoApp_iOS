@@ -26,7 +26,9 @@ class ScanViewController: UIViewController, CBCentralManagerDelegate, CameraView
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
+       
+        self.navigationController?.navigationBar.tintColor = UIColor.black// 将颜色改为你喜欢的颜色
+   
         setupView()
      
         centralManager = CBCentralManager(delegate: self, queue: nil)
