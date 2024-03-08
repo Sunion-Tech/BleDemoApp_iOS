@@ -46,6 +46,10 @@ class DeviceConfigSettingViewController: UIViewController {
         delegate?.config(data: model)
         self.dismiss(animated: true)
     }
+    
+    @IBAction func cancelAction(_ sender: UIButton) {
+        self.dismiss(animated: true)
+    }
     func setupData() {
         if let data = data {
             if let d = data.D4 {

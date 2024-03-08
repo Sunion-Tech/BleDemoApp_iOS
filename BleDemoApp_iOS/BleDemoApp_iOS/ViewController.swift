@@ -197,14 +197,30 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
         case .getUserData:
             showgetUserDataAlert()
         case .addUser:
-            let model = AddTokenModel(tokenName: "DemoUser", tokenPermission: .limit)
-            SunionBluetoothTool.shared.createToken(model: model)
+            self.performSegue(withIdentifier: "user", sender: "add")
+     
         case .editUser:
-            let model = EditTokenModel(tokenName: "DemoManager", tokenPermission: .all, tokenIndex: 1)
-            SunionBluetoothTool.shared.editToken(model: model)
+            if let token = token {
+                if token.isOwnerToken == .owner {
+                    showAlert(title: "Editing of the Owner is not allowed", message: "")
+                } else {
+                    self.performSegue(withIdentifier: "user", sender: "edit")
+                }
+               
+            } else {
+                showAlert(title: "Please Get User Data first", message: "")
+            }
+          
         case .delUser:
             if let token = token {
-                SunionBluetoothTool.shared.delToken(model: token)
+                if token.isOwnerToken == .owner {
+                    showAlert(title: "deleting the Owner is not allowed", message: "")
+                } else {
+                    SunionBluetoothTool.shared.delToken(model: token)
+                }
+              
+            } else {
+                showAlert(title: "Please Get User Data first", message: "")
             }
         case .getAccessArray:
             SunionBluetoothTool.shared.getPinCodeArray()
@@ -237,8 +253,30 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
             vc.data = self.config
             vc.delegate = self
         }
+        
+        if let id = segue.identifier, id == "user",
+           let vc = segue.destination as? UserOptionViewController {
+            if sender as! String == "edit" {
+                vc.data = self.token
+            }
+            vc.delegate = self
+        }
     }
 
+}
+
+extension ViewController: UserOptionViewControllerDelegate {
+    func optionData(add: AddTokenModel?, edit: EditTokenModel?) {
+        if let add = add {
+            SunionBluetoothTool.shared.createToken(model: add)
+        }
+        
+        if let edit = edit {
+            SunionBluetoothTool.shared.editToken(model: edit)
+        }
+    }
+    
+    
 }
 
 extension ViewController: DeviceConfigSettingViewControllerDelegate {
@@ -434,7 +472,9 @@ extension ViewController: SunionBluetoothToolDelegate {
     func TokenData(value: TokenModel?) {
         if let value = value {
             token = value
-            token?.indexOfToken = tokenIndex
+            if value.isOwnerToken == .notOwner {
+                token?.indexOfToken = tokenIndex
+            }
             let msg = "isenable: \(value.isEnable)\n tokenmode: \(value.tokenMode.rawValue)\n isowner: \(value.isOwnerToken.rawValue)\n tokenpermission: \(value.tokenPermission.rawValue)\n token: \(value.token?.toHexString() ?? "")\n name: \(value.name ?? "")\n indexoftoken: \(value.indexOfToken ?? 0000)"
             
             appendLogToTextView(logMessage: msg)
