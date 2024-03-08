@@ -21,7 +21,7 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
     private var pickerData = Picker1Option.allCases
     
     private var selectedRow = 0
-    var isEditAdminCode = false
+    var isAdminCode = false
     
     var modelName = ""
     var config: DeviceSetupResultModel?
@@ -32,21 +32,22 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
     var timezonetextField: UITextField?
     let timezonepickerView = UIPickerView()
     
-   
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
- 
+        
         textField.isEnabled = false
     }
     
-
+    
     // MARK: - QrCode Data
     func QrCodeData(model: BluetoothToolModel) {
         if let token = model.token,
            let aes1 = model.aes1Key,
            let mac = model.macAddress,
            let name = model.modelName {
+            isAdminCode = false
             let msg = "token: \(token.toHexString())\n aes1Key: \(aes1.toHexString())\n macAddress: \(mac)\n modelName: \(name)"
             SunionBluetoothTool.shared.initBluetooth(macAddress: mac, aes1Key: Array(aes1), token: Array(token))
             if SunionBluetoothTool.shared.delegate == nil {
@@ -64,7 +65,7 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
             appendLogToTextView(logMessage: msg)
             textField.isEnabled = true
         }
-       
+        
     }
     
     func getCurrentTimeString() -> String {
@@ -101,18 +102,18 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
         toolBar.sizeToFit()
         
         // 添加一个取消按钮到工具条的左侧
-            let cancelButton = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(self.cancelPicker))
-            
+        let cancelButton = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(self.cancelPicker))
+        
         
         // 添加一个确认按钮
         let doneButton = UIBarButtonItem(title: "Confirm", style: .plain, target: self, action: #selector(self.dismissKeyboard))
         
         // 通过在两个按钮之间添加一个flexible space bar button item来使这两个按钮分别对齐到左侧和右侧
-         let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
-         
-         // 设置工具条的items，包括取消按钮、弹性空间和确认按钮
-         toolBar.setItems([cancelButton, flexibleSpace, doneButton], animated: false)
-         
+        let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+        
+        // 设置工具条的items，包括取消按钮、弹性空间和确认按钮
+        toolBar.setItems([cancelButton, flexibleSpace, doneButton], animated: false)
+        
         toolBar.isUserInteractionEnabled = true
         
         // 将pickerView和工具条设置为textField的inputView和inputAccessoryView
@@ -130,118 +131,133 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
         // 关闭pickerView
         view.endEditing(true)
         let data = pickerData[selectedRow]
-        switch data {
-        case .connecting:
-            appendLogToTextView(logMessage: "Connecting...")
-            SunionBluetoothTool.shared.connectingBluetooth()
-        case .adminCodeExist:
-            SunionBluetoothTool.shared.isAdminCode()
-        case .setAdminCode:
-            isEditAdminCode = false
-            showsetAdminCodeAlert()
-        case .editAdminCode:
-            isEditAdminCode = true
-            showEditAdminCodeAlert()
-        case .boltCheck:
-            SunionBluetoothTool.shared.blotCheck()
-        case .factoryReset:
-            showfactoryResetAlert()
-        case .setDeviceName:
-            showsetDeviceNameAlert()
-        case .getDeviceName:
-            SunionBluetoothTool.shared.getDeviceName()
-        case .setTimeZone:
-            SunionBluetoothTool.shared.setupTimeZone(timezone: "Asia/Taipei")
-        case .setDeviceTime:
-            SunionBluetoothTool.shared.setupDeviceTime()
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
-                self.appendLogToTextView(logMessage: "set Device Time successfully")
-            }
-        case .getDeviceConfig:
-            switch modelName {
-            case "KD0":
-                SunionBluetoothTool.shared.getDeviceConfigD4()
+        
+        if data == .adminCodeExist ||
+            data == .setAdminCode ||
+            data == .connecting {
+            switch data {
+            case .connecting:
+                appendLogToTextView(logMessage: "Connecting...")
+                SunionBluetoothTool.shared.connectingBluetooth()
+            case .adminCodeExist:
+                SunionBluetoothTool.shared.isAdminCode()
+            case .setAdminCode:
+                showsetAdminCodeAlert()
             default:
                 break
             }
-        case .setDeviceConfig:
-            
-            if let config = config {
-                self.performSegue(withIdentifier: "config", sender: nil)
-            } else {
-                showAlert(title: "Please Get Device Config first", message: "")
-            }
-           
-      
-        case .getDeviceStatus:
-            SunionBluetoothTool.shared.getDeviceStatus()
-        case .switchDevice:
-            var lockMode: CommandService.DeviceMode = .unlock
-            switch modelName {
-            case "KD0":
-                if status?.D6?.isLocked == .locked {
-                    lockMode = .unlock
-                }else {
-                    lockMode = .lock
+        } else if !isAdminCode{
+            showAlert(title: "Please Set Admin Code first", message: "")
+        } else {
+            switch data {
+            case .adminCodeExist:
+                SunionBluetoothTool.shared.isAdminCode()
+            case .setAdminCode:
+                showsetAdminCodeAlert()
+            case .editAdminCode:
+                showEditAdminCodeAlert()
+            case .boltCheck:
+                SunionBluetoothTool.shared.blotCheck()
+            case .factoryReset:
+                showfactoryResetAlert()
+            case .setDeviceName:
+                showsetDeviceNameAlert()
+            case .getDeviceName:
+                SunionBluetoothTool.shared.getDeviceName()
+            case .setTimeZone:
+                SunionBluetoothTool.shared.setupTimeZone(timezone: "Asia/Taipei")
+            case .setDeviceTime:
+                SunionBluetoothTool.shared.setupDeviceTime()
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
+                    self.appendLogToTextView(logMessage: "set Device Time successfully")
                 }
+            case .getDeviceConfig:
+                switch modelName {
+                case "KD0":
+                    SunionBluetoothTool.shared.getDeviceConfigD4()
+                default:
+                    break
+                }
+            case .setDeviceConfig:
+                
+                if let config = config {
+                    self.performSegue(withIdentifier: "config", sender: nil)
+                } else {
+                    showAlert(title: "Please Get Device Config first", message: "")
+                }
+                
+                
+            case .getDeviceStatus:
+                SunionBluetoothTool.shared.getDeviceStatus()
+            case .switchDevice:
+                var lockMode: CommandService.DeviceMode = .unlock
+                switch modelName {
+                case "KD0":
+                    if status?.D6?.isLocked == .locked {
+                        lockMode = .unlock
+                    }else {
+                        lockMode = .lock
+                    }
+                default:
+                    break
+                }
+                SunionBluetoothTool.shared.switchDevice(mode: lockMode)
+            case .getLogCount:
+                SunionBluetoothTool.shared.getLogCount()
+            case .getLogData:
+                showgetLogDataAlert()
+            case .getUserArray:
+                SunionBluetoothTool.shared.getTokenArray()
+            case .getUserData:
+                showgetUserDataAlert()
+            case .addUser:
+                self.performSegue(withIdentifier: "user", sender: "add")
+                
+            case .editUser:
+                if let token = token {
+                    if token.isOwnerToken == .owner {
+                        showAlert(title: "Editing of the Owner is not allowed", message: "")
+                    } else {
+                        self.performSegue(withIdentifier: "user", sender: "edit")
+                    }
+                    
+                } else {
+                    showAlert(title: "Please Get User Data first", message: "")
+                }
+                
+            case .delUser:
+                if let token = token {
+                    if token.isOwnerToken == .owner {
+                        showAlert(title: "deleting the Owner is not allowed", message: "")
+                    } else {
+                        SunionBluetoothTool.shared.delToken(model: token)
+                    }
+                    
+                } else {
+                    showAlert(title: "Please Get User Data first", message: "")
+                }
+            case .getAccessArray:
+                SunionBluetoothTool.shared.getPinCodeArray()
+            case .getAccessData:
+                SunionBluetoothTool.shared.getPinCode(position: 1)
+            case .addAccess:
+                let model = PinCodeManageModel(index: 1, isEnable: true, PinCode: [1,2,3,4], name: "DemoAccess", schedule: .init(availableOption: .all), PinCodeManageOption: .add)
+                SunionBluetoothTool.shared.pinCodeOption(model: model)
+            case .editAccess:
+                let model = PinCodeManageModel(index: 1, isEnable: true, PinCode: [2,3,4,1], name: "DemoAccess", schedule: .init(availableOption: .all), PinCodeManageOption: .edit)
+                SunionBluetoothTool.shared.pinCodeOption(model: model)
+            case .delAccess:
+                SunionBluetoothTool.shared.delPinCode(position: 1)
+            case .disconnected:
+                SunionBluetoothTool.shared.disconnectBluetooth()
+                appendLogToTextView(logMessage: "Disconnected")
             default:
                 break
             }
-            SunionBluetoothTool.shared.switchDevice(mode: lockMode)
-        case .getLogCount:
-            SunionBluetoothTool.shared.getLogCount()
-        case .getLogData:
-            showgetLogDataAlert()
-        case .getUserArray:
-            SunionBluetoothTool.shared.getTokenArray()
-        case .getUserData:
-            showgetUserDataAlert()
-        case .addUser:
-            self.performSegue(withIdentifier: "user", sender: "add")
-     
-        case .editUser:
-            if let token = token {
-                if token.isOwnerToken == .owner {
-                    showAlert(title: "Editing of the Owner is not allowed", message: "")
-                } else {
-                    self.performSegue(withIdentifier: "user", sender: "edit")
-                }
-               
-            } else {
-                showAlert(title: "Please Get User Data first", message: "")
-            }
-          
-        case .delUser:
-            if let token = token {
-                if token.isOwnerToken == .owner {
-                    showAlert(title: "deleting the Owner is not allowed", message: "")
-                } else {
-                    SunionBluetoothTool.shared.delToken(model: token)
-                }
-              
-            } else {
-                showAlert(title: "Please Get User Data first", message: "")
-            }
-        case .getAccessArray:
-            SunionBluetoothTool.shared.getPinCodeArray()
-        case .getAccessData:
-            SunionBluetoothTool.shared.getPinCode(position: 1)
-        case .addAccess:
-            let model = PinCodeManageModel(index: 1, isEnable: true, PinCode: [1,2,3,4], name: "DemoAccess", schedule: .init(availableOption: .all), PinCodeManageOption: .add)
-            SunionBluetoothTool.shared.pinCodeOption(model: model)
-        case .editAccess:
-            let model = PinCodeManageModel(index: 1, isEnable: true, PinCode: [2,3,4,1], name: "DemoAccess", schedule: .init(availableOption: .all), PinCodeManageOption: .edit)
-            SunionBluetoothTool.shared.pinCodeOption(model: model)
-        case .delAccess:
-            SunionBluetoothTool.shared.delPinCode(position: 1)
-        case .disconnected:
-            SunionBluetoothTool.shared.disconnectBluetooth()
-            appendLogToTextView(logMessage: "Disconnected")
-        default:
-            break
         }
+        
     }
-
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let id = segue.identifier, id == "qrcode",
            let vc = segue.destination as? ScanViewController {
@@ -262,7 +278,7 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
             vc.delegate = self
         }
     }
-
+    
 }
 
 extension ViewController: UserOptionViewControllerDelegate {
@@ -283,7 +299,7 @@ extension ViewController: DeviceConfigSettingViewControllerDelegate {
     func config(data: DeviceSetupModel) {
         SunionBluetoothTool.shared.setupDeviceConfig(data: data)
     }
-
+    
 }
 
 
@@ -306,7 +322,7 @@ extension ViewController: UIPickerViewDelegate, UIPickerViewDataSource {
         selectedRow = row
     }
 }
- 
+
 
 
 extension ViewController: SunionBluetoothToolDelegate {
@@ -335,7 +351,7 @@ extension ViewController: SunionBluetoothToolDelegate {
                 break
             default:
                 appendLogToTextView(logMessage: "Disconnected")
-              
+                
             }
         }
     }
@@ -360,6 +376,7 @@ extension ViewController: SunionBluetoothToolDelegate {
     
     func AdminCode(bool: Bool?) {
         if let bool = bool, bool {
+            isAdminCode = true
             appendLogToTextView(logMessage: "adminCode set successfully")
         } else {
             appendLogToTextView(logMessage: "adminCode setting failed")
@@ -535,6 +552,6 @@ extension ViewController: SunionBluetoothToolDelegate {
         }
     }
     
-
+    
     
 }
