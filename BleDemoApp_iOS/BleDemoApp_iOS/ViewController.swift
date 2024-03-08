@@ -27,9 +27,12 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
     var config: DeviceSetupResultModel?
     var status: DeviceStatusModel?
     var token: TokenModel?
+    var tokenIndex: Int?
     
     var timezonetextField: UITextField?
     let timezonepickerView = UIPickerView()
+    
+   
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -162,17 +165,14 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
                 break
             }
         case .setDeviceConfig:
-            let model = DeviceSetupModel()
-          
-            switch modelName {
-            case "KD0":
-                let d = DeviceSetupModelD5(soundOn: !(config?.D4?.soundOn ?? false), vacationModeOn: config?.D4?.vacationModeOn ?? false, autoLockOn: config?.D4?.autoLockOn ?? false, autoLockTime: config?.D4?.autoLockTime ?? 1, guidingCode: config?.D4?.guidingCode ?? false, latitude: config?.D4?.latitude ?? 0.0, longitude: config?.D4?.longitude ?? 0.0)
-                
-                model.D5 = d
-            default:
-                break
+            
+            if let config = config {
+                self.performSegue(withIdentifier: "config", sender: nil)
+            } else {
+                showAlert(title: "Please Get Device Config first", message: "")
             }
-            SunionBluetoothTool.shared.setupDeviceConfig(data: model)
+           
+      
         case .getDeviceStatus:
             SunionBluetoothTool.shared.getDeviceStatus()
         case .switchDevice:
@@ -191,11 +191,11 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
         case .getLogCount:
             SunionBluetoothTool.shared.getLogCount()
         case .getLogData:
-            SunionBluetoothTool.shared.getLog(count: 1)
+            showgetLogDataAlert()
         case .getUserArray:
             SunionBluetoothTool.shared.getTokenArray()
         case .getUserData:
-            SunionBluetoothTool.shared.getToken(position: 1)
+            showgetUserDataAlert()
         case .addUser:
             let model = AddTokenModel(tokenName: "DemoUser", tokenPermission: .limit)
             SunionBluetoothTool.shared.createToken(model: model)
@@ -231,6 +231,19 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
            let vc = segue.destination as? ScanViewController {
             vc.delegate = self
         }
+        
+        if let id = segue.identifier, id == "config",
+           let vc = segue.destination as? DeviceConfigSettingViewController {
+            vc.data = self.config
+            vc.delegate = self
+        }
+    }
+
+}
+
+extension ViewController: DeviceConfigSettingViewControllerDelegate {
+    func config(data: DeviceSetupModel) {
+        SunionBluetoothTool.shared.setupDeviceConfig(data: data)
     }
 
 }
@@ -341,7 +354,7 @@ extension ViewController: SunionBluetoothToolDelegate {
     
     func DeviceName(bool: Bool?) {
         if let bool = bool, bool {
-            appendLogToTextView(logMessage: "set device name successfully: DemoLock")
+            appendLogToTextView(logMessage: "set device name successfully")
         } else {
             appendLogToTextView(logMessage: "set device name failed")
         }
@@ -357,7 +370,7 @@ extension ViewController: SunionBluetoothToolDelegate {
     
     func TimeZone(bool: Bool?) {
         if let bool = bool, bool {
-            appendLogToTextView(logMessage: "set timezone successfully: Asia/Taipei")
+            appendLogToTextView(logMessage: "set timezone successfully")
         } else {
             appendLogToTextView(logMessage: "set timezone failed")
         }
@@ -403,7 +416,7 @@ extension ViewController: SunionBluetoothToolDelegate {
     
     func LogData(value: LogModel?) {
         if let value = value {
-            let msg = "count 1 log data\n timestamp: \(value.timestamp)\n event: \(value.event)\n name: \(value.name)\n message: \(value.message ?? "")"
+            let msg = "timestamp: \(value.timestamp)\n event: \(value.event)\n name: \(value.name)\n message: \(value.message ?? "")"
             appendLogToTextView(logMessage: msg)
         } else {
             appendLogToTextView(logMessage: "get log data failed")
@@ -421,6 +434,7 @@ extension ViewController: SunionBluetoothToolDelegate {
     func TokenData(value: TokenModel?) {
         if let value = value {
             token = value
+            token?.indexOfToken = tokenIndex
             let msg = "isenable: \(value.isEnable)\n tokenmode: \(value.tokenMode.rawValue)\n isowner: \(value.isOwnerToken.rawValue)\n tokenpermission: \(value.tokenPermission.rawValue)\n token: \(value.token?.toHexString() ?? "")\n name: \(value.name ?? "")\n indexoftoken: \(value.indexOfToken ?? 0000)"
             
             appendLogToTextView(logMessage: msg)
@@ -432,6 +446,7 @@ extension ViewController: SunionBluetoothToolDelegate {
     func TokenOption(value: AddTokenResult?) {
         if let value = value {
             let msg = "isSuccess: \(value.isSuccess)\n token: \(value.token?.toHexString() ?? "")\n index: \(value.index ?? 0000)"
+            tokenIndex = value.index
             appendLogToTextView(logMessage: msg)
         } else {
             appendLogToTextView(logMessage: "add user failed")
