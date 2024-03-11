@@ -48,15 +48,60 @@ class AccessCodeViewController: UIViewController {
     
     
     @IBOutlet weak var scrollView: UIScrollView!
+    
+    private var textFieldSelected: UITextField?
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        let screenWidth = UIScreen.main.bounds.width
-        let screenHeight = UIScreen.main.bounds.height
-        scrollView.contentSize = (CGSize(width: screenWidth, height: screenHeight))
+        // 監聽鍵盤彈出事件
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_:)), name: UIResponder.keyboardWillShowNotification, object: nil)
+        
+        // 添加一個 tap gesture recognizer 來關閉鍵盤
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        scrollView.addGestureRecognizer(tapGesture)
+       
+    
     }
     
-
+    deinit {
+        // 移除通知監聽
+        NotificationCenter.default.removeObserver(self)
+    }
+    
+    @objc func dismissKeyboard() {
+         view.endEditing(true)
+     }
+    
+    @objc func keyboardWillShow(_ notification: Notification) {
+        // 獲取鍵盤的尺寸
+        guard let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect else { return }
+        
+        // 計算 scrollView 需要滾動的距離
+        let contentInsets = UIEdgeInsets(top: 0, left: 0, bottom: keyboardFrame.height, right: 0)
+        scrollView.contentInset = contentInsets
+        scrollView.scrollIndicatorInsets = contentInsets
+        
+        // 讓目標元件在鍵盤的上方
+        var visibleRect = scrollView.frame
+        visibleRect.size.height -= keyboardFrame.height
+        
+        if let activeField = textFieldSelected {
+            let textFieldRect = activeField.convert(activeField.bounds, to: scrollView)
+            if !visibleRect.contains(textFieldRect.origin) {
+                scrollView.scrollRectToVisible(textFieldRect, animated: true)
+            }
+        }
+    }
+    
+    @objc func cancelButtonTapped(_ sender: UIButton) {
+        
+        view.endEditing(true)
+    }
+    
+    @objc func confirmButtonTapped() {
+        // 在此處執行確認操作
+        view.endEditing(true)
+    }
 
     @IBAction func buttonCardAction(_ sender: UIButton) {
     }
@@ -93,41 +138,51 @@ class AccessCodeViewController: UIViewController {
     
     @IBAction func switchPermanentAction(_ sender: UISwitch) {
         
-        validTimeRangeOption(enable: !sender.isOn)
-         scheduledEntryOption(enable: !sender.isOn)
-         switchSingleEntry.isOn = !sender.isOn
- 
-       
+        if sender.isOn {
+            validTimeRangeOption(enable: !sender.isOn)
+             scheduledEntryOption(enable: !sender.isOn)
+             switchSingleEntry.isOn = !sender.isOn
+        }
+
+
     }
     
     
     @IBAction func switchValidTimeRangeAction(_ sender: UISwitch) {
-        
-
-        swtichPermanent.isOn = !sender.isOn
         validTimeRangeOption(enable: sender.isOn)
-        scheduledEntryOption(enable: !sender.isOn)
-        switchSingleEntry.isOn = !sender.isOn
+        
+        if sender.isOn {
+            swtichPermanent.isOn = !sender.isOn
+            scheduledEntryOption(enable: !sender.isOn)
+            switchSingleEntry.isOn = !sender.isOn
+        }
+     
     }
     
     
     @IBAction func switchScheduledEntryAction(_ sender: UISwitch) {
-        swtichPermanent.isOn = !sender.isOn
-        switchSingleEntry.isOn = !sender.isOn
-        validTimeRangeOption(enable: !sender.isOn)
         scheduledEntryOption(enable: sender.isOn)
+        
+        if sender.isOn {
+            swtichPermanent.isOn = !sender.isOn
+            switchSingleEntry.isOn = !sender.isOn
+            validTimeRangeOption(enable: !sender.isOn)
+        }
+     
     }
     
     
     @IBAction func switchSingleEntryAction(_ sender: UISwitch) {
-        swtichPermanent.isOn = !sender.isOn
-        switchSingleEntry.isOn = !sender.isOn
-        validTimeRangeOption(enable: !sender.isOn)
-        scheduledEntryOption(enable: !sender.isOn)
+        if sender.isOn {
+            swtichPermanent.isOn = !sender.isOn
+            validTimeRangeOption(enable: !sender.isOn)
+            scheduledEntryOption(enable: !sender.isOn)
+        }
     }
     
     
     private func scheduledEntryOption(enable: Bool) {
+        
         switchScheduledEntry.isOn = enable
         switchSu.isOn = enable
         switchSu.isEnabled = enable
@@ -158,18 +213,48 @@ class AccessCodeViewController: UIViewController {
             textFieldScheduledEntryEND.text = nil
         }
         
+
+        
     }
     
     private func validTimeRangeOption(enable: Bool) {
+        
         switchValidTimeRange.isOn = enable
         textFieldValidTimeRangeSTART.isEnabled = enable
-        textFieldValidTimeRangeSTART.isEnabled = enable
+        textFieldValidTimeRangeEND.isEnabled = enable
+        
         if !enable {
             textFieldValidTimeRangeSTART.text = nil
             textFieldValidTimeRangeEND.text = nil
         }
-      
     }
     
     
+}
+
+
+extension AccessCodeViewController: UITextFieldDelegate {
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        textFieldSelected = textField
+        // 創建自定義 accessory view
+        let accessoryView = UIView(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: 44))
+        accessoryView.backgroundColor = .lightGray
+        
+        // 創建 Cancel 按鈕
+        let cancelButton = UIButton(type: .system)
+        cancelButton.setTitle("Cancel", for: .normal)
+        cancelButton.addTarget(self, action: #selector(cancelButtonTapped(_:)), for: .touchUpInside)
+        cancelButton.frame = CGRect(x: 10, y: 0, width: 80, height: 44)
+        accessoryView.addSubview(cancelButton)
+        
+        // 創建 Confirm 按鈕
+        let confirmButton = UIButton(type: .system)
+        confirmButton.setTitle("Confirm", for: .normal)
+        confirmButton.addTarget(self, action: #selector(confirmButtonTapped), for: .touchUpInside)
+        confirmButton.frame = CGRect(x: accessoryView.frame.width - 90, y: 0, width: 80, height: 44)
+        accessoryView.addSubview(confirmButton)
+        
+        // 將 accessory view 設置為 textfield 的 inputAccessoryView
+        textField.inputAccessoryView = accessoryView
+    }
 }
