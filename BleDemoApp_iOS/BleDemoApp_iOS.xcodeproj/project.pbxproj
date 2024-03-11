@@ -26,6 +26,7 @@
 		60EF0D1D2B9AE61500819AF4 /* VC+LogData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60EF0D1C2B9AE61500819AF4 /* VC+LogData.swift */; };
 		60EF0D1F2B9AE7CA00819AF4 /* VC+UserData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60EF0D1E2B9AE7CA00819AF4 /* VC+UserData.swift */; };
 		60EF0D212B9AF52700819AF4 /* UserOptionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60EF0D202B9AF52700819AF4 /* UserOptionViewController.swift */; };
+		60EF0D232B9EB18A00819AF4 /* AccessCodeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60EF0D222B9EB18A00819AF4 /* AccessCodeViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -50,6 +51,7 @@
 		60EF0D1C2B9AE61500819AF4 /* VC+LogData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VC+LogData.swift"; sourceTree = "<group>"; };
 		60EF0D1E2B9AE7CA00819AF4 /* VC+UserData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VC+UserData.swift"; sourceTree = "<group>"; };
 		60EF0D202B9AF52700819AF4 /* UserOptionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserOptionViewController.swift; sourceTree = "<group>"; };
+		60EF0D222B9EB18A00819AF4 /* AccessCodeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessCodeViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -89,6 +91,7 @@
 				6006D5972B980ADA004AC7CC /* ScanViewController.swift */,
 				60EF0D1A2B9AC09300819AF4 /* DeviceConfigSettingViewController.swift */,
 				60EF0D202B9AF52700819AF4 /* UserOptionViewController.swift */,
+				60EF0D222B9EB18A00819AF4 /* AccessCodeViewController.swift */,
 				6006D5E32B9840F3004AC7CC /* PickerOption.swift */,
 				6006D5852B97FB29004AC7CC /* Main.storyboard */,
 				6006D5882B97FB2A004AC7CC /* Assets.xcassets */,
@@ -187,6 +190,7 @@
 				6006D5842B97FB29004AC7CC /* ViewController.swift in Sources */,
 				6006D5802B97FB29004AC7CC /* AppDelegate.swift in Sources */,
 				60EF0D152B99ACF500819AF4 /* VC+DeviceName.swift in Sources */,
+				60EF0D232B9EB18A00819AF4 /* AccessCodeViewController.swift in Sources */,
 				6006D5822B97FB29004AC7CC /* SceneDelegate.swift in Sources */,
 				60EF0D132B99AC1B00819AF4 /* VC+FactoryReset.swift in Sources */,
 				6006D5E42B9840F3004AC7CC /* PickerOption.swift in Sources */,

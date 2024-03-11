@@ -241,8 +241,9 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
             case .getAccessData:
                 SunionBluetoothTool.shared.getPinCode(position: 1)
             case .addAccess:
-                let model = PinCodeManageModel(index: 1, isEnable: true, PinCode: [1,2,3,4], name: "DemoAccess", schedule: .init(availableOption: .all), PinCodeManageOption: .add)
-                SunionBluetoothTool.shared.pinCodeOption(model: model)
+                self.performSegue(withIdentifier: "access", sender: nil)
+//                let model = PinCodeManageModel(index: 1, isEnable: true, PinCode: [1,2,3,4], name: "DemoAccess", schedule: .init(availableOption: .all), PinCodeManageOption: .add)
+//                SunionBluetoothTool.shared.pinCodeOption(model: model)
             case .editAccess:
                 let model = PinCodeManageModel(index: 1, isEnable: true, PinCode: [2,3,4,1], name: "DemoAccess", schedule: .init(availableOption: .all), PinCodeManageOption: .edit)
                 SunionBluetoothTool.shared.pinCodeOption(model: model)
