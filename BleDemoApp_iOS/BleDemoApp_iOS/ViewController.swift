@@ -28,11 +28,13 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
     var status: DeviceStatusModel?
     var token: TokenModel?
     var tokenIndex: Int?
+    var accessFirstEmptyIndex: Int?
+    var accessData: PinCodeModelResult?
     
     var timezonetextField: UITextField?
     let timezonepickerView = UIPickerView()
     
-    
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -239,14 +241,24 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
             case .getAccessArray:
                 SunionBluetoothTool.shared.getPinCodeArray()
             case .getAccessData:
-                SunionBluetoothTool.shared.getPinCode(position: 1)
+                showgetAccessDataAlert()
             case .addAccess:
-                self.performSegue(withIdentifier: "access", sender: nil)
-//                let model = PinCodeManageModel(index: 1, isEnable: true, PinCode: [1,2,3,4], name: "DemoAccess", schedule: .init(availableOption: .all), PinCodeManageOption: .add)
-//                SunionBluetoothTool.shared.pinCodeOption(model: model)
+                if let firstEmptyIndex = accessFirstEmptyIndex, accessData == nil {
+                    self.performSegue(withIdentifier: "access", sender: true)
+                } else {
+                    showAlert(title: "Please Get Access Array first", message: "")
+                }
+             
+
             case .editAccess:
-                let model = PinCodeManageModel(index: 1, isEnable: true, PinCode: [2,3,4,1], name: "DemoAccess", schedule: .init(availableOption: .all), PinCodeManageOption: .edit)
-                SunionBluetoothTool.shared.pinCodeOption(model: model)
+                if let data = accessData {
+                    self.performSegue(withIdentifier: "access", sender: false)
+                } else {
+                    showAlert(title: "Please Get Access Data first", message: "")
+                }
+//
+//                let model = PinCodeManageModel(index: 1, isEnable: true, PinCode: [2,3,4,1], name: "DemoAccess", schedule: .init(availableOption: .all), PinCodeManageOption: .edit)
+//                SunionBluetoothTool.shared.pinCodeOption(model: model)
             case .delAccess:
                 SunionBluetoothTool.shared.delPinCode(position: 1)
             case .disconnected:
@@ -278,7 +290,27 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
             }
             vc.delegate = self
         }
+        
+        if let id = segue.identifier, id == "access",
+           let vc = segue.destination as? AccessCodeViewController,
+            let isCreate = sender as? Bool {
+            vc.isCreate = isCreate
+            vc.positionIndex = accessFirstEmptyIndex
+            vc.data = accessData
+            vc.delegate = self
+            vc.bleStatus = status
+        }
     }
+    
+}
+
+extension ViewController: AccessCodeViewControllerDelegate {
+    func optionData(model: PinCodeManageModel) {
+        accessFirstEmptyIndex = nil
+        accessData = nil
+        SunionBluetoothTool.shared.pinCodeOption(model: model)
+    }
+    
     
 }
 
@@ -529,7 +561,9 @@ extension ViewController: SunionBluetoothToolDelegate {
     
     func PinCodeArray(value: PinCodeArrayModel?) {
         if let value = value {
+            accessData = nil
             let msg = "count: \(value.count)\n data: \(value.data)\n firstemptyindex: \(value.firstEmptyIndex)"
+            self.accessFirstEmptyIndex = value.firstEmptyIndex
             appendLogToTextView(logMessage: msg)
         } else {
             appendLogToTextView(logMessage: "get access array failed")
@@ -538,11 +572,64 @@ extension ViewController: SunionBluetoothToolDelegate {
     
     func PinCodeData(value: PinCodeModelResult?) {
         if let value = value {
-            let msg = "isenable: \(value.isEnable)\n code: \(value.PinCode ?? [0000])\n length: \(value.PinCodeLength ?? 0x00)\n name: \(value.name ?? "")\n schedule: \(value.schedule?.scheduleOption.scheduleName ?? "")"
+            accessData = value
+            var schemsg = ""
+            if let sche = value.schedule {
+                switch sche.scheduleOption {
+                    
+                case .all:
+                    break
+                case .none:
+                    break
+                case .once:
+                    break
+                case .weekly(let week,let start, let end):
+                    
+                    
+                    let weekmsg = "week: \(convertWeekArrayToString(week: week))"
+                    
+                    let startValue = start.components(separatedBy: ":")
+                    let endValue = end.components(separatedBy: ":")
+                    let startmsg = "START: \(startValue.first!.appendLeadingZero + ":" + startValue.last!.appendLeadingZero)"
+                    let endmsg = "END: \(endValue.first!.appendLeadingZero + ":" + endValue.last!.appendLeadingZero)"
+                    schemsg = weekmsg + "\n \(startmsg)" + "\n \(endmsg)"
+                case .validTime(let start, let end):
+                    let dateformatter = DateFormatter()
+                    dateformatter.dateFormat = "yyyy-MM-dd HH:mm"
+                   
+                    let startmsg = dateformatter.string(from: start)
+                    let endmsg = dateformatter.string(from: end)
+                    schemsg = "START: \(startmsg)" + "\n END: \(endmsg)"
+                case .error:
+                    break
+                }
+            }
+            
+            let msg = "index: \(value.index) \nisenable: \(value.isEnable)\n code: \(value.PinCode ?? [0000])\n length: \(value.PinCodeLength ?? 0x00)\n name: \(value.name ?? "")\n schedule: \(value.schedule?.scheduleOption.scheduleName ?? "")\n" + schemsg
+          
             appendLogToTextView(logMessage: msg)
         } else {
             appendLogToTextView(logMessage: "get access data failed")
         }
+    }
+    
+    func convertWeekArrayToString(week: [Int]) -> String {
+
+        
+        // 星期的缩写，与你的要求相匹配
+        let days = ["Sa", "Fr", "Th", "We", "Tu", "Mo", "Su"]
+        
+        var resultString = ""
+        
+        for (index, value) in week.enumerated() {
+            if value == 1 {
+                // 添加对应的天到结果字符串
+                resultString += days[index] + " "
+            }
+        }
+        
+        // 移除最后一个空格并返回结果
+        return resultString.trimmingCharacters(in: .whitespaces)
     }
     
     func PinCode(bool: Bool?) {
