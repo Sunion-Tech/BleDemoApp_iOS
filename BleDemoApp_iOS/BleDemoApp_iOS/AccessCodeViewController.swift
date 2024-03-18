@@ -10,6 +10,7 @@ import SunionBluetoothTool
 
 protocol AccessCodeViewControllerDelegate: AnyObject {
     func optionData(model: PinCodeManageModel)
+    func optionData2(model: AccessRequestModel)
 }
 
 class AccessCodeViewController: UIViewController {
@@ -57,11 +58,15 @@ class AccessCodeViewController: UIViewController {
     private var selectedTextField: UITextField?
     
     var model: PinCodeManageModel?
+    var model2: AccessRequestModel?
     var positionIndex: Int?
+    var positionCardIndex: Int?
     
     var data: PinCodeModelResult?
+    var data2: AccessDataResponseModel?
     
     var isCreate: Bool?
+    var isV2: Bool? = false
     
     weak var delegate: AccessCodeViewControllerDelegate?
     
@@ -73,10 +78,14 @@ class AccessCodeViewController: UIViewController {
     var bleStatus: DeviceStatusModel?
     
 
+    var code = false
+    var card = false
+    var face = false
+    var finger = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        SunionBluetoothTool.shared.delegate = self
         // 監聽鍵盤彈出事件
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_:)), name: UIResponder.keyboardWillShowNotification, object: nil)
         
@@ -134,6 +143,53 @@ class AccessCodeViewController: UIViewController {
                 }
             }
         }
+        
+        if let data = data2 {
+            switchEnable.isOn = data.isEnable
+            textFieldName.text = data.name
+            textFieldCode.text = data.codeCard?.map{String($0)}.joined()
+            swtichPermanent.isOn  = false
+            if let sche = data.schedule {
+                switch sche.scheduleOption {
+                case .none:
+                    break
+                case .once:
+              
+                    switchSingleEntry.isOn = true
+                case .weekly(let week,let start, let end):
+                    switchScheduledEntry.isOn = true
+                    let startValue = start.components(separatedBy: ":")
+                    let endValue = end.components(separatedBy: ":")
+                   
+                   textFieldScheduledEntrySTART.text = startValue.first!.appendLeadingZero + ":" + startValue.last!.appendLeadingZero
+                   textFieldScheduledEntryEND.text = endValue.first!.appendLeadingZero + ":" + endValue.last!.appendLeadingZero
+                    
+                    let switches = [switchSa, switchFr, switchTh, switchWe, switchTu, switchMo, switchSu] // 注意顺序与问题描述相匹配
+                       
+                    for (index, day) in week.enumerated().reversed() {
+                        if index < 7 {
+                            switches[index]!.isOn = (day == 1)
+                        }
+                    }
+                    
+                    switches.forEach { element in
+                        element?.isEnabled = true
+                    }
+                    
+                case .validTime(let start, let end):
+                    switchValidTimeRange.isOn  = true
+                    let dateformatter = DateFormatter()
+                    dateformatter.dateFormat = "yyyy-MM-dd HH:mm"
+          
+                    textFieldValidTimeRangeSTART.text = dateformatter.string(from: start)
+                    textFieldValidTimeRangeEND.text = dateformatter.string(from: end)
+                case .error:
+                    break
+                case .all:
+                    swtichPermanent.isOn  = true
+                }
+            }
+        }
     
     }
     
@@ -149,8 +205,12 @@ class AccessCodeViewController: UIViewController {
             }
             
             if let a = ble.A2 {
-                stackViewCard.isHidden = false
                 stackViewSingleEntry.isHidden = true
+                if card  {
+                    stackViewCard.isHidden = false
+                }
+              
+               
             }
         }
     }
@@ -254,15 +314,18 @@ class AccessCodeViewController: UIViewController {
             return
         }
         var scheduleValue: PinCodeScheduleModel?
+        var scheduleValue2: scheduleModel?
         
         if swtichPermanent.isOn {
             scheduleValue  = PinCodeScheduleModel(availableOption: .all)
+            scheduleValue2 = scheduleModel(availableOption: .all)
         }
         
         if switchValidTimeRange.isOn, let Start = textFieldValidTimeRangeSTART.text, let End = textFieldValidTimeRangeEND.text {
             let dateFormatter = DateFormatter()
             dateFormatter.dateFormat = "yyyy-MM-dd HH:mm"
             scheduleValue = PinCodeScheduleModel(availableOption: .validTime(dateFormatter.date(from: Start)!, dateFormatter.date(from: End)!))
+            scheduleValue2 = scheduleModel(availableOption: .validTime(dateFormatter.date(from: Start)!, dateFormatter.date(from: End)!))
         }
         
         if switchScheduledEntry.isOn {
@@ -275,16 +338,30 @@ class AccessCodeViewController: UIViewController {
             let weekSelection = UInt8(scheduleWeekdayString, radix: 2) ?? 0x00
             
             scheduleValue = PinCodeScheduleModel(availableOption: .weekly(weekSelection, UInt8(getTimeSelection().first ?? 100), UInt8(getTimeSelection().last ?? 100)))
+            scheduleValue2 = scheduleModel(availableOption: .weekly(weekSelection, UInt8(getTimeSelection().first ?? 100), UInt8(getTimeSelection().last ?? 100)))
         }
         
         if switchSingleEntry.isOn {
             scheduleValue  = PinCodeScheduleModel(availableOption: .once)
         }
         
-        var vodeValue = textFieldCode.text!.map { Int(String($0)) ?? -1 }.filter{$0 != -1}
-        model = PinCodeManageModel(index: positionIndex!, isEnable: switchEnable.isOn, PinCode: vodeValue, name: textFieldName.text!, schedule: scheduleValue!, PinCodeManageOption: isCreate ?? false ? .add : .edit)
         
-        delegate?.optionData(model: model!)
+        var vodeValue = [0]
+        
+        
+        if isV2 ?? false {
+            vodeValue = (switchCard.isOn ? textFieldCard : textFieldCode).text!.map { Int(String($0)) ?? -1 }.filter{$0 != -1}
+            model2 = AccessRequestModel(type: switchCard.isOn ? .AccessCard : .AccessCode, index: switchCard.isOn ? positionCardIndex ?? 1 : positionIndex ?? 1, isEnable: switchEnable.isOn, codecard: vodeValue, name: textFieldName.text!, schedule: scheduleValue2!, accessOption: isCreate ?? false ? .add : .edit)
+            delegate?.optionData2(model: model2!)
+            
+        } else {
+            vodeValue = textFieldCode.text!.map { Int(String($0)) ?? -1 }.filter{$0 != -1}
+            model = PinCodeManageModel(index: positionIndex!, isEnable: switchEnable.isOn, PinCode: vodeValue, name: textFieldName.text!, schedule: scheduleValue!, PinCodeManageOption: isCreate ?? false ? .add : .edit)
+            
+            delegate?.optionData(model: model!)
+        }
+      
+  
         self.navigationController?.popViewController(animated: true)
         
     }
@@ -311,7 +388,8 @@ class AccessCodeViewController: UIViewController {
     }
 
     @IBAction func buttonCardAction(_ sender: UIButton) {
-        // TODO: ble command
+ 
+        SunionBluetoothTool.shared.setupAccess(model: SetupAccessRequestModel(type: .AccessCard, index: positionCardIndex ?? 1, state: .start))
     }
     
     @IBAction func switchCodeAction(_ sender: UISwitch) {
@@ -490,3 +568,15 @@ extension String {
 
 
 
+
+extension AccessCodeViewController: SunionBluetoothToolDelegate {
+    func BluetoothState(State: bluetoothState) {
+        
+    }
+    func SetupAccess(value: SetupAccessResponseModel?) {
+        if let value = value {
+            textFieldCard.text = value.data?.toHexString()
+        }
+    }
+    
+}

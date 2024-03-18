@@ -73,6 +73,7 @@ class ScanViewController: UIViewController, CBCentralManagerDelegate, CameraView
     func cameraView(_ cameraView: CameraView, didDetectQRCode code: String) {
         print("扫描到的QR码: \(code)")
         
+        // TODO: 改barcodeKey- 0000000000000000
         if let decodeConfig = SunionBluetoothTool.shared.decodeQrCode(barcodeKey: "SoftChefSunion65", qrCode: code),
            let _ = decodeConfig.macAddress,
            let _ = decodeConfig.modelName {
