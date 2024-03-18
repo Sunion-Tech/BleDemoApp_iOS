@@ -256,11 +256,10 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
                 } else {
                     showAlert(title: "Please Get Access Data first", message: "")
                 }
-//
-//                let model = PinCodeManageModel(index: 1, isEnable: true, PinCode: [2,3,4,1], name: "DemoAccess", schedule: .init(availableOption: .all), PinCodeManageOption: .edit)
-//                SunionBluetoothTool.shared.pinCodeOption(model: model)
+
             case .delAccess:
-                SunionBluetoothTool.shared.delPinCode(position: 1)
+                showdelAccesAlert()
+            
             case .disconnected:
                 SunionBluetoothTool.shared.disconnectBluetooth()
                 appendLogToTextView(logMessage: "Disconnected")
