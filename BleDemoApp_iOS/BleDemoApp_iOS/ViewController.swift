@@ -31,7 +31,6 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
     var token: TokenModel?
     var tokenIndex: Int?
     var accessFirstEmptyIndex: Int?
-    var accessFirstEmtpyCardIndex: Int?
     var accessData: PinCodeModelResult?
     var accessData2: AccessDataResponseModel?
     
@@ -401,7 +400,7 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
                 
                 case .addAccess:
                     
-                    if accessFirstEmptyIndex != nil || accessFirstEmtpyCardIndex != nil, accessData2 == nil, let card = supportCard, let code = supportCode, let face = supportFace, let finger = supportFinger {
+                    if accessFirstEmptyIndex != nil, accessData2 == nil, let card = supportCard, let code = supportCode, let face = supportFace, let finger = supportFinger {
                         self.performSegue(withIdentifier: "access", sender: true)
                     } else {
                         showAlert(title: "Please Get Access Array/ Supported Access first", message: "")
@@ -416,8 +415,13 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
                     }
 
                 case .delAccess:
-                    showdelAccesAlert()
+              
                 
+                    if let card = supportCard, let code = supportCode, let face = supportFace, let finger = supportFinger {
+                        self.performSegue(withIdentifier: "del", sender: nil)
+                    } else {
+                        showAlert(title: "Please Get Supported Access first", message: "")
+                    }
                 case .disconnected:
                     SunionBluetoothTool.shared.disconnectBluetooth()
                     appendLogToTextView(logMessage: "Disconnected")
@@ -455,7 +459,6 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
             let isCreate = sender as? Bool {
             vc.isCreate = isCreate
             vc.positionIndex = accessFirstEmptyIndex
-            vc.positionCardIndex = accessFirstEmtpyCardIndex
             vc.data = accessData
             vc.data2 = accessData2
             vc.delegate = self
@@ -510,8 +513,33 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
             vc.delegate = self
         }
         
+        if let id = segue.identifier, id == "del",
+           let vc = segue.destination as? DelAccessDataViewController {
+            if let supportCode = supportCode, supportCode > 0 {
+                vc.code = true
+            }
+            if let supportcard = supportCard, supportcard > 0 {
+                vc.card = true
+            }
+            if let supportface = supportFace, supportface > 0 {
+                vc.face = true
+            }
+            if let supportFinger = supportFinger, supportFinger > 0 {
+                vc.finger = true
+            }
+            vc.delegate = self
+        }
+        
         
     }
+    
+}
+
+extension ViewController: DelAccessDataViewControllerDelegate {
+    func delAccessData(model:DelAccessRequestModel) {
+        SunionBluetoothTool.shared.delAccess(model: model)
+    }
+    
     
 }
 
@@ -560,7 +588,7 @@ extension ViewController: AccessCodeViewControllerDelegate {
     func optionData2(model: AccessRequestModel) {
         accessData2 = nil
         accessFirstEmptyIndex = nil
-        accessFirstEmtpyCardIndex = nil
+ 
         SunionBluetoothTool.shared.delegate = self
         SunionBluetoothTool.shared.accessAction(model: model)
     }
@@ -960,7 +988,7 @@ extension ViewController: SunionBluetoothToolDelegate {
                     // 如果包含，则index加1
                     index += 1
                 }
-                accessFirstEmtpyCardIndex = index
+                accessFirstEmptyIndex = index
             case .AccessCode:
                 while value.hasDataAIndex.contains(index) {
                     // 如果包含，则index加1
@@ -1012,7 +1040,7 @@ extension ViewController: SunionBluetoothToolDelegate {
                 }
             }
             
-            appendLogToTextView(logMessage: "type: \(value.type.rawValue)\n index: \(value.index)\n enable: \(value.isEnable)\n name: \(value.name) \n data:\(value.codeCard?.toHexString())\n" + schemsg)
+            appendLogToTextView(logMessage: "type: \(value.type.rawValue)\n index: \(value.index)\n enable: \(value.isEnable)\n name: \(value.name) \n data:\(value.codeCard)\n schedule: \(value.schedule?.scheduleOption.scheduleName ?? "")\n" + schemsg)
         } else {
             appendLogToTextView(logMessage: "get access data failed")
         }

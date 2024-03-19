@@ -22,6 +22,7 @@
 		606B249B2BA7D8A9008DBC35 /* VC+DelAcces.swift in Sources */ = {isa = PBXBuildFile; fileRef = 606B249A2BA7D8A9008DBC35 /* VC+DelAcces.swift */; };
 		606B249D2BA80BA7008DBC35 /* GetAccessArrayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 606B249C2BA80BA7008DBC35 /* GetAccessArrayViewController.swift */; };
 		606B249F2BA81993008DBC35 /* GetAccessDataViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 606B249E2BA81993008DBC35 /* GetAccessDataViewController.swift */; };
+		606B24A92BA93A9D008DBC35 /* DelAccessDataViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 606B24A82BA93A9D008DBC35 /* DelAccessDataViewController.swift */; };
 		60EF0D0F2B99A63000819AF4 /* VC+AddAdminCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60EF0D0E2B99A63000819AF4 /* VC+AddAdminCode.swift */; };
 		60EF0D112B99A8FD00819AF4 /* VC+EditAdminCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60EF0D102B99A8FD00819AF4 /* VC+EditAdminCode.swift */; };
 		60EF0D132B99AC1B00819AF4 /* VC+FactoryReset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60EF0D122B99AC1B00819AF4 /* VC+FactoryReset.swift */; };
@@ -51,6 +52,7 @@
 		606B249A2BA7D8A9008DBC35 /* VC+DelAcces.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VC+DelAcces.swift"; sourceTree = "<group>"; };
 		606B249C2BA80BA7008DBC35 /* GetAccessArrayViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetAccessArrayViewController.swift; sourceTree = "<group>"; };
 		606B249E2BA81993008DBC35 /* GetAccessDataViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetAccessDataViewController.swift; sourceTree = "<group>"; };
+		606B24A82BA93A9D008DBC35 /* DelAccessDataViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DelAccessDataViewController.swift; sourceTree = "<group>"; };
 		60EF0D0E2B99A63000819AF4 /* VC+AddAdminCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VC+AddAdminCode.swift"; sourceTree = "<group>"; };
 		60EF0D102B99A8FD00819AF4 /* VC+EditAdminCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VC+EditAdminCode.swift"; sourceTree = "<group>"; };
 		60EF0D122B99AC1B00819AF4 /* VC+FactoryReset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VC+FactoryReset.swift"; sourceTree = "<group>"; };
@@ -102,6 +104,7 @@
 				60EF0D222B9EB18A00819AF4 /* AccessCodeViewController.swift */,
 				606B249C2BA80BA7008DBC35 /* GetAccessArrayViewController.swift */,
 				606B249E2BA81993008DBC35 /* GetAccessDataViewController.swift */,
+				606B24A82BA93A9D008DBC35 /* DelAccessDataViewController.swift */,
 				6006D5E32B9840F3004AC7CC /* PickerOption.swift */,
 				6006D5852B97FB29004AC7CC /* Main.storyboard */,
 				6006D5882B97FB2A004AC7CC /* Assets.xcassets */,
@@ -197,6 +200,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				606B24A92BA93A9D008DBC35 /* DelAccessDataViewController.swift in Sources */,
 				6006D5DC2B981469004AC7CC /* Ex+UIView.swift in Sources */,
 				606B249B2BA7D8A9008DBC35 /* VC+DelAcces.swift in Sources */,
 				60EF0D0F2B99A63000819AF4 /* VC+AddAdminCode.swift in Sources */,

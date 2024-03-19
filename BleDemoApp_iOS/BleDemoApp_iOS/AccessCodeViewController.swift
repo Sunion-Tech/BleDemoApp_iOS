@@ -60,7 +60,7 @@ class AccessCodeViewController: UIViewController {
     var model: PinCodeManageModel?
     var model2: AccessRequestModel?
     var positionIndex: Int?
-    var positionCardIndex: Int?
+
     
     var data: PinCodeModelResult?
     var data2: AccessDataResponseModel?
@@ -82,6 +82,7 @@ class AccessCodeViewController: UIViewController {
     var card = false
     var face = false
     var finger = false
+    var setupAccessData: [UInt8]?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -346,17 +347,17 @@ class AccessCodeViewController: UIViewController {
         }
         
         
-        var vodeValue = [0]
+        let codeValue = textFieldCode.text!.map { Int(String($0)) ?? -1 }.filter{$0 != -1}
         
         
         if isV2 ?? false {
-            vodeValue = (switchCard.isOn ? textFieldCard : textFieldCode).text!.map { Int(String($0)) ?? -1 }.filter{$0 != -1}
-            model2 = AccessRequestModel(type: switchCard.isOn ? .AccessCard : .AccessCode, index: switchCard.isOn ? positionCardIndex ?? 1 : positionIndex ?? 1, isEnable: switchEnable.isOn, codecard: vodeValue, name: textFieldName.text!, schedule: scheduleValue2!, accessOption: isCreate ?? false ? .add : .edit)
+           
+            model2 = AccessRequestModel(type: switchCard.isOn ? .AccessCard : .AccessCode, index:  positionIndex ?? 1, isEnable: switchEnable.isOn, codecard: switchCard.isOn ? setupAccessData!.map { Int($0) } : codeValue, name: textFieldName.text!, schedule: scheduleValue2!, accessOption: isCreate ?? false ? .add : .edit)
             delegate?.optionData2(model: model2!)
             
         } else {
-            vodeValue = textFieldCode.text!.map { Int(String($0)) ?? -1 }.filter{$0 != -1}
-            model = PinCodeManageModel(index: positionIndex!, isEnable: switchEnable.isOn, PinCode: vodeValue, name: textFieldName.text!, schedule: scheduleValue!, PinCodeManageOption: isCreate ?? false ? .add : .edit)
+       
+            model = PinCodeManageModel(index: positionIndex!, isEnable: switchEnable.isOn, PinCode: codeValue, name: textFieldName.text!, schedule: scheduleValue!, PinCodeManageOption: isCreate ?? false ? .add : .edit)
             
             delegate?.optionData(model: model!)
         }
@@ -389,7 +390,7 @@ class AccessCodeViewController: UIViewController {
 
     @IBAction func buttonCardAction(_ sender: UIButton) {
  
-        SunionBluetoothTool.shared.setupAccess(model: SetupAccessRequestModel(type: .AccessCard, index: positionCardIndex ?? 1, state: .start))
+        SunionBluetoothTool.shared.setupAccess(model: SetupAccessRequestModel(type: .AccessCard, index: positionIndex ?? 1, state: .start))
     }
     
     @IBAction func switchCodeAction(_ sender: UISwitch) {
@@ -576,6 +577,7 @@ extension AccessCodeViewController: SunionBluetoothToolDelegate {
     func SetupAccess(value: SetupAccessResponseModel?) {
         if let value = value {
             textFieldCard.text = value.data?.toHexString()
+            setupAccessData = value.data
         }
     }
     
