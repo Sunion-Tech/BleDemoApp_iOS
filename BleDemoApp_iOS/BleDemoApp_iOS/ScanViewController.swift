@@ -11,7 +11,7 @@ import CoreBluetooth
 import SunionBluetoothTool
 
 protocol ScanViewControllerDelegate: AnyObject {
-    func QrCodeData(model: BluetoothToolModel)
+    func QrCodeData(model: BluetoothToolModel?, uuid: String?)
 }
 
 class ScanViewController: UIViewController, CBCentralManagerDelegate, CameraViewDelegate {
@@ -78,11 +78,13 @@ class ScanViewController: UIViewController, CBCentralManagerDelegate, CameraView
            let _ = decodeConfig.macAddress,
            let _ = decodeConfig.modelName {
             // 在这里处理扫描到的QR码，比如展示结果或进行下一步操作
-            delegate?.QrCodeData(model: decodeConfig)
+            delegate?.QrCodeData(model: decodeConfig, uuid: nil)
             self.navigationController?.popViewController(animated: true)
             
+        } else if code.count == 16 {
+            delegate?.QrCodeData(model: nil, uuid: code)
+            self.navigationController?.popViewController(animated: true)
         } else {
-          
             showAlert(title: "Unable to fetch this code", message: "") {
                 self.navigationController?.popViewController(animated: true)
             }

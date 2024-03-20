@@ -15,7 +15,6 @@
 		6006D58C2B97FB2A004AC7CC /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6006D58A2B97FB2A004AC7CC /* LaunchScreen.storyboard */; };
 		6006D5982B980ADA004AC7CC /* ScanViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6006D5972B980ADA004AC7CC /* ScanViewController.swift */; };
 		6006D5DC2B981469004AC7CC /* Ex+UIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6006D5DB2B981469004AC7CC /* Ex+UIView.swift */; };
-		6006D5DE2B983800004AC7CC /* SunionBluetoothTool.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6006D5DD2B983800004AC7CC /* SunionBluetoothTool.framework */; };
 		6006D5E02B9838EC004AC7CC /* Ex+UIViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6006D5DF2B9838EC004AC7CC /* Ex+UIViewController.swift */; };
 		6006D5E42B9840F3004AC7CC /* PickerOption.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6006D5E32B9840F3004AC7CC /* PickerOption.swift */; };
 		603F980C2BA1840000E6E4E5 /* VC+AccessData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 603F980B2BA1840000E6E4E5 /* VC+AccessData.swift */; };
@@ -23,6 +22,7 @@
 		606B249D2BA80BA7008DBC35 /* GetAccessArrayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 606B249C2BA80BA7008DBC35 /* GetAccessArrayViewController.swift */; };
 		606B249F2BA81993008DBC35 /* GetAccessDataViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 606B249E2BA81993008DBC35 /* GetAccessDataViewController.swift */; };
 		606B24A92BA93A9D008DBC35 /* DelAccessDataViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 606B24A82BA93A9D008DBC35 /* DelAccessDataViewController.swift */; };
+		606B24CD2BAA9104008DBC35 /* SunionBluetoothTool.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 606B24CC2BAA9104008DBC35 /* SunionBluetoothTool.framework */; };
 		60EF0D0F2B99A63000819AF4 /* VC+AddAdminCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60EF0D0E2B99A63000819AF4 /* VC+AddAdminCode.swift */; };
 		60EF0D112B99A8FD00819AF4 /* VC+EditAdminCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60EF0D102B99A8FD00819AF4 /* VC+EditAdminCode.swift */; };
 		60EF0D132B99AC1B00819AF4 /* VC+FactoryReset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60EF0D122B99AC1B00819AF4 /* VC+FactoryReset.swift */; };
@@ -45,7 +45,6 @@
 		6006D58D2B97FB2A004AC7CC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6006D5972B980ADA004AC7CC /* ScanViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanViewController.swift; sourceTree = "<group>"; };
 		6006D5DB2B981469004AC7CC /* Ex+UIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Ex+UIView.swift"; sourceTree = "<group>"; };
-		6006D5DD2B983800004AC7CC /* SunionBluetoothTool.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SunionBluetoothTool.framework; sourceTree = "<group>"; };
 		6006D5DF2B9838EC004AC7CC /* Ex+UIViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Ex+UIViewController.swift"; sourceTree = "<group>"; };
 		6006D5E32B9840F3004AC7CC /* PickerOption.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickerOption.swift; sourceTree = "<group>"; };
 		603F980B2BA1840000E6E4E5 /* VC+AccessData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VC+AccessData.swift"; sourceTree = "<group>"; };
@@ -53,6 +52,7 @@
 		606B249C2BA80BA7008DBC35 /* GetAccessArrayViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetAccessArrayViewController.swift; sourceTree = "<group>"; };
 		606B249E2BA81993008DBC35 /* GetAccessDataViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetAccessDataViewController.swift; sourceTree = "<group>"; };
 		606B24A82BA93A9D008DBC35 /* DelAccessDataViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DelAccessDataViewController.swift; sourceTree = "<group>"; };
+		606B24CC2BAA9104008DBC35 /* SunionBluetoothTool.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SunionBluetoothTool.framework; sourceTree = "<group>"; };
 		60EF0D0E2B99A63000819AF4 /* VC+AddAdminCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VC+AddAdminCode.swift"; sourceTree = "<group>"; };
 		60EF0D102B99A8FD00819AF4 /* VC+EditAdminCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VC+EditAdminCode.swift"; sourceTree = "<group>"; };
 		60EF0D122B99AC1B00819AF4 /* VC+FactoryReset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VC+FactoryReset.swift"; sourceTree = "<group>"; };
@@ -69,7 +69,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6006D5DE2B983800004AC7CC /* SunionBluetoothTool.framework in Frameworks */,
+				606B24CD2BAA9104008DBC35 /* SunionBluetoothTool.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -111,7 +111,6 @@
 				6006D58A2B97FB2A004AC7CC /* LaunchScreen.storyboard */,
 				6006D58D2B97FB2A004AC7CC /* Info.plist */,
 				6006D5DB2B981469004AC7CC /* Ex+UIView.swift */,
-				6006D5DD2B983800004AC7CC /* SunionBluetoothTool.framework */,
 				6006D5DF2B9838EC004AC7CC /* Ex+UIViewController.swift */,
 				60EF0D0E2B99A63000819AF4 /* VC+AddAdminCode.swift */,
 				60EF0D102B99A8FD00819AF4 /* VC+EditAdminCode.swift */,
@@ -121,6 +120,7 @@
 				60EF0D1E2B9AE7CA00819AF4 /* VC+UserData.swift */,
 				603F980B2BA1840000E6E4E5 /* VC+AccessData.swift */,
 				606B249A2BA7D8A9008DBC35 /* VC+DelAcces.swift */,
+				606B24CC2BAA9104008DBC35 /* SunionBluetoothTool.framework */,
 			);
 			path = BleDemoApp_iOS;
 			sourceTree = "<group>";

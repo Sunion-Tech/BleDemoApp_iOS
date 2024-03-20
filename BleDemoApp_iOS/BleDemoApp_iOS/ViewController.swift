@@ -53,14 +53,14 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
     
     
     // MARK: - QrCode Data
-    func QrCodeData(model: BluetoothToolModel) {
-        if let token = model.token,
-           let aes1 = model.aes1Key,
-           let mac = model.macAddress,
-           let name = model.modelName {
+    func QrCodeData(model: BluetoothToolModel?, uuid: String?) {
+        if let token = model?.token,
+           let aes1 = model?.aes1Key,
+           let mac = model?.macAddress,
+           let name = model?.modelName {
             isAdminCode = false
             let msg = "token: \(token.toHexString())\n aes1Key: \(aes1.toHexString())\n macAddress: \(mac)\n modelName: \(name)"
-            SunionBluetoothTool.shared.initBluetooth(macAddress: mac, aes1Key: Array(aes1), token: Array(token))
+            SunionBluetoothTool.shared.initBluetooth(macAddress: mac, aes1Key: Array(aes1), token: Array(token), v3udid: nil)
             if SunionBluetoothTool.shared.delegate == nil {
                 SunionBluetoothTool.shared.delegate = self
             }
@@ -81,6 +81,59 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
             textField.isEnabled = true
         }
         
+        if let uuid = uuid {
+            fetchProductionData(code: uuid) { result in
+                switch result {
+                case .success(let success):
+                    // 成功获取到数据，尝试解析JSON
+                    do {
+                        // 尝试将Data对象解码为JSON对象
+                        if let jsonObject = try JSONSerialization.jsonObject(with: success, options: []) as? [String: Any] {
+                            // 成功解码，jsonObject现在是一个[String: Any]字典
+                            print(jsonObject)
+                            // TODO: cmd30
+                            self.pickerData = .cmd1O
+                          //  let aes1 = (jsonObject["key"] as! String).data(using: .utf8)
+                         //   let token = (jsonObject["token"] as! String).data(using: .utf8)
+                            let aes1 =   Data.init((jsonObject["key"] as! String).hexStringTobyteArray).bytes
+                            let token = Data.init((jsonObject["token"] as! String).hexStringTobyteArray).bytes
+                            SunionBluetoothTool.shared.initBluetooth(macAddress: nil, aes1Key: Array(aes1), token: Array(token), v3udid: uuid)
+                            DispatchQueue.main.async {
+                                self.appendLogToTextView(logMessage: self.convertDictionaryToString(jsonObject)!)
+                                self.setupPickerView()
+                                self.textField.isEnabled = true
+                            }
+                            
+                        } else {
+                            self.appendLogToTextView(logMessage: "get qrcode data failed")
+                        }
+                    } catch {
+                        // 处理解码过程中出现的错误
+                        self.appendLogToTextView(logMessage: "get qrcode data failed")
+                    }
+                  
+                case .failure(let failure):
+                    // 处理错误
+                    self.appendLogToTextView(logMessage: "get qrcode data failed")
+                    
+                }
+            }
+        }
+
+        
+    }
+    
+    func convertDictionaryToString(_ dictionary: [String: Any]) -> String? {
+        do {
+            // 将字典转换为JSON Data
+            let jsonData = try JSONSerialization.data(withJSONObject: dictionary, options: [])
+            // 将JSON Data转换为String
+            let jsonString = String(data: jsonData, encoding: .utf8)
+            return jsonString
+        } catch {
+            print("Error converting dictionary to string: \(error)")
+            return nil
+        }
     }
     
     func getCurrentTimeString() -> String {
@@ -532,6 +585,56 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
         
         
     }
+    
+    
+    // MARK: - API
+    
+
+    func fetchProductionData(code: String, completion: @escaping (Result<Data, Error>) -> Void) {
+        guard let url = URL(string: "https://apii.ikey-lock.com/v1/production/get") else {
+            print("Invalid URL")
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        // 设置请求头部
+        request.setValue("ifUgJuF98l2eIUMy50sM118j3itVOewO8YF9xztJ", forHTTPHeaderField: "x-api-key")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+        // 准备你的JSON数据
+        let requestBody: [String: Any] = [
+            "code": code,
+            "clientToken": UUID().uuidString
+        ]
+        
+        // 将字典转换为JSON Data
+        do {
+            request.httpBody = try JSONSerialization.data(withJSONObject: requestBody, options: [])
+        } catch {
+            completion(.failure(error))
+            return
+        }
+
+        // 发起请求
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+            
+            guard let data = data else {
+                completion(.failure(NSError(domain: "", code: -1, userInfo: nil)))
+                return
+            }
+            
+            completion(.success(data))
+        }
+        
+        task.resume()
+    }
+
+
     
 }
 
@@ -1055,4 +1158,36 @@ extension ViewController: SunionBluetoothToolDelegate {
     }
     
     
+}
+
+
+extension String {
+    var hexStringTobyteArray: [UInt8] {
+        let chunkedString = self.chunked(into: 2, separatedBy: ":")
+        let arrayString = chunkedString.components(separatedBy: ":")
+        let byteArray = arrayString.map { UInt8($0, radix: 16) ?? 0x00 }
+        return byteArray
+    }
+    
+    func chunked(into size: Int, separatedBy separator: String) -> String {
+        let array = Array(self)
+        let newArray = array.chunked(into: size)
+        var newString = ""
+        for (index, item) in newArray.enumerated() {
+            if index == 0 {
+                newString = String(item)
+            } else {
+                newString += separator + String(item)
+            }
+        }
+        return newString
+    }
+}
+
+extension Array {
+    func chunked(into size: Int) -> [[Element]] {
+        return stride(from: 0, to: count, by: size).map {
+            Array(self[$0 ..< Swift.min($0 + size, count)])
+        }
+    }
 }
