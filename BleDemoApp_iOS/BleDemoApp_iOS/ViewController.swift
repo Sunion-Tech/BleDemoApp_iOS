@@ -21,6 +21,7 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
     private var pickerData: PickerOption?
     private var cmd10Datas = Picker1Option.allCases
     private var cmd20Datas = Picker2Option.allCases
+    private var cmd30Datas = Picker3Option.allCases
     
     private var selectedRow = 0
     var isAdminCode = false
@@ -72,6 +73,8 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
             case "TLR0":
                 isV2 = true
                 pickerData = .cmd2O
+            case "KD01":
+                pickerData = .cmd30
             default:
                 break
             }
@@ -92,12 +95,15 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
                             // 成功解码，jsonObject现在是一个[String: Any]字典
                             print(jsonObject)
                             // TODO: cmd30
-                            self.pickerData = .cmd1O
+                            self.pickerData = .cmd30
                           //  let aes1 = (jsonObject["key"] as! String).data(using: .utf8)
                          //   let token = (jsonObject["token"] as! String).data(using: .utf8)
                             let aes1 =   Data.init((jsonObject["key"] as! String).hexStringTobyteArray).bytes
                             let token = Data.init((jsonObject["token"] as! String).hexStringTobyteArray).bytes
                             SunionBluetoothTool.shared.initBluetooth(macAddress: nil, aes1Key: Array(aes1), token: Array(token), v3udid: uuid)
+                            if SunionBluetoothTool.shared.delegate == nil {
+                                SunionBluetoothTool.shared.delegate = self
+                            }
                             DispatchQueue.main.async {
                                 self.appendLogToTextView(logMessage: self.convertDictionaryToString(jsonObject)!)
                                 self.setupPickerView()
@@ -198,10 +204,18 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
     @objc func dismissKeyboard() {
         // 关闭pickerView
         view.endEditing(true)
-        var data: Any
-        data = cmd10Datas[selectedRow]
+        var data: Any? = nil
+      
+        if pickerData == .cmd1O {
+            data = cmd10Datas[selectedRow]
+        }
+        
         if pickerData == .cmd2O {
             data = cmd20Datas[selectedRow]
+        }
+        
+        if pickerData == .cmd30 {
+            data = cmd30Datas[selectedRow]
         }
         
         
@@ -484,7 +498,153 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
             }
         }
       
-        
+        if let data = data as? Picker3Option {
+            if data == .adminCodeExist ||
+                data == .setAdminCode ||
+                data == .connecting {
+                switch data {
+                case .connecting:
+                    appendLogToTextView(logMessage: "Connecting...")
+                    SunionBluetoothTool.shared.connectingBluetooth()
+                case .adminCodeExist:
+                    SunionBluetoothTool.shared.isAdminCode()
+                case .setAdminCode:
+                    showsetAdminCodeAlert()
+                default:
+                    break
+                }
+            } else if !isAdminCode{
+                showAlert(title: "Please Set Admin Code first", message: "")
+            } else {
+                switch data {
+                case .adminCodeExist:
+                    SunionBluetoothTool.shared.isAdminCode()
+                case .setAdminCode:
+                    showsetAdminCodeAlert()
+                case .editAdminCode:
+                    showEditAdminCodeAlert()
+                case .boltCheck:
+                    SunionBluetoothTool.shared.blotCheck()
+                case .factoryReset:
+                    showfactoryResetAlert()
+                case .setDeviceName:
+                    showsetDeviceNameAlert()
+                case .getDeviceName:
+                    SunionBluetoothTool.shared.getDeviceName()
+                case .setTimeZone:
+                    SunionBluetoothTool.shared.setupTimeZone(timezone: "Asia/Taipei")
+                case .setDeviceTime:
+                    SunionBluetoothTool.shared.setupDeviceTime()
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
+                        self.appendLogToTextView(logMessage: "set Device Time successfully")
+                    }
+                case .getDeviceConfig:
+                    SunionBluetoothTool.shared.getDeviceConfigA0()
+                case .setDeviceConfig:
+                    
+                    if let config = config {
+                        self.performSegue(withIdentifier: "config", sender: nil)
+                    } else {
+                        showAlert(title: "Please Get Device Config first", message: "")
+                    }
+                    
+                    
+                case .getDeviceStatus:
+                    SunionBluetoothTool.shared.getDeviceStatus()
+                case .switchDevice:
+                    var lockMode: CommandService.DeviceMode = .unlock
+                    if status?.A2?.lockState == .lockedUnlinked {
+                        lockMode = .unlock
+                    } else {
+                        lockMode = .lock
+                    }
+                    SunionBluetoothTool.shared.switchDevice(mode: lockMode)
+                case .getLogCount:
+                    SunionBluetoothTool.shared.getLogCount()
+                case .getLogData:
+                    showgetLogDataAlert()
+                case .getUserArray:
+                    SunionBluetoothTool.shared.getTokenArray()
+                case .getUserData:
+                    showgetUserDataAlert()
+                case .addUser:
+                    self.performSegue(withIdentifier: "user", sender: "add")
+                    
+                case .editUser:
+                    if let token = token {
+                        if token.isOwnerToken == .owner {
+                            showAlert(title: "Editing of the Owner is not allowed", message: "")
+                        } else {
+                            self.performSegue(withIdentifier: "user", sender: "edit")
+                        }
+                        
+                    } else {
+                        showAlert(title: "Please Get User Data first", message: "")
+                    }
+                    
+                case .delUser:
+                    if let token = token {
+                        if token.isOwnerToken == .owner {
+                            showAlert(title: "deleting the Owner is not allowed", message: "")
+                        } else {
+                            SunionBluetoothTool.shared.delToken(model: token)
+                        }
+                        
+                    } else {
+                        showAlert(title: "Please Get User Data first", message: "")
+                    }
+                
+                case .getAccessArray:
+                    if let card = supportCard, let code = supportCode, let face = supportFace, let finger = supportFinger {
+                        self.performSegue(withIdentifier: "accessarray", sender: nil)
+                    } else {
+                        showAlert(title: "Please Get Supported Access first", message: "")
+                    }
+                   
+                    
+                case .getSupportAccess:
+                    SunionBluetoothTool.shared.getSupportType()
+                  
+                case .getAccessData:
+                    
+                    if let card = supportCard, let code = supportCode, let face = supportFace, let finger = supportFinger {
+                        self.performSegue(withIdentifier: "accessdata", sender: nil)
+                    } else {
+                        showAlert(title: "Please Get Supported Access first", message: "")
+                    }
+                
+                case .addAccess:
+                    
+                    if accessFirstEmptyIndex != nil, accessData2 == nil, let card = supportCard, let code = supportCode, let face = supportFace, let finger = supportFinger {
+                        self.performSegue(withIdentifier: "access", sender: true)
+                    } else {
+                        showAlert(title: "Please Get Access Array/ Supported Access first", message: "")
+                    }
+                 
+
+                case .editAccess:
+                    if let data = accessData2 {
+                        self.performSegue(withIdentifier: "access", sender: false)
+                    } else {
+                        showAlert(title: "Please Get Access Data first", message: "")
+                    }
+
+                case .delAccess:
+              
+                
+                    if let card = supportCard, let code = supportCode, let face = supportFace, let finger = supportFinger {
+                        self.performSegue(withIdentifier: "del", sender: nil)
+                    } else {
+                        showAlert(title: "Please Get Supported Access first", message: "")
+                    }
+                case .disconnected:
+                    SunionBluetoothTool.shared.disconnectBluetooth()
+                    appendLogToTextView(logMessage: "Disconnected")
+                default:
+                    break
+                }
+            }
+        }
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -739,6 +899,8 @@ extension ViewController: UIPickerViewDelegate, UIPickerViewDataSource {
             return cmd10Datas.count
         case .cmd2O:
             return cmd20Datas.count
+        case .cmd30:
+            return cmd30Datas.count
         default:
             return 0
         }
@@ -751,6 +913,8 @@ extension ViewController: UIPickerViewDelegate, UIPickerViewDataSource {
             return cmd10Datas[row].description
         case .cmd2O:
             return cmd20Datas[row].description
+        case .cmd30:
+            return cmd30Datas[row].description
         default:
             return ""
         }
@@ -808,7 +972,7 @@ extension ViewController: SunionBluetoothToolDelegate {
         }
         
         if let n = value?.N82 {
-            
+            msg = "mainVersion: \(n.mainVersion)\n subVersion: \(n.subVersion)\n lockDirection: \(n.lockDirection.rawValue)\n vacationMode: \(n.vacationModeOn.rawValue)\n deadbolt: \(n.deadBolt.rawValue)\n doorState: \(n.doorState.rawValue)\n lockState: \(n.lockState.rawValue)\n securitybole: \(n.securityBolt.rawValue) \n battery: \(n.battery ?? 0000)\n batteryWarning: \(n.batteryWarning.rawValue)"
         }
         
         appendLogToTextView(logMessage: msg)
