@@ -212,8 +212,8 @@ enum Picker3Option: CaseIterable, CustomStringConvertible {
     case getDeviceName
     case setTimeZone
     case setDeviceTime
-    case getDeviceConfig//
-    case setDeviceConfig//
+    case getDeviceConfig
+    case setDeviceConfig
     case getDeviceStatus
     case switchDevice
     case getLogCount

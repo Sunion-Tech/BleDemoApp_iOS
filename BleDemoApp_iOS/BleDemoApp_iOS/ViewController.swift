@@ -539,7 +539,7 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
                         self.appendLogToTextView(logMessage: "set Device Time successfully")
                     }
                 case .getDeviceConfig:
-                    SunionBluetoothTool.shared.getDeviceConfigA0()
+                    SunionBluetoothTool.shared.getDeviceConfig80()
                 case .setDeviceConfig:
                     
                     if let config = config {
@@ -1044,11 +1044,11 @@ extension ViewController: SunionBluetoothToolDelegate {
             }
             
             if let a = value.A0 {
-                
+                msg = "latitude: \(a.latitude ?? 0000)\n longitude: \(a.longitude ?? 0000)\n lockDirection: \(a.direction.rawValue)\n guidingCode: \(a.guidingCode.rawValue)\n virtualCode: \(a.virtualCode.rawValue)\n twoFA: \(a.twoFA.rawValue)\n vacationMode: \(a.vacationMode.rawValue)\n autoLock: \(a.isAutoLock.rawValue)\n autoLockTime: \(a.autoLockTime ?? 0000)\n autoLockMinLimit: \(a.autoLockMinLimit ?? 0000)\n autoLockMaxLimit: \(a.autoLockMaxLimit ?? 0000)\n sound:\(a.sound.rawValue)\n voiceType: \(a.voiceType.rawValue)\n voiceValue: \(a.voiceValue.name)\n fastMode: \(a.fastMode.rawValue)"
             }
             
             if let n = value.N80 {
-                
+                msg = "mainVersion: \(n.mainVersion ?? "")\n subVersion: \(n.subVersion ?? "")\n formatVersioin: \(n.formatVersion ?? "")\n serverversion: \(n.serverversion ?? "")\n latitude: \(n.latitude ?? 0000)\n longitude: \(n.longitude ?? 0000)\n lockDirection: \(n.direction.rawValue)\n guidingCode: \(n.guidingCode.rawValue)\n virtualCode: \(n.virtualCode.rawValue)\n twoFA: \(n.twoFA.rawValue)\n vacationMode: \(n.vacationMode.rawValue)\n autoLock: \(n.isAutoLock.rawValue)\n autoLockTime: \(n.autoLockTime ?? 0000)\n autoLockMinLimit: \(n.autoLockMinLimit ?? 0000)\n autoLockMaxLimit: \(n.autoLockMaxLimit ?? 0000)\n sound:\(n.sound.rawValue)\n voiceType: \(n.voiceType.rawValue)\n voiceValue: \(n.voiceValue.name)\n fastMode: \(n.fastMode.rawValue)"
             }
             
             appendLogToTextView(logMessage: msg)
