@@ -46,6 +46,9 @@ class DeviceConfigSettingViewController: UIViewController {
     @IBOutlet weak var segmentVoiceLevle: UISegmentedControl!
     @IBOutlet weak var textFieldVoiceProgress: UITextField!
     
+    @IBOutlet weak var stackViewSabbathMode: UIStackView!
+    @IBOutlet weak var switchSabbathMode: UISwitch!
+    
     weak var delegate: DeviceConfigSettingViewControllerDelegate?
     
     var data: DeviceSetupResultModel?
@@ -68,6 +71,11 @@ class DeviceConfigSettingViewController: UIViewController {
             if let a = data.A0 {
                 let amodel = DeviceSetupModelA1(direction: a.direction, soundOn: getCodeStatusValue(value: stackViewSound, element: soundSwitch), vacationModeOn: getCodeStatusValue(value: stackViewVacation, element: vacationSwitch), autoLockOn: getCodeStatusValue(value: stackViewAutoLock, element: autoLockSwitch), autoLockTime: Int(autoLockTimeTextField.text!) ?? 10, guidingCode: getCodeStatusValue(value: stackViewGuiding, element: guidingSwitch), virtualCode: getCodeStatusValue(value: stackViewVirtualCode, element: switchVirtualCode), twoFA: getCodeStatusValue(value: stackViewTwoFA, element: swtichTwoFA), latitude: Double(latTextField.text!) ?? 0.0, longitude: Double(lonTextField.text!) ?? 0.0, fastMode: getCodeStatusValue(value: stackViewFastMode, element: switchFastMode), voiceValue: getVoiceData())
                 model.A1 = amodel
+            }
+            
+            if let a = data.N80 {
+                let nmodel = DeviceSetupModelN81(latitude: Double(latTextField.text!) ?? 0.0, longitude: Double(lonTextField.text!) ?? 0.0, guidingCode: getCodeStatusValue(value: stackViewGuiding, element: guidingSwitch), virtualCode: getCodeStatusValue(value: stackViewVirtualCode, element: switchVirtualCode), twoFA: getCodeStatusValue(value: stackViewTwoFA, element: swtichTwoFA), vacationModeOn: getCodeStatusValue(value: stackViewVacation, element: vacationSwitch), autoLockOn: getCodeStatusValue(value: stackViewAutoLock, element: autoLockSwitch), autoLockTime: Int(autoLockTimeTextField.text!) ?? 10, soundOn: getCodeStatusValue(value: stackViewSound, element: soundSwitch), fastMode: getCodeStatusValue(value: stackViewFastMode, element: switchFastMode), voiceValue: getVoiceData(), direction: a.direction, sabbathMode: getCodeStatusValue(value: stackViewSabbathMode, element: switchSabbathMode))
+                model.N81 = nmodel
             }
         }
         
@@ -119,6 +127,7 @@ class DeviceConfigSettingViewController: UIViewController {
         if let data = data {
             if let d = data.D4 {
                 stackViewV2.isHidden = true
+                stackViewSabbathMode.isHidden = true
                 soundSwitch.isOn = d.soundOn
                 vacationSwitch.isOn = d.vacationModeOn
                 autoLockSwitch.isOn = d.autoLockOn
@@ -129,7 +138,8 @@ class DeviceConfigSettingViewController: UIViewController {
             }
             
             if let a = data.A0 {
-                
+                stackViewV2.isHidden = false
+                stackViewSabbathMode.isHidden = true
                 lonTextField.text = String(a.longitude ?? 0.0)
                 latTextField.text = String(a.latitude ?? 0.0)
                 
@@ -176,6 +186,11 @@ class DeviceConfigSettingViewController: UIViewController {
                     autoLockTimeTextField.text = String(a.autoLockTime ?? 5)
                 }
                 
+                if a.fastMode == .error || a.fastMode == .unsupport {
+                    stackViewFastMode.isHidden = true
+                } else {
+                    switchFastMode.isOn = a.fastMode == .open ? true : false
+                }
              
               
                 
@@ -227,6 +242,117 @@ class DeviceConfigSettingViewController: UIViewController {
                 }
                 
                 
+            }
+            
+            if let a = data.N80 {
+                stackViewV2.isHidden = false
+                stackViewSabbathMode.isHidden = false
+                lonTextField.text = String(a.longitude ?? 0.0)
+                latTextField.text = String(a.latitude ?? 0.0)
+                
+                if a.sound == .unsupport || a.sound == .error {
+                    stackViewSound.isHidden = true
+                } else {
+                    stackViewSound.isHidden = false
+                    soundSwitch.isOn = a.sound == .open ? true : false
+                }
+                
+                if a.guidingCode == .error || a.guidingCode == .unsupport {
+                    stackViewGuiding.isHidden = true
+                } else {
+                    stackViewGuiding.isHidden = false
+                    guidingSwitch.isOn = a.guidingCode == .open ? true : false
+                }
+                
+                if a.virtualCode == .error || a.virtualCode == .unsupport {
+                    stackViewVirtualCode.isHidden = true
+                } else {
+                    stackViewVirtualCode.isHidden = false
+                    switchVirtualCode.isOn = a.virtualCode == .open ? true : false
+                }
+                
+                if a.twoFA == .error || a.twoFA == .unsupport {
+                    stackViewTwoFA.isHidden = true
+                } else {
+                    stackViewTwoFA.isHidden = false
+                    swtichTwoFA.isOn = a.twoFA == .open ? true : false
+                }
+                
+                if a.vacationMode == .error || a.vacationMode == .unsupport {
+                    stackViewVacation.isHidden = true
+                } else {
+                    stackViewVacation.isHidden = false
+                    vacationSwitch.isOn = a.vacationMode == .open ? true : false
+                }
+                
+                if a.isAutoLock == .error || a.isAutoLock == .unsupport {
+                    stackViewAutoLock.isHidden = true
+                    stackViewAutoLockTime.isHidden = true
+                } else {
+                    autoLockSwitch.isOn = a.isAutoLock == .open ? true : false
+                    autoLockTimeTextField.text = String(a.autoLockTime ?? 5)
+                }
+                
+                if a.sabbathMode == .error || a.sabbathMode == .unsupport {
+                    stackViewSabbathMode.isHidden = true
+                } else {
+                    stackViewSabbathMode.isHidden = false
+                    switchSabbathMode.isOn = a.sabbathMode == .open ? true : false
+                }
+                
+                if a.fastMode == .error || a.fastMode == .unsupport {
+                    stackViewFastMode.isHidden = true
+                } else {
+                    switchFastMode.isOn = a.fastMode == .open ? true : false
+                }
+                 
+
+                if a.voiceType == .error {
+                    stackViewVoice.isHidden = true
+                } else {
+                    stackViewVoice.isHidden = false
+              
+                    switch a.voiceType {
+                    case .onoff:
+                        stackViewVoiceProgress.isHidden = true
+                        stackViewVoiceLevel.isHidden = true
+                        stackViewVoiceOffOn.isHidden = false
+                        switch a.voiceValue {
+                        case .open:
+                            switchVoiceOffOn.isOn = true
+                        case .close:
+                            switchVoiceOffOn.isOn = false
+                        default:
+                            break
+                        }
+                    case .level:
+                        stackViewVoiceProgress.isHidden = true
+                        stackViewVoiceLevel.isHidden = false
+                        stackViewVoiceOffOn.isHidden = true
+                        switch a.voiceValue {
+                        case .loudly:
+                            segmentVoiceLevle.selectedSegmentIndex = 0
+                        case .whisper:
+                            segmentVoiceLevle.selectedSegmentIndex = 1
+                        case .close:
+                            segmentVoiceLevle.selectedSegmentIndex = 2
+                        default:
+                            break
+                        }
+                    case .percentage:
+                        stackViewVoiceProgress.isHidden = false
+                        stackViewVoiceLevel.isHidden = true
+                        stackViewVoiceOffOn.isHidden = true
+                        switch a.voiceValue {
+                        case .value(let value):
+                            textFieldVoiceProgress.text = String(value)
+                        default:
+                            break
+                        }
+                    default:
+                        break
+                    }
+                }
             }
         }
     }

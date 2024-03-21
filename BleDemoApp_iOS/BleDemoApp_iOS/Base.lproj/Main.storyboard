@@ -307,7 +307,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="top" spacing="18" translatesAutoresizingMaskIntoConstraints="NO" id="S1D-pj-0Gc">
-                                <rect key="frame" x="39.333333333333343" y="68.333333333333314" width="314.33333333333326" height="636"/>
+                                <rect key="frame" x="39.333333333333343" y="68.333333333333314" width="314.33333333333326" height="685"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" alignment="center" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="1uP-S7-cPy">
                                         <rect key="frame" x="0.0" y="0.0" width="314.33333333333331" height="31"/>
@@ -525,10 +525,25 @@
                                             <constraint firstItem="CLH-E4-xSx" firstAttribute="width" secondItem="X4h-Et-663" secondAttribute="width" id="sof-Ps-Y9E"/>
                                         </constraints>
                                     </stackView>
+                                    <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" alignment="center" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="Bz2-8c-hoN">
+                                        <rect key="frame" x="0.0" y="654" width="314.33333333333331" height="31"/>
+                                        <subviews>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="sabbathMode" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eDW-iA-0sE">
+                                                <rect key="frame" x="0.0" y="5.3333333333332575" width="153.33333333333334" height="20.333333333333332"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="b19-b5-QIa">
+                                                <rect key="frame" x="161.33333333333331" y="0.0" width="155" height="31"/>
+                                            </switch>
+                                        </subviews>
+                                    </stackView>
                                 </subviews>
                                 <constraints>
                                     <constraint firstItem="Okn-rO-KEZ" firstAttribute="width" secondItem="S1D-pj-0Gc" secondAttribute="width" id="6wT-d1-LYA"/>
                                     <constraint firstItem="FDf-uZ-DYQ" firstAttribute="width" secondItem="S1D-pj-0Gc" secondAttribute="width" id="KvT-Jg-lSS"/>
+                                    <constraint firstItem="Bz2-8c-hoN" firstAttribute="width" secondItem="S1D-pj-0Gc" secondAttribute="width" id="MJz-Sp-dcB"/>
                                     <constraint firstItem="1uP-S7-cPy" firstAttribute="width" secondItem="S1D-pj-0Gc" secondAttribute="width" id="RYY-Zo-A1s"/>
                                     <constraint firstItem="X4h-Et-663" firstAttribute="width" secondItem="S1D-pj-0Gc" secondAttribute="width" id="iOn-bd-4gc"/>
                                     <constraint firstItem="Ly6-d9-PhC" firstAttribute="width" secondItem="S1D-pj-0Gc" secondAttribute="width" id="mhv-ZB-UFB"/>
@@ -538,7 +553,7 @@
                                 </constraints>
                             </stackView>
                             <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" alignment="center" spacing="126" translatesAutoresizingMaskIntoConstraints="NO" id="LUN-hI-jSR">
-                                <rect key="frame" x="48.666666666666657" y="724.33333333333337" width="296" height="34.333333333333371"/>
+                                <rect key="frame" x="48.666666666666657" y="773.33333333333337" width="296" height="34.333333333333371"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="oLL-o5-EDc">
                                         <rect key="frame" x="0.0" y="0.0" width="85" height="34.333333333333336"/>
@@ -583,6 +598,7 @@
                         <outlet property="stackViewAutoLockTime" destination="Ly6-d9-PhC" id="45G-hF-VL3"/>
                         <outlet property="stackViewFastMode" destination="VsN-Ek-wRf" id="J7H-nI-jv8"/>
                         <outlet property="stackViewGuiding" destination="Okn-rO-KEZ" id="sBE-DC-5fA"/>
+                        <outlet property="stackViewSabbathMode" destination="Bz2-8c-hoN" id="baz-KK-0O0"/>
                         <outlet property="stackViewSound" destination="1uP-S7-cPy" id="BK9-Cg-IgA"/>
                         <outlet property="stackViewTwoFA" destination="CLH-E4-xSx" id="wCW-O9-w6Y"/>
                         <outlet property="stackViewV2" destination="X4h-Et-663" id="KED-DB-bSW"/>
@@ -593,6 +609,7 @@
                         <outlet property="stackViewVoiceOffOn" destination="Ba4-vr-4Gw" id="yXl-xT-4Qt"/>
                         <outlet property="stackViewVoiceProgress" destination="kNM-FG-3ON" id="ndL-iE-PRe"/>
                         <outlet property="switchFastMode" destination="Y9J-h0-jZk" id="EWo-Sb-NVF"/>
+                        <outlet property="switchSabbathMode" destination="b19-b5-QIa" id="jeT-nb-YH2"/>
                         <outlet property="switchVirtualCode" destination="Djc-iT-b7x" id="cYM-Ua-94p"/>
                         <outlet property="switchVoiceOffOn" destination="9wz-Zk-Plc" id="ssg-st-qNw"/>
                         <outlet property="swtichTwoFA" destination="lwS-5V-3Yh" id="Pti-S1-6CJ"/>

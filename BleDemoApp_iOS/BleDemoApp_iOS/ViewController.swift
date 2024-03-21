@@ -287,14 +287,14 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
                     SunionBluetoothTool.shared.getLogCount()
                 case .getLogData:
                     showgetLogDataAlert()
-                case .getUserArray:
+                case .gettokenArray:
                     SunionBluetoothTool.shared.getTokenArray()
-                case .getUserData:
+                case .gettokenData:
                     showgetUserDataAlert()
-                case .addUser:
+                case .addtoken:
                     self.performSegue(withIdentifier: "user", sender: "add")
                     
-                case .editUser:
+                case .edittoken:
                     if let token = token {
                         if token.isOwnerToken == .owner {
                             showAlert(title: "Editing of the Owner is not allowed", message: "")
@@ -306,7 +306,7 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
                         showAlert(title: "Please Get User Data first", message: "")
                     }
                     
-                case .delUser:
+                case .deltoken:
                     if let token = token {
                         if token.isOwnerToken == .owner {
                             showAlert(title: "deleting the Owner is not allowed", message: "")
@@ -415,14 +415,14 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
                     SunionBluetoothTool.shared.getLogCount()
                 case .getLogData:
                     showgetLogDataAlert()
-                case .getUserArray:
+                case .gettokenArray:
                     SunionBluetoothTool.shared.getTokenArray()
-                case .getUserData:
+                case .gettokenData:
                     showgetUserDataAlert()
-                case .addUser:
+                case .addtoken:
                     self.performSegue(withIdentifier: "user", sender: "add")
                     
-                case .editUser:
+                case .edittoken:
                     if let token = token {
                         if token.isOwnerToken == .owner {
                             showAlert(title: "Editing of the Owner is not allowed", message: "")
@@ -434,7 +434,7 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
                         showAlert(title: "Please Get User Data first", message: "")
                     }
                     
-                case .delUser:
+                case .deltoken:
                     if let token = token {
                         if token.isOwnerToken == .owner {
                             showAlert(title: "deleting the Owner is not allowed", message: "")
@@ -563,14 +563,14 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
                     SunionBluetoothTool.shared.getLogCount()
                 case .getLogData:
                     showgetLogDataAlert()
-                case .getUserArray:
+                case .gettokenArray:
                     SunionBluetoothTool.shared.getTokenArray()
-                case .getUserData:
+                case .gettokenData:
                     showgetUserDataAlert()
-                case .addUser:
+                case .addtoken:
                     self.performSegue(withIdentifier: "user", sender: "add")
                     
-                case .editUser:
+                case .edittoken:
                     if let token = token {
                         if token.isOwnerToken == .owner {
                             showAlert(title: "Editing of the Owner is not allowed", message: "")
@@ -582,7 +582,7 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
                         showAlert(title: "Please Get User Data first", message: "")
                     }
                     
-                case .delUser:
+                case .deltoken:
                     if let token = token {
                         if token.isOwnerToken == .owner {
                             showAlert(title: "deleting the Owner is not allowed", message: "")
@@ -593,50 +593,14 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
                     } else {
                         showAlert(title: "Please Get User Data first", message: "")
                     }
-                
-                case .getAccessArray:
-                    if let card = supportCard, let code = supportCode, let face = supportFace, let finger = supportFinger {
-                        self.performSegue(withIdentifier: "accessarray", sender: nil)
-                    } else {
-                        showAlert(title: "Please Get Supported Access first", message: "")
-                    }
-                   
-                    
-                case .getSupportAccess:
-                    SunionBluetoothTool.shared.getSupportType()
-                  
-                case .getAccessData:
-                    
-                    if let card = supportCard, let code = supportCode, let face = supportFace, let finger = supportFinger {
-                        self.performSegue(withIdentifier: "accessdata", sender: nil)
-                    } else {
-                        showAlert(title: "Please Get Supported Access first", message: "")
-                    }
-                
-                case .addAccess:
-                    
-                    if accessFirstEmptyIndex != nil, accessData2 == nil, let card = supportCard, let code = supportCode, let face = supportFace, let finger = supportFinger {
-                        self.performSegue(withIdentifier: "access", sender: true)
-                    } else {
-                        showAlert(title: "Please Get Access Array/ Supported Access first", message: "")
-                    }
-                 
-
-                case .editAccess:
-                    if let data = accessData2 {
-                        self.performSegue(withIdentifier: "access", sender: false)
-                    } else {
-                        showAlert(title: "Please Get Access Data first", message: "")
-                    }
-
-                case .delAccess:
-              
-                
-                    if let card = supportCard, let code = supportCode, let face = supportFace, let finger = supportFinger {
-                        self.performSegue(withIdentifier: "del", sender: nil)
-                    } else {
-                        showAlert(title: "Please Get Supported Access first", message: "")
-                    }
+                case .getUserCapabilities:
+                    SunionBluetoothTool.shared.userAble()
+                case .isMatterDevice:
+                    SunionBluetoothTool.shared.isMatter()
+                case .getUserCredentialArray:
+                    SunionBluetoothTool.shared.getUserCredentialArray()
+                case .getUserCredentialData:
+                    showgetusercredentialDataAlert()
                 case .disconnected:
                     SunionBluetoothTool.shared.disconnectBluetooth()
                     appendLogToTextView(logMessage: "Disconnected")
@@ -1048,7 +1012,7 @@ extension ViewController: SunionBluetoothToolDelegate {
             }
             
             if let n = value.N80 {
-                msg = "mainVersion: \(n.mainVersion ?? 9999)\n subVersion: \(n.subVersion ?? 9999)\n formatVersioin: \(n.formatVersion ?? 9999)\n serverversion: \(n.serverversion ?? 9999)\n latitude: \(n.latitude ?? 0000)\n longitude: \(n.longitude ?? 0000)\n lockDirection: \(n.direction.rawValue)\n guidingCode: \(n.guidingCode.rawValue)\n virtualCode: \(n.virtualCode.rawValue)\n twoFA: \(n.twoFA.rawValue)\n vacationMode: \(n.vacationMode.rawValue)\n autoLock: \(n.isAutoLock.rawValue)\n autoLockTime: \(n.autoLockTime ?? 0000)\n autoLockMinLimit: \(n.autoLockMinLimit ?? 0000)\n autoLockMaxLimit: \(n.autoLockMaxLimit ?? 0000)\n sound:\(n.sound.rawValue)\n voiceType: \(n.voiceType.rawValue)\n voiceValue: \(n.voiceValue.name)\n fastMode: \(n.fastMode.rawValue)"
+                msg = "mainVersion: \(n.mainVersion ?? 9999)\n subVersion: \(n.subVersion ?? 9999)\n formatVersioin: \(n.formatVersion ?? 9999)\n serverversion: \(n.serverversion ?? 9999)\n latitude: \(n.latitude ?? 0000)\n longitude: \(n.longitude ?? 0000)\n lockDirection: \(n.direction.rawValue)\n guidingCode: \(n.guidingCode.rawValue)\n virtualCode: \(n.virtualCode.rawValue)\n twoFA: \(n.twoFA.rawValue)\n vacationMode: \(n.vacationMode.rawValue)\n autoLock: \(n.isAutoLock.rawValue)\n autoLockTime: \(n.autoLockTime ?? 0000)\n autoLockMinLimit: \(n.autoLockMinLimit ?? 0000)\n autoLockMaxLimit: \(n.autoLockMaxLimit ?? 0000)\n sound:\(n.sound.rawValue)\n voiceType: \(n.voiceType.rawValue)\n voiceValue: \(n.voiceValue.name)\n fastMode: \(n.fastMode.rawValue)\n SabbathMode: \(n.sabbathMode.rawValue)"
             }
             
             appendLogToTextView(logMessage: msg)
@@ -1321,6 +1285,66 @@ extension ViewController: SunionBluetoothToolDelegate {
         }
     }
     
+    func userAble(value: UserableResponseModel?) {
+        if let value = value {
+            appendLogToTextView(logMessage: "isMatter: \(value.isMatter)\n weekday: \(value.weekdayCount ?? 9999)\n yeardat: \(value.yeardayCount ?? 9999)\n code: \(value.codeCount ?? 9999)\n card: \(value.cardCount ?? 9999) \n frigerprint: \(value.fpCount ?? 9999)\n face: \(value.faceCount ?? 9999)")
+        } else {
+            appendLogToTextView(logMessage: "get user able failed")
+        }
+    }
+    
+    func isMatter(value: Bool?) {
+        if let value = value {
+            appendLogToTextView(logMessage: "is matter device successfully: \(value)")
+        } else {
+            appendLogToTextView(logMessage: "is matter device failed")
+        }
+    }
+    
+    func userCredentialArray(value: [Int]?) {
+        if let value = value {
+            appendLogToTextView(logMessage: "get user credential Array successfully: \(value)")
+        } else {
+            appendLogToTextView(logMessage: "get user credential Array failed")
+        }
+    }
+    
+    func userCredentialData(value: UserCredentialModel?) {
+        if let value = value {
+            
+            var credentailStucts = ""
+            
+            value.credentialStruct?.forEach({ el in
+                var msg  = "---credentialStruct---\n type: \(el.type.description)\n index: \(el.index ?? 999)\n----\n"
+                credentailStucts += msg
+            })
+            
+            var weeks = ""
+            value.weekDayscheduleStruct?.forEach({ el in
+                var msg = "---weekDayscheduleStruct---\n daymask: \(el.daymask?.description)\n startHour: \(el.startHour ?? "N/A")\n startMinute: \(el.startMinute ?? "N/A")\n endHour: \(el.endHour ?? "N/A")\n endMinute: \(el.endMinute ?? "N/A")\n --- \n"
+                weeks += msg
+            })
+            
+            // 创建一个DateFormatter
+            let dateFormatter = DateFormatter()
+
+            // 设置日期和时间的样式
+            // 这里使用自定义格式
+            dateFormatter.dateFormat = "yyyy/MM/dd HH:mm:ss"
+            
+            var years = ""
+            value.yearDayscheduleStruct?.forEach({ el in
+                var msg = "---yearDayscheduleStruct---\n staus: \(el.status.description) \n start: \(dateFormatter.string(from: el.start ?? Date()))\n end: \(dateFormatter.string(from: el.end ?? Date()))"
+                years += msg
+            })
+            
+            
+            appendLogToTextView(logMessage: "index: \(value.index ?? 999)\n name: \(value.name ?? "N/A") \n uid: \(value.uid ?? "N/A")\n status: \(value.status.description)\n type: \(value.type.description)\n credential rule: \(value.credentialRule.description)\n credential structCount: \(value.credentialStruct?.count ?? 999)\n \(credentailStucts)\n weekDayCount: \(value.weekDayscheduleStruct?.count ?? 999)\n \(weeks) \n yeardayCount: \(value.yearDayscheduleStruct?.count ?? 999)\n \(years)")
+        } else {
+            appendLogToTextView(logMessage: "get user credential Data failed")
+        }
+    }
+
     
 }
 

@@ -32,11 +32,11 @@ enum Picker1Option: CaseIterable, CustomStringConvertible {
     case switchDevice
     case getLogCount
     case getLogData
-    case getUserArray
-    case getUserData
-    case addUser
-    case editUser
-    case delUser
+    case gettokenArray
+    case gettokenData
+    case addtoken
+    case edittoken
+    case deltoken
     case getAccessArray
     case getAccessData
     case addAccess
@@ -78,16 +78,16 @@ enum Picker1Option: CaseIterable, CustomStringConvertible {
             return "Get Log Count"
         case .getLogData:
             return "Get Log Data"
-        case .getUserArray:
-            return "Get User Array"
-        case .getUserData:
-            return "Get User Data"
-        case .addUser:
-            return "Add User"
-        case .editUser:
-            return "Edit User"
-        case .delUser:
-            return "Delete User"
+        case .gettokenArray:
+            return "Get Token Array"
+        case .gettokenData:
+            return "Get Token Data"
+        case .addtoken:
+            return "Add Token"
+        case .edittoken:
+            return "Edit Token"
+        case .deltoken:
+            return "Delete Token"
         case .getAccessArray:
             return "Get Access Array"
         case .getAccessData:
@@ -123,11 +123,11 @@ enum Picker2Option: CaseIterable, CustomStringConvertible {
     case switchDevice
     case getLogCount
     case getLogData
-    case getUserArray
-    case getUserData
-    case addUser
-    case editUser
-    case delUser
+    case gettokenArray
+    case gettokenData
+    case addtoken
+    case edittoken
+    case deltoken
     case getSupportAccess
     case getAccessArray
     case getAccessData
@@ -170,16 +170,16 @@ enum Picker2Option: CaseIterable, CustomStringConvertible {
             return "Get Log Count"
         case .getLogData:
             return "Get Log Data"
-        case .getUserArray:
-            return "Get User Array"
-        case .getUserData:
-            return "Get User Data"
-        case .addUser:
-            return "Add User"
-        case .editUser:
-            return "Edit User"
-        case .delUser:
-            return "Delete User"
+        case .gettokenArray:
+            return "Get Token Array"
+        case .gettokenData:
+            return "Get Token Data"
+        case .addtoken:
+            return "Add Token"
+        case .edittoken:
+            return "Edit Token"
+        case .deltoken:
+            return "Delete Token"
         case .getSupportAccess:
             return "Get Supported Access"
         case .getAccessArray:
@@ -218,17 +218,23 @@ enum Picker3Option: CaseIterable, CustomStringConvertible {
     case switchDevice
     case getLogCount
     case getLogData
-    case getUserArray
-    case getUserData
-    case addUser
-    case editUser
-    case delUser
-    case getSupportAccess
-    case getAccessArray
-    case getAccessData
-    case addAccess
-    case editAccess
-    case delAccess
+    case gettokenArray
+    case gettokenData
+    case addtoken
+    case edittoken
+    case deltoken
+    case getUserCapabilities
+    case isMatterDevice
+    case getUserCredentialArray
+    case getUserCredentialData
+    case addeditUserCredential
+    case delUserCredential
+    case getCredentialArray
+    case getCredentialData
+    case addCredential
+    case editCredentail
+    case deviceRetrieveCredential
+    case delCredential
     case disconnected
     
     var description: String {
@@ -265,28 +271,40 @@ enum Picker3Option: CaseIterable, CustomStringConvertible {
             return "Get Log Count"
         case .getLogData:
             return "Get Log Data"
-        case .getUserArray:
-            return "Get User Array"
-        case .getUserData:
-            return "Get User Data"
-        case .addUser:
-            return "Add User"
-        case .editUser:
-            return "Edit User"
-        case .delUser:
-            return "Delete User"
-        case .getSupportAccess:
-            return "Get Supported Access"
-        case .getAccessArray:
-            return "Get Access Array"
-        case .getAccessData:
-            return "Get Access Data"
-        case .addAccess:
-            return "Add Access"
-        case .editAccess:
-            return "Edit Access"
-        case .delAccess:
-            return "Delete Access"
+        case .gettokenArray:
+            return "Get Token Array"
+        case .gettokenData:
+            return "Get Token Data"
+        case .addtoken:
+            return "Add Token"
+        case .edittoken:
+            return "Edit Token"
+        case .deltoken:
+            return "Delete Token"
+        case .getUserCapabilities:
+            return "Get User Capabilities"
+        case .isMatterDevice:
+            return "Is Matter Device"
+        case .getUserCredentialArray:
+            return "Get User Credential Array"
+        case .getUserCredentialData:
+            return "Get User Credential Data"
+        case .addeditUserCredential:
+            return "Add/Edit User Credential"
+        case .delUserCredential:
+            return "Delete User Credential"
+        case .getCredentialArray:
+            return "Get Credential Array"
+        case .getCredentialData:
+            return "Get Credentail Data"
+        case .addCredential:
+            return "Add Credentail"
+        case .editCredentail:
+            return "Edit Credentail"
+        case .deviceRetrieveCredential:
+            return "Device Retrieve Credential"
+        case .delCredential:
+            return "Delete Credential"
         case .disconnected:
             return "Disconnected"
         }
