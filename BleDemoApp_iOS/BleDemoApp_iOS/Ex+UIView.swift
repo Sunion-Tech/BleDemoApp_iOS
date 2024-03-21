@@ -29,12 +29,16 @@ class CameraView: UIView, AVCaptureMetadataOutputObjectsDelegate {
         let session = AVCaptureSession()
         session.sessionPreset = .high
         
+        session.beginConfiguration()
+        // 在这里进行会话配置的更改，例如添加输入和输出
+        
         // 尝试获取后置相机
         guard let backCamera = AVCaptureDevice.default(for: .video),
               let input = try? AVCaptureDeviceInput(device: backCamera) else {
             print("无法获取后置相机。")
             return
         }
+        
         
         // 将输入添加到会话中
         if session.canAddInput(input) {
@@ -54,7 +58,9 @@ class CameraView: UIView, AVCaptureMetadataOutputObjectsDelegate {
         videoPreviewLayer = previewLayer
         
      
-          
+
+
+        session.commitConfiguration()
 
         
         // 启动会话
