@@ -80,6 +80,9 @@
                         <segue destination="FhB-sG-hre" kind="presentation" identifier="accessarray" id="gfC-gw-yxx"/>
                         <segue destination="bWt-9X-gmW" kind="presentation" identifier="accessdata" id="O5b-Qg-zrr"/>
                         <segue destination="nb6-K3-Bbu" kind="presentation" identifier="del" id="YdQ-6z-tJJ"/>
+                        <segue destination="jym-Ij-8r7" kind="presentation" identifier="usercredential" id="WR9-Zg-AWv"/>
+                        <segue destination="Zyo-I1-umt" kind="presentation" identifier="searchC" id="Z0W-jO-1JV"/>
+                        <segue destination="gPo-lg-dYf" kind="presentation" identifier="addeditC" id="Fv5-ga-dbv"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -1295,7 +1298,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="IjV-ov-s1W" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2768.7022900763359" y="862.67605633802816"/>
+            <point key="canvasLocation" x="2772" y="969"/>
         </scene>
         <!--Del Access Data View Controller-->
         <scene sceneID="CcD-5e-Sz8">
@@ -1387,6 +1390,304 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="lbm-rt-hlF" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2749" y="-708"/>
+        </scene>
+        <!--Add Edit User Credential View Controller-->
+        <scene sceneID="6Ak-SX-Eox">
+            <objects>
+                <viewController id="jym-Ij-8r7" customClass="AddEditUserCredentialViewController" customModule="BleDemoApp_iOS" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="0PE-GV-qba">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="842"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="add/edit User Credential" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PPV-4O-oJ8">
+                                <rect key="frame" x="104.00000000000001" y="11.999999999999998" width="185.33333333333337" height="20.333333333333329"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" alignment="center" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="3ey-cd-Y24">
+                                <rect key="frame" x="39.333333333333343" y="138" width="314.33333333333326" height="34"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Bdg-gm-ohW">
+                                        <rect key="frame" x="0.0" y="6.9999999999999982" width="153.33333333333334" height="20.333333333333329"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="VMc-ty-w9j">
+                                        <rect key="frame" x="161.33333333333331" y="0.0" width="153" height="34"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits"/>
+                                    </textField>
+                                </subviews>
+                            </stackView>
+                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="Uah-Cu-IAA">
+                                <rect key="frame" x="64" y="204" width="265" height="32"/>
+                                <segments>
+                                    <segment title="OccupiedEnabled"/>
+                                    <segment title="OccupiedDisabled"/>
+                                </segments>
+                            </segmentedControl>
+                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="Jja-8v-FCw">
+                                <rect key="frame" x="39.333333333333343" y="274" width="314.33333333333326" height="32"/>
+                                <segments>
+                                    <segment title="Unrestricted"/>
+                                    <segment title="YearDay"/>
+                                    <segment title="WeekDay"/>
+                                    <segment title="Forced"/>
+                                    <segment title="Disposable"/>
+                                </segments>
+                            </segmentedControl>
+                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" alignment="center" spacing="126" translatesAutoresizingMaskIntoConstraints="NO" id="S5w-Ne-zqJ">
+                                <rect key="frame" x="48.666666666666657" y="403" width="296" height="34.333333333333314"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ztb-rd-NQO">
+                                        <rect key="frame" x="0.0" y="0.0" width="85" height="34.333333333333336"/>
+                                        <state key="normal" title="Button"/>
+                                        <buttonConfiguration key="configuration" style="plain" title="Cancel"/>
+                                        <connections>
+                                            <action selector="buttonActionCancel:" destination="jym-Ij-8r7" eventType="touchUpInside" id="hmt-We-1MP"/>
+                                            <action selector="cancelAction:" destination="bWt-9X-gmW" eventType="touchUpInside" id="cNz-T0-CCm"/>
+                                            <action selector="cancelAction:" destination="FhB-sG-hre" eventType="touchUpInside" id="uYZ-MS-Ob2"/>
+                                            <action selector="cancelAction:" destination="1c6-fo-j1B" eventType="touchUpInside" id="wQ0-AD-F8z"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KJt-4d-aIj">
+                                        <rect key="frame" x="211.00000000000003" y="0.0" width="84.999999999999972" height="34.333333333333336"/>
+                                        <state key="normal" title="Button"/>
+                                        <buttonConfiguration key="configuration" style="plain" title="Confirm"/>
+                                        <connections>
+                                            <action selector="buttonActionConfirm:" destination="jym-Ij-8r7" eventType="touchUpInside" id="IL9-ER-fQy"/>
+                                            <action selector="confirmAction:" destination="FhB-sG-hre" eventType="touchUpInside" id="14V-sH-jQW"/>
+                                            <action selector="confirmAction:" destination="1c6-fo-j1B" eventType="touchUpInside" id="lN0-r9-mjm"/>
+                                            <action selector="confirmAction:" destination="bWt-9X-gmW" eventType="touchUpInside" id="tdG-yq-JFi"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                            </stackView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="0gY-fW-984"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="Uah-Cu-IAA" firstAttribute="top" secondItem="3ey-cd-Y24" secondAttribute="bottom" constant="32" id="0bH-Hu-epi"/>
+                            <constraint firstItem="S5w-Ne-zqJ" firstAttribute="top" secondItem="Jja-8v-FCw" secondAttribute="bottom" constant="98" id="4Ej-yy-Ee4"/>
+                            <constraint firstItem="3ey-cd-Y24" firstAttribute="centerX" secondItem="0gY-fW-984" secondAttribute="centerX" id="BJg-TB-l1I"/>
+                            <constraint firstItem="Uah-Cu-IAA" firstAttribute="centerX" secondItem="3ey-cd-Y24" secondAttribute="centerX" id="JLc-C5-yqD"/>
+                            <constraint firstItem="Jja-8v-FCw" firstAttribute="width" secondItem="0gY-fW-984" secondAttribute="width" multiplier="0.8" id="U1m-A0-kLL"/>
+                            <constraint firstItem="Jja-8v-FCw" firstAttribute="top" secondItem="Uah-Cu-IAA" secondAttribute="bottom" constant="39" id="Yue-6D-EpG"/>
+                            <constraint firstItem="PPV-4O-oJ8" firstAttribute="centerX" secondItem="0gY-fW-984" secondAttribute="centerX" id="jAg-iP-ynF"/>
+                            <constraint firstItem="PPV-4O-oJ8" firstAttribute="top" secondItem="0gY-fW-984" secondAttribute="top" constant="12" id="k1H-SU-jbT"/>
+                            <constraint firstItem="Jja-8v-FCw" firstAttribute="centerX" secondItem="3ey-cd-Y24" secondAttribute="centerX" id="n32-yr-hhE"/>
+                            <constraint firstItem="3ey-cd-Y24" firstAttribute="top" secondItem="PPV-4O-oJ8" secondAttribute="bottom" constant="105.66666666666667" id="qk5-3n-4Oy"/>
+                            <constraint firstItem="3ey-cd-Y24" firstAttribute="width" secondItem="0gY-fW-984" secondAttribute="width" multiplier="0.8" id="tOy-Se-QNr"/>
+                            <constraint firstItem="S5w-Ne-zqJ" firstAttribute="centerX" secondItem="Jja-8v-FCw" secondAttribute="centerX" id="vyh-rP-X8x"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="labelTitle" destination="PPV-4O-oJ8" id="zqV-TY-v3z"/>
+                        <outlet property="segmentStatus" destination="Uah-Cu-IAA" id="3li-Ad-OCF"/>
+                        <outlet property="segmentType" destination="Jja-8v-FCw" id="T0u-FV-BdB"/>
+                        <outlet property="textFieldName" destination="VMc-ty-w9j" id="HD7-VX-N1p"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="YCd-8Z-yiy" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3730.5343511450378" y="4.9295774647887329"/>
+        </scene>
+        <!--Search Credential View Controller-->
+        <scene sceneID="uXO-2Q-8yQ">
+            <objects>
+                <viewController id="Zyo-I1-umt" customClass="SearchCredentialViewController" customModule="BleDemoApp_iOS" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="Dnv-3p-nSA">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="842"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Search Credential" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Hhc-YP-fTm">
+                                <rect key="frame" x="128.66666666666669" y="11.999999999999998" width="135.66666666666669" height="20.333333333333329"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="TsJ-5u-SCW">
+                                <rect key="frame" x="114" y="88" width="165" height="32"/>
+                                <segments>
+                                    <segment title="User"/>
+                                    <segment title="Credential"/>
+                                </segments>
+                            </segmentedControl>
+                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" alignment="center" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="h72-7G-ixf">
+                                <rect key="frame" x="39.333333333333343" y="143" width="314.33333333333326" height="34"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="index" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Hd1-im-q5e">
+                                        <rect key="frame" x="0.0" y="6.9999999999999982" width="153.33333333333334" height="20.333333333333329"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="vao-sj-gTN">
+                                        <rect key="frame" x="161.33333333333331" y="0.0" width="153" height="34"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits" keyboardType="numberPad"/>
+                                    </textField>
+                                </subviews>
+                            </stackView>
+                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" alignment="center" spacing="126" translatesAutoresizingMaskIntoConstraints="NO" id="G3j-sW-d8U">
+                                <rect key="frame" x="48.666666666666657" y="297" width="296" height="34.333333333333314"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Wni-pd-Xgx">
+                                        <rect key="frame" x="0.0" y="0.0" width="85" height="34.333333333333336"/>
+                                        <state key="normal" title="Button"/>
+                                        <buttonConfiguration key="configuration" style="plain" title="Cancel"/>
+                                        <connections>
+                                            <action selector="buttonActionCancel:" destination="Zyo-I1-umt" eventType="touchUpInside" id="GhO-1p-mlI"/>
+                                            <action selector="buttonActionCancel:" destination="jym-Ij-8r7" eventType="touchUpInside" id="vph-Kd-bnH"/>
+                                            <action selector="cancelAction:" destination="1c6-fo-j1B" eventType="touchUpInside" id="Ghi-Du-0Fa"/>
+                                            <action selector="cancelAction:" destination="bWt-9X-gmW" eventType="touchUpInside" id="kHd-a6-n54"/>
+                                            <action selector="cancelAction:" destination="FhB-sG-hre" eventType="touchUpInside" id="tSL-MI-rcc"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="n8B-Oh-dKe">
+                                        <rect key="frame" x="211.00000000000003" y="0.0" width="84.999999999999972" height="34.333333333333336"/>
+                                        <state key="normal" title="Button"/>
+                                        <buttonConfiguration key="configuration" style="plain" title="Confirm"/>
+                                        <connections>
+                                            <action selector="buttonActionComfirm:" destination="Zyo-I1-umt" eventType="touchUpInside" id="oSq-Gw-h9V"/>
+                                            <action selector="buttonActionConfirm:" destination="jym-Ij-8r7" eventType="touchUpInside" id="Nc8-8Q-wlm"/>
+                                            <action selector="confirmAction:" destination="FhB-sG-hre" eventType="touchUpInside" id="Nw7-ve-XPX"/>
+                                            <action selector="confirmAction:" destination="1c6-fo-j1B" eventType="touchUpInside" id="qZn-W7-8lN"/>
+                                            <action selector="confirmAction:" destination="bWt-9X-gmW" eventType="touchUpInside" id="tuM-Ra-dWj"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                            </stackView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="Tnv-qn-uIx"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="G3j-sW-d8U" firstAttribute="centerX" secondItem="h72-7G-ixf" secondAttribute="centerX" id="2ZR-HJ-3VB"/>
+                            <constraint firstItem="TsJ-5u-SCW" firstAttribute="top" secondItem="Hhc-YP-fTm" secondAttribute="bottom" constant="55.666666666666671" id="4EL-kz-CIM"/>
+                            <constraint firstItem="G3j-sW-d8U" firstAttribute="top" secondItem="h72-7G-ixf" secondAttribute="bottom" constant="120" id="9XO-Qs-0UD"/>
+                            <constraint firstItem="TsJ-5u-SCW" firstAttribute="centerX" secondItem="Hhc-YP-fTm" secondAttribute="centerX" id="CG4-sg-7QR"/>
+                            <constraint firstItem="h72-7G-ixf" firstAttribute="width" secondItem="Tnv-qn-uIx" secondAttribute="width" multiplier="0.8" id="How-t8-ISE"/>
+                            <constraint firstItem="h72-7G-ixf" firstAttribute="centerX" secondItem="TsJ-5u-SCW" secondAttribute="centerX" id="Mkj-OP-H23"/>
+                            <constraint firstItem="h72-7G-ixf" firstAttribute="top" secondItem="TsJ-5u-SCW" secondAttribute="bottom" constant="24" id="h2A-r9-RYS"/>
+                            <constraint firstItem="Hhc-YP-fTm" firstAttribute="top" secondItem="Tnv-qn-uIx" secondAttribute="top" constant="12" id="pLr-rT-VjW"/>
+                            <constraint firstItem="Hhc-YP-fTm" firstAttribute="centerX" secondItem="Tnv-qn-uIx" secondAttribute="centerX" id="yXe-5s-uoh"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="segmentFormat" destination="TsJ-5u-SCW" id="11Y-6O-sJB"/>
+                        <outlet property="textFieldIndex" destination="vao-sj-gTN" id="IV8-xl-Egd"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="JF8-FL-JXX" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="4692" y="5"/>
+        </scene>
+        <!--Add Edit Credential View Controller-->
+        <scene sceneID="cZS-I0-NiW">
+            <objects>
+                <viewController id="gPo-lg-dYf" customClass="AddEditCredentialViewController" customModule="BleDemoApp_iOS" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="EOT-Fx-nNP">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="842"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="add/edit Credential" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bUI-Fe-uaz">
+                                <rect key="frame" x="124" y="11.999999999999998" width="145" height="20.333333333333329"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="ofk-q1-Qb4">
+                                <rect key="frame" x="64" y="96.333333333333329" width="265" height="31.999999999999986"/>
+                                <segments>
+                                    <segment title="OccupiedEnabled"/>
+                                    <segment title="OccupiedDisabled"/>
+                                </segments>
+                            </segmentedControl>
+                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="Txq-1z-xC1">
+                                <rect key="frame" x="74.666666666666686" y="196.33333333333334" width="244" height="32"/>
+                                <segments>
+                                    <segment title="Pin"/>
+                                    <segment title="Rfid"/>
+                                    <segment title="FP"/>
+                                    <segment title="FV"/>
+                                    <segment title="Face"/>
+                                </segments>
+                            </segmentedControl>
+                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" alignment="center" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="we5-mE-MHx">
+                                <rect key="frame" x="39.333333333333343" y="291.33333333333331" width="314.33333333333326" height="34"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="value" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HD1-UK-NHd">
+                                        <rect key="frame" x="0.0" y="6.9999999999999982" width="153.33333333333334" height="20.333333333333329"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="rDK-Vt-Yta">
+                                        <rect key="frame" x="161.33333333333331" y="0.0" width="153" height="34"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits" keyboardType="numberPad"/>
+                                    </textField>
+                                </subviews>
+                            </stackView>
+                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" alignment="center" spacing="126" translatesAutoresizingMaskIntoConstraints="NO" id="Da8-fR-iCS">
+                                <rect key="frame" x="48.666666666666657" y="433" width="296" height="34.333333333333314"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2iW-x9-mJc">
+                                        <rect key="frame" x="0.0" y="0.0" width="85" height="34.333333333333336"/>
+                                        <state key="normal" title="Button"/>
+                                        <buttonConfiguration key="configuration" style="plain" title="Cancel"/>
+                                        <connections>
+                                            <action selector="buttonActionCancel:" destination="jym-Ij-8r7" eventType="touchUpInside" id="LPe-iD-x5w"/>
+                                            <action selector="buttonActionCancel:" destination="Zyo-I1-umt" eventType="touchUpInside" id="iTP-bM-aMq"/>
+                                            <action selector="buttonActionCancel:" destination="gPo-lg-dYf" eventType="touchUpInside" id="mva-Ot-TZP"/>
+                                            <action selector="cancelAction:" destination="FhB-sG-hre" eventType="touchUpInside" id="2CV-rC-AeB"/>
+                                            <action selector="cancelAction:" destination="bWt-9X-gmW" eventType="touchUpInside" id="jEz-uV-XcE"/>
+                                            <action selector="cancelAction:" destination="1c6-fo-j1B" eventType="touchUpInside" id="y4N-0W-pX9"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xua-hr-3qR">
+                                        <rect key="frame" x="211.00000000000003" y="0.0" width="84.999999999999972" height="34.333333333333336"/>
+                                        <state key="normal" title="Button"/>
+                                        <buttonConfiguration key="configuration" style="plain" title="Confirm"/>
+                                        <connections>
+                                            <action selector="buttonActionComfirm:" destination="Zyo-I1-umt" eventType="touchUpInside" id="Ws3-0E-IZQ"/>
+                                            <action selector="buttonActionConfirm:" destination="jym-Ij-8r7" eventType="touchUpInside" id="6Xh-7r-tyc"/>
+                                            <action selector="buttonActionConfirm:" destination="gPo-lg-dYf" eventType="touchUpInside" id="u0y-07-V6y"/>
+                                            <action selector="confirmAction:" destination="bWt-9X-gmW" eventType="touchUpInside" id="Gvh-Zl-NOV"/>
+                                            <action selector="confirmAction:" destination="FhB-sG-hre" eventType="touchUpInside" id="RAg-uS-RCG"/>
+                                            <action selector="confirmAction:" destination="1c6-fo-j1B" eventType="touchUpInside" id="kqV-2q-r8q"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                            </stackView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="PFr-vV-GTt"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="we5-mE-MHx" firstAttribute="width" secondItem="EOT-Fx-nNP" secondAttribute="width" multiplier="0.8" id="04E-cM-1qS"/>
+                            <constraint firstItem="Da8-fR-iCS" firstAttribute="top" secondItem="we5-mE-MHx" secondAttribute="bottom" constant="107.66666666666669" id="7Aa-9q-IDT"/>
+                            <constraint firstItem="bUI-Fe-uaz" firstAttribute="top" secondItem="PFr-vV-GTt" secondAttribute="top" constant="12" id="8bu-1J-tnQ"/>
+                            <constraint firstItem="Da8-fR-iCS" firstAttribute="centerX" secondItem="we5-mE-MHx" secondAttribute="centerX" id="9Jn-EX-uE1"/>
+                            <constraint firstItem="bUI-Fe-uaz" firstAttribute="centerX" secondItem="PFr-vV-GTt" secondAttribute="centerX" id="HTt-lY-lYk"/>
+                            <constraint firstItem="Txq-1z-xC1" firstAttribute="top" secondItem="ofk-q1-Qb4" secondAttribute="bottom" constant="69" id="Kpl-Qw-xFm"/>
+                            <constraint firstItem="we5-mE-MHx" firstAttribute="top" secondItem="Txq-1z-xC1" secondAttribute="bottom" constant="64" id="j6P-Qc-RQv"/>
+                            <constraint firstItem="Txq-1z-xC1" firstAttribute="centerX" secondItem="ofk-q1-Qb4" secondAttribute="centerX" id="npJ-XU-PwX"/>
+                            <constraint firstItem="we5-mE-MHx" firstAttribute="centerX" secondItem="Txq-1z-xC1" secondAttribute="centerX" id="uDx-Xp-Grn"/>
+                            <constraint firstItem="ofk-q1-Qb4" firstAttribute="centerX" secondItem="bUI-Fe-uaz" secondAttribute="centerX" id="xDv-0R-d5D"/>
+                            <constraint firstItem="ofk-q1-Qb4" firstAttribute="top" secondItem="bUI-Fe-uaz" secondAttribute="bottom" constant="64" id="zQr-SP-sgd"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="segmentStatus" destination="ofk-q1-Qb4" id="r5e-bR-ce9"/>
+                        <outlet property="segmentType" destination="Txq-1z-xC1" id="E8e-8L-QYi"/>
+                        <outlet property="textFieldValue" destination="rDK-Vt-Yta" id="5ME-eh-O53"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Let-W7-5fo" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="5599" y="5"/>
         </scene>
     </scenes>
     <resources>

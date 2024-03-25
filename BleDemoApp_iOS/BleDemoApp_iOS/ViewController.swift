@@ -32,6 +32,8 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
     var token: TokenModel?
     var tokenIndex: Int?
     var accessFirstEmptyIndex: Int?
+    var userCredentailEmptyIndex: Int?
+    var credentailEmptyIndex: Int?
     var accessData: PinCodeModelResult?
     var accessData2: AccessDataResponseModel?
     
@@ -45,6 +47,12 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
     var supportFinger: Int?
     
     var isV2 = false
+    
+    var able: UserableResponseModel?
+    
+    var userCredentialData: UserCredentialModel?
+    var userSupportCount: resUserSupportedCountModel?
+    var credentialData: CredentialModel?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -601,6 +609,44 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
                     SunionBluetoothTool.shared.getUserCredentialArray()
                 case .getUserCredentialData:
                     showgetusercredentialDataAlert()
+                case .addUserCredential:
+                    if let userCredentailEmptyIndex = userCredentailEmptyIndex, let able = able {
+                      
+                        self.performSegue(withIdentifier: "usercredential", sender: nil)
+                      
+                    } else {
+                        showAlert(title: "Please Get UserCredentialArray/ UserCapabilities first", message: "")
+                    }
+                case .editUserCredential:
+                    if let data = userCredentialData {
+                        self.performSegue(withIdentifier: "usercredential", sender: nil)
+                    } else {
+                        showAlert(title: "Please Get UserCredentialData first", message: "")
+                    }
+                case .delUserCredential:
+                    showuserCredentialDeleteAlert()
+                case .getUserSupportedCount:
+                    SunionBluetoothTool.shared.getUserSupportedCount()
+                case .getCredentialArray:
+                    SunionBluetoothTool.shared.getCredentialArray()
+                case .getCredentialData:
+                    self.performSegue(withIdentifier: "searchC", sender: nil)
+                case .addCredential:
+                    if let credentailEmptyIndex = credentailEmptyIndex, let able = able {
+                      
+                        self.performSegue(withIdentifier: "addeditC", sender: nil)
+                      
+                    } else {
+                        showAlert(title: "Please Get CredentialArray/ UserCapabilities first", message: "")
+                    }
+                case .editCredentail:
+                    if let data = credentialData, let able = able {
+                        self.performSegue(withIdentifier: "addeditC", sender: nil)
+                    } else {
+                        showAlert(title: "Please Get CredentialData/ UserCapabilities first", message: "")
+                    }
+                case .delCredential:
+                    showDelCredentialAlert()
                 case .disconnected:
                     SunionBluetoothTool.shared.disconnectBluetooth()
                     appendLogToTextView(logMessage: "Disconnected")
@@ -707,6 +753,27 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
             vc.delegate = self
         }
         
+        if let id = segue.identifier, id == "usercredential",
+           let vc = segue.destination as? AddEditUserCredentialViewController {
+            vc.index = userCredentailEmptyIndex ?? userCredentialData?.index ?? 1
+            vc.able = able
+            vc.data = userCredentialData
+            vc.isCreate = userCredentialData == nil
+        }
+        
+        if let id = segue.identifier, id == "searchC",
+           let vc = segue.destination as? SearchCredentialViewController {
+            vc.delegate = self
+        }
+        
+        if let id = segue.identifier, id == "addeditC",
+           let vc = segue.destination as? AddEditCredentialViewController {
+            vc.delegate = self
+            vc.credientialIndex = credentailEmptyIndex
+            vc.userIndex = userCredentialData?.index!
+            vc.able = self.able
+            vc.data = self.credentialData
+        }
         
     }
     
@@ -759,6 +826,22 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
     }
 
 
+    
+}
+
+extension ViewController: AddEditCredentialViewControllerDelegate {
+    func addEditCredential(model: CredentialRequestModel) {
+        SunionBluetoothTool.shared.credentialAction(model: model)
+    }
+    
+    
+}
+
+extension ViewController: SearchCredentialViewControllerDelegate {
+    func searchC(model:SearchCredentialRequestModel) {
+        SunionBluetoothTool.shared.searchCredential(model: model)
+    }
+    
     
 }
 
@@ -1287,6 +1370,7 @@ extension ViewController: SunionBluetoothToolDelegate {
     
     func userAble(value: UserableResponseModel?) {
         if let value = value {
+            self.able = value
             appendLogToTextView(logMessage: "isMatter: \(value.isMatter)\n weekday: \(value.weekdayCount ?? 9999)\n yeardat: \(value.yeardayCount ?? 9999)\n code: \(value.codeCount ?? 9999)\n card: \(value.cardCount ?? 9999) \n frigerprint: \(value.fpCount ?? 9999)\n face: \(value.faceCount ?? 9999)")
         } else {
             appendLogToTextView(logMessage: "get user able failed")
@@ -1303,6 +1387,17 @@ extension ViewController: SunionBluetoothToolDelegate {
     
     func userCredentialArray(value: [Int]?) {
         if let value = value {
+            
+            var index = 1
+            
+            while value.contains(index) {
+                // 如果包含，则index加1
+                index += 1
+            }
+            userCredentailEmptyIndex = index
+            
+            
+            
             appendLogToTextView(logMessage: "get user credential Array successfully: \(value)")
         } else {
             appendLogToTextView(logMessage: "get user credential Array failed")
@@ -1311,17 +1406,17 @@ extension ViewController: SunionBluetoothToolDelegate {
     
     func userCredentialData(value: UserCredentialModel?) {
         if let value = value {
-            
+            self.userCredentialData = value
             var credentailStucts = ""
             
-            value.credentialStruct?.forEach({ el in
+            value.credentialStruct.forEach({ el in
                 var msg  = "---credentialStruct---\n type: \(el.type.description)\n index: \(el.index ?? 999)\n----\n"
                 credentailStucts += msg
             })
             
             var weeks = ""
-            value.weekDayscheduleStruct?.forEach({ el in
-                var msg = "---weekDayscheduleStruct---\n daymask: \(el.daymask?.description)\n startHour: \(el.startHour ?? "N/A")\n startMinute: \(el.startMinute ?? "N/A")\n endHour: \(el.endHour ?? "N/A")\n endMinute: \(el.endMinute ?? "N/A")\n --- \n"
+            value.weekDayscheduleStruct.forEach({ el in
+                var msg = "---weekDayscheduleStruct---\n status: \(el.status.description)\n daymask: \(el.daymask?.description)\n startHour: \(el.startHour ?? "N/A")\n startMinute: \(el.startMinute ?? "N/A")\n endHour: \(el.endHour ?? "N/A")\n endMinute: \(el.endMinute ?? "N/A")\n --- \n"
                 weeks += msg
             })
             
@@ -1333,18 +1428,109 @@ extension ViewController: SunionBluetoothToolDelegate {
             dateFormatter.dateFormat = "yyyy/MM/dd HH:mm:ss"
             
             var years = ""
-            value.yearDayscheduleStruct?.forEach({ el in
+            value.yearDayscheduleStruct.forEach({ el in
                 var msg = "---yearDayscheduleStruct---\n staus: \(el.status.description) \n start: \(dateFormatter.string(from: el.start ?? Date()))\n end: \(dateFormatter.string(from: el.end ?? Date()))"
                 years += msg
             })
             
             
-            appendLogToTextView(logMessage: "index: \(value.index ?? 999)\n name: \(value.name ?? "N/A") \n uid: \(value.uid ?? "N/A")\n status: \(value.status.description)\n type: \(value.type.description)\n credential rule: \(value.credentialRule.description)\n credential structCount: \(value.credentialStruct?.count ?? 999)\n \(credentailStucts)\n weekDayCount: \(value.weekDayscheduleStruct?.count ?? 999)\n \(weeks) \n yeardayCount: \(value.yearDayscheduleStruct?.count ?? 999)\n \(years)")
+            appendLogToTextView(logMessage: "index: \(value.index ?? 999)\n name: \(value.name ?? "N/A") \n uid: \(value.uid ?? 999)\n status: \(value.status.description)\n type: \(value.type.description)\n credential rule: \(value.credentialRule.description)\n credential structCount: \(value.credentialStruct.count)\n \(credentailStucts)\n weekDayCount: \(value.weekDayscheduleStruct.count)\n \(weeks) \n yeardayCount: \(value.yearDayscheduleStruct.count )\n \(years)")
         } else {
             appendLogToTextView(logMessage: "get user credential Data failed")
         }
     }
+    
+    func userCredentialAction(value: N9ResponseModel?) {
+        if let value = value {
+            self.able = nil
+            self.userCredentailEmptyIndex = nil
+            self.userCredentialData = nil
+            appendLogToTextView(logMessage: "index: \(value.index ?? 999)\n isSuccess: \(value.isSuccess ?? false)")
+        } else {
+            appendLogToTextView(logMessage: "add/edit usercredential  failed")
+        }
+    }
+    
+    func delUserCredentialAction(value: N9ResponseModel?) {
+        if let value = value {
+            self.able = nil
+            self.userCredentailEmptyIndex = nil
+            self.userCredentialData = nil
+            appendLogToTextView(logMessage: "index: \(value.index ?? 999)\n isSuccess: \(value.isSuccess ?? false)")
+        } else {
+            appendLogToTextView(logMessage: "deleted usercredential  failed")
+        }
+    }
 
+    func getCredentialArray(value: [Int]?) {
+        if let value = value {
+            
+            var index = 1
+            
+            while value.contains(index) {
+                // 如果包含，则index加1
+                index += 1
+            }
+            credentailEmptyIndex = index
+            
+            
+            
+            appendLogToTextView(logMessage: "get Credential Array successfully: \(value)")
+        
+        } else {
+            appendLogToTextView(logMessage: "get Credential Array  failed")
+        }
+    }
+    
+    func searchCredential(value: CredentialModel?) {
+        if let value = value {
+            if value.format == .credential {
+                credentialData = value
+            }
+            var credentialDetailStruct = ""
+            
+            value.credentialDetailStruct?.forEach({ el in
+                let msg = "---credentialDetailStruct---\n type: \(el.type.description)\n status: \(el.status.description) \n data: \(el.data ?? "") \n --- \n"
+                credentialDetailStruct += msg
+            })
+            
+            
+            appendLogToTextView(logMessage: "format: \(value.format!.description)\n CredentialIndex: \(value.credientialIndex ?? 999)\n status: \(value.status.description)\n type: \(value.type.description)\n UserIndex: \(value.userIndex ?? 999)\n dataIndex: \(value.credentialData ?? "")\n + \(credentialDetailStruct)")
+        } else {
+            appendLogToTextView(logMessage: "searchCredential failed")
+        }
+    }
+    
+    func usersupportedCount(value: resUserSupportedCountModel?) {
+        if let value = value {
+            userSupportCount = value
+            appendLogToTextView(logMessage: "Matter: \(value.matter) \n code: \(value.code) \n card: \(value.card) \n fp: \(value.fp)\n face: \(value.face)")
+        } else {
+            appendLogToTextView(logMessage: "get User Suppored Count failed")
+        }
+    }
+    
+    func credentialAction(value: N9ResponseModel?) {
+        if let value = value {
+            self.able = nil
+            self.credentailEmptyIndex = nil
+            self.credentialData = nil
+            appendLogToTextView(logMessage: "index: \(value.index ?? 999)\n isSuccess: \(value.isSuccess ?? false)")
+        } else {
+            appendLogToTextView(logMessage: "add/edit credential  failed")
+        }
+    }
+    
+    func delCredential(value: N9ResponseModel?) {
+        if let value = value {
+            self.able = nil
+            self.credentailEmptyIndex = nil
+            self.credentialData = nil
+            appendLogToTextView(logMessage: "index: \(value.index ?? 999)\n isSuccess: \(value.isSuccess ?? false)")
+        } else {
+            appendLogToTextView(logMessage: "deleted credential  failed")
+        }
+    }
     
 }
 

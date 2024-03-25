@@ -64,9 +64,7 @@ class CameraView: UIView, AVCaptureMetadataOutputObjectsDelegate {
 
         
         // 启动会话
-        DispatchQueue.global(qos: .userInitiated).async {
-            session.startRunning()
-        }
+        session.startRunning()
       
         captureSession = session
         

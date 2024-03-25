@@ -227,8 +227,10 @@ enum Picker3Option: CaseIterable, CustomStringConvertible {
     case isMatterDevice
     case getUserCredentialArray
     case getUserCredentialData
-    case addeditUserCredential
+    case addUserCredential
+    case editUserCredential
     case delUserCredential
+    case getUserSupportedCount
     case getCredentialArray
     case getCredentialData
     case addCredential
@@ -289,10 +291,14 @@ enum Picker3Option: CaseIterable, CustomStringConvertible {
             return "Get User Credential Array"
         case .getUserCredentialData:
             return "Get User Credential Data"
-        case .addeditUserCredential:
-            return "Add/Edit User Credential"
+        case .addUserCredential:
+            return "Add User Credential"
+        case .editUserCredential:
+            return "Edit User Credential"
         case .delUserCredential:
             return "Delete User Credential"
+        case .getUserSupportedCount:
+            return "Get User Supported Count"
         case .getCredentialArray:
             return "Get Credential Array"
         case .getCredentialData:
