@@ -9,7 +9,7 @@ import UIKit
 import SunionBluetoothTool
 
 extension ViewController {
-    func showsetDeviceNameAlert() {
+    func showsetDeviceNameAlert(v3: Bool = false) {
         let alertController = UIAlertController(title: "Set Device Name", message: "Enter up to 20 characters", preferredStyle: .alert)
         
         alertController.addTextField { textField in
@@ -21,7 +21,12 @@ extension ViewController {
             // 处理确认动作
             if let text = alertController.textFields?.first?.text {
                 print("输入的文本: \(text)")
-                SunionBluetoothTool.shared.setupDeviceName(name: text)
+                if v3 {
+                    SunionBluetoothTool.shared.UseCase.name.set(value: text)
+                } else {
+                    SunionBluetoothTool.shared.setupDeviceName(name: text)
+                }
+     
             }
         }
         

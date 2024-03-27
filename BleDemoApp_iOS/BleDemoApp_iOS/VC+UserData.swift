@@ -12,7 +12,7 @@ import SunionBluetoothTool
 
 
 extension ViewController {
-    func showgetUserDataAlert() {
+    func showgetUserDataAlert(v3: Bool = false) {
         let alertController = UIAlertController(title: "Get User Data", message: "Please enter user position", preferredStyle: .alert)
         
         alertController.addTextField { (textField) in
@@ -27,7 +27,12 @@ extension ViewController {
             // 确认按钮的逻辑处理，可以在这里处理输入的文本
             print("输入的数字是：\(inputText)")
             self.tokenIndex = Int(inputText)
-            SunionBluetoothTool.shared.getToken(position: Int(inputText)!)
+            if v3 {
+                SunionBluetoothTool.shared.UseCase.token.data(position: Int(inputText)!)
+            } else {
+                SunionBluetoothTool.shared.getToken(position: Int(inputText)!)
+            }
+            
         }
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
         

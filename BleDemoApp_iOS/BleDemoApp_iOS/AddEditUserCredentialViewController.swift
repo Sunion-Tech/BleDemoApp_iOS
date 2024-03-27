@@ -19,6 +19,7 @@ class AddEditUserCredentialViewController: UIViewController {
     
     var able: UserableResponseModel?
     var data: UserCredentialModel?
+    var v3 = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -165,7 +166,12 @@ class AddEditUserCredentialViewController: UIViewController {
         
         
         let model = UserCredentialRequestModel(isCreate: isCreate!, index: self.index!, name: textFieldName.text!, uid: 0, status: statu, type: type, credentialRule: .single, credentialStruct: ss, weekDayscheduleStruct: weeks, yearDayscheduleStruct: years)
-        SunionBluetoothTool.shared.userCredentialAction(model: model)
+        if v3 {
+            SunionBluetoothTool.shared.UseCase.user.createorEdit(model: model)
+        } else {
+            SunionBluetoothTool.shared.userCredentialAction(model: model)
+        }
+
         self.dismiss(animated: true)
     }
 }

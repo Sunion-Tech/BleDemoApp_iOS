@@ -47,6 +47,7 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
     var supportFinger: Int?
     
     var isV2 = false
+    var isV3 = false
     
     var able: UserableResponseModel?
     
@@ -102,7 +103,7 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
                         if let jsonObject = try JSONSerialization.jsonObject(with: success, options: []) as? [String: Any] {
                             // 成功解码，jsonObject现在是一个[String: Any]字典
                             print(jsonObject)
-                            // TODO: cmd30
+                            self.isV3 = true
                             self.pickerData = .cmd30
                           //  let aes1 = (jsonObject["key"] as! String).data(using: .utf8)
                          //   let token = (jsonObject["token"] as! String).data(using: .utf8)
@@ -515,9 +516,9 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
                     appendLogToTextView(logMessage: "Connecting...")
                     SunionBluetoothTool.shared.connectingBluetooth()
                 case .adminCodeExist:
-                    SunionBluetoothTool.shared.isAdminCode()
+                    SunionBluetoothTool.shared.UseCase.adminCode.exists()
                 case .setAdminCode:
-                    showsetAdminCodeAlert()
+                    showsetAdminCodeAlert(v3: true)
                 default:
                     break
                 }
@@ -526,39 +527,39 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
             } else {
                 switch data {
                 case .adminCodeExist:
-                    SunionBluetoothTool.shared.isAdminCode()
+                    SunionBluetoothTool.shared.UseCase.adminCode.exists()
                 case .setAdminCode:
-                    showsetAdminCodeAlert()
+                    showsetAdminCodeAlert(v3: true)
                 case .editAdminCode:
-                    showEditAdminCodeAlert()
+                    showEditAdminCodeAlert(v3: true)
                 case .boltCheck:
-                    SunionBluetoothTool.shared.blotCheck()
+                    SunionBluetoothTool.shared.UseCase.direction.checkDoorDirection()
                 case .factoryReset:
-                    showfactoryResetAlert()
+                    showfactoryResetAlert(v3: true)
                 case .setDeviceName:
-                    showsetDeviceNameAlert()
+                    showsetDeviceNameAlert(v3: true)
                 case .getDeviceName:
-                    SunionBluetoothTool.shared.getDeviceName()
+                    SunionBluetoothTool.shared.UseCase.name.data()
                 case .setTimeZone:
-                    SunionBluetoothTool.shared.setupTimeZone(timezone: "Asia/Taipei")
+                    SunionBluetoothTool.shared.UseCase.time.setTimeZone(value: "Asia/Taipei")
                 case .setDeviceTime:
-                    SunionBluetoothTool.shared.setupDeviceTime()
+                    SunionBluetoothTool.shared.UseCase.time.syncCurrentTime()
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
                         self.appendLogToTextView(logMessage: "set Device Time successfully")
                     }
                 case .getDeviceConfig:
-                    SunionBluetoothTool.shared.getDeviceConfig80()
+                    SunionBluetoothTool.shared.UseCase.config.data()
                 case .setDeviceConfig:
                     
                     if let config = config {
-                        self.performSegue(withIdentifier: "config", sender: nil)
+                        self.performSegue(withIdentifier: "config", sender: true)
                     } else {
                         showAlert(title: "Please Get Device Config first", message: "")
                     }
                     
                     
                 case .getDeviceStatus:
-                    SunionBluetoothTool.shared.getDeviceStatus()
+                    SunionBluetoothTool.shared.UseCase.deviceStatus.data()
                 case .switchDevice:
                     var lockMode: CommandService.DeviceMode = .unlock
                     if status?.A2?.lockState == .lockedUnlinked {
@@ -566,15 +567,15 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
                     } else {
                         lockMode = .lock
                     }
-                    SunionBluetoothTool.shared.switchDevice(mode: lockMode)
+                    SunionBluetoothTool.shared.UseCase.direction.lockorUnlock(value: lockMode)
                 case .getLogCount:
-                    SunionBluetoothTool.shared.getLogCount()
+                    SunionBluetoothTool.shared.UseCase.log.count()
                 case .getLogData:
-                    showgetLogDataAlert()
+                    showgetLogDataAlert(v3: true)
                 case .gettokenArray:
-                    SunionBluetoothTool.shared.getTokenArray()
+                    SunionBluetoothTool.shared.UseCase.token.array()
                 case .gettokenData:
-                    showgetUserDataAlert()
+                    showgetUserDataAlert(v3: true)
                 case .addtoken:
                     self.performSegue(withIdentifier: "user", sender: "add")
                     
@@ -595,20 +596,21 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
                         if token.isOwnerToken == .owner {
                             showAlert(title: "deleting the Owner is not allowed", message: "")
                         } else {
-                            SunionBluetoothTool.shared.delToken(model: token)
+                            SunionBluetoothTool.shared.UseCase.token.delete(model: token)
                         }
                         
                     } else {
                         showAlert(title: "Please Get User Data first", message: "")
                     }
                 case .getUserCapabilities:
-                    SunionBluetoothTool.shared.userAble()
+                    SunionBluetoothTool.shared.UseCase.user.able()
                 case .isMatterDevice:
-                    SunionBluetoothTool.shared.isMatter()
+                    SunionBluetoothTool.shared.UseCase.utility.isMatter()
                 case .getUserCredentialArray:
-                    SunionBluetoothTool.shared.getUserCredentialArray()
+                    SunionBluetoothTool.shared.UseCase.user.array()
                 case .getUserCredentialData:
-                    showgetusercredentialDataAlert()
+                    showgetusercredentialDataAlert(v3: true)
+                
                 case .addUserCredential:
                     if let userCredentailEmptyIndex = userCredentailEmptyIndex, let able = able {
                       
@@ -624,11 +626,11 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
                         showAlert(title: "Please Get UserCredentialData first", message: "")
                     }
                 case .delUserCredential:
-                    showuserCredentialDeleteAlert()
+                    showuserCredentialDeleteAlert(v3: true)
                 case .getUserSupportedCount:
-                    SunionBluetoothTool.shared.getUserSupportedCount()
+                    SunionBluetoothTool.shared.UseCase.user.supportCount()
                 case .getCredentialArray:
-                    SunionBluetoothTool.shared.getCredentialArray()
+                    SunionBluetoothTool.shared.UseCase.credential.array()
                 case .getCredentialData:
                     self.performSegue(withIdentifier: "searchC", sender: nil)
                 case .addCredential:
@@ -667,6 +669,7 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
            let vc = segue.destination as? DeviceConfigSettingViewController {
             vc.data = self.config
             vc.delegate = self
+            vc.v3 = self.isV3
         }
         
         if let id = segue.identifier, id == "user",
@@ -675,6 +678,7 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
                 vc.data = self.token
             }
             vc.delegate = self
+            vc.v3 = self.isV3
         }
         
         if let id = segue.identifier, id == "access",
@@ -755,10 +759,11 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
         
         if let id = segue.identifier, id == "usercredential",
            let vc = segue.destination as? AddEditUserCredentialViewController {
-            vc.index = userCredentailEmptyIndex ?? userCredentialData?.index ?? 1
+            vc.index = userCredentialData?.index ?? userCredentailEmptyIndex ??  1
             vc.able = able
             vc.data = userCredentialData
             vc.isCreate = userCredentialData == nil
+            vc.v3 = self.isV3
         }
         
         if let id = segue.identifier, id == "searchC",
@@ -831,7 +836,8 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
 
 extension ViewController: AddEditCredentialViewControllerDelegate {
     func addEditCredential(model: CredentialRequestModel) {
-        SunionBluetoothTool.shared.credentialAction(model: model)
+        SunionBluetoothTool.shared.UseCase.credential.createorEdit(model: model)
+        
     }
     
     
@@ -839,7 +845,7 @@ extension ViewController: AddEditCredentialViewControllerDelegate {
 
 extension ViewController: SearchCredentialViewControllerDelegate {
     func searchC(model:SearchCredentialRequestModel) {
-        SunionBluetoothTool.shared.searchCredential(model: model)
+        SunionBluetoothTool.shared.UseCase.credential.data(model: model)
     }
     
     
@@ -913,23 +919,41 @@ extension ViewController: AccessCodeViewControllerDelegate {
 }
 
 extension ViewController: UserOptionViewControllerDelegate {
-    func optionData(add: AddTokenModel?, edit: EditTokenModel?) {
+    func optionData(add: AddTokenModel?, edit: EditTokenModel?, v3: Bool) {
         if let add = add {
-            SunionBluetoothTool.shared.createToken(model: add)
+            if v3 {
+                SunionBluetoothTool.shared.UseCase.token.create(model: add)
+            } else {
+                SunionBluetoothTool.shared.createToken(model: add)
+            }
+          
         }
         
         if let edit = edit {
-            SunionBluetoothTool.shared.editToken(model: edit)
+            if v3 {
+                SunionBluetoothTool.shared.UseCase.token.edit(model: edit)
+            } else {
+                SunionBluetoothTool.shared.editToken(model: edit)
+            }
+          
         }
     }
+    
+
     
     
 }
 
 extension ViewController: DeviceConfigSettingViewControllerDelegate {
-    func config(data: DeviceSetupModel) {
-        SunionBluetoothTool.shared.setupDeviceConfig(data: data)
+    func config(data: DeviceSetupModel, v3: Bool) {
+        if v3 {
+            SunionBluetoothTool.shared.UseCase.config.set(model: data.N81!)
+        } else {
+            SunionBluetoothTool.shared.setupDeviceConfig(data: data)
+        }
     }
+    
+
     
 }
 
@@ -1025,6 +1049,8 @@ extension ViewController: SunionBluetoothToolDelegate {
         appendLogToTextView(logMessage: msg)
     }
     
+
+    
     func AdminCode(bool: Bool?) {
         if let bool = bool, bool {
             isAdminCode = true
@@ -1049,6 +1075,8 @@ extension ViewController: SunionBluetoothToolDelegate {
             appendLogToTextView(logMessage: "adminCode does not exist")
         }
     }
+    
+
     
     func FactoryReset(bool: Bool?) {
         if let bool = bool, bool {
@@ -1530,6 +1558,300 @@ extension ViewController: SunionBluetoothToolDelegate {
         } else {
             appendLogToTextView(logMessage: "deleted credential  failed")
         }
+    }
+    
+    
+    // MARK: - V3
+    func v3deviceStatus(value: DeviceStatusModelN82?) {
+        var msg = "==V3==\n"
+        if let n = value {
+            msg += "mainVersion: \(n.mainVersion ?? 9999)\n subVersion: \(n.subVersion ?? 9999)\n lockDirection: \(n.lockDirection.rawValue)\n vacationMode: \(n.vacationModeOn.rawValue)\n deadbolt: \(n.deadBolt.rawValue)\n doorState: \(n.doorState.rawValue)\n lockState: \(n.lockState.rawValue)\n securitybole: \(n.securityBolt.rawValue) \n battery: \(n.battery ?? 0000)\n batteryWarning: \(n.batteryWarning.rawValue)"
+        } else {
+            msg += "failed"
+        }
+    
+        appendLogToTextView(logMessage: msg)
+    }
+    
+    func v3time(value: resTimeUseCase?) {
+        var msg = "==V3==\n"
+        if let value = value {
+            if let time = value.isSavedTime {
+                msg += "time saved successfully: \(time)"
+            }
+            
+            if let timezone = value.isSavedTimeZone {
+                msg += "timeZone saved successfully: \(timezone)"
+            }
+        } else {
+            msg += "failed"
+        }
+        
+        appendLogToTextView(logMessage: msg)
+    }
+    
+    func v3adminCode(value: resAdminCodeUseCase?) {
+        var msg = "==V3==\n"
+        if let value = value {
+            if let c = value.isCreated {
+                isAdminCode = true
+                msg += "adminCode Created successfully: \(c)"
+            }
+            
+            if let e = value.isEdited {
+                msg += "adminCode Edited successfully: \(e)"
+            }
+            
+            if let exi = value.isExisted {
+                msg += "adminCode Existied successfully: \(exi)"
+            }
+        } else {
+           msg += "failed"
+        }
+        
+        appendLogToTextView(logMessage: msg)
+    }
+    
+    func v3Name(value: resNameUseCase?) {
+        var msg = "==V3==\n"
+        if let value = value {
+            if let v = value.data {
+                msg += "name Created successfully: \(v)"
+            }
+            
+            if let v = value.isConfigured {
+                msg += "name set successfully: \(v)"
+            }
+        } else {
+            msg += "failed"
+        }
+        
+        appendLogToTextView(logMessage: msg)
+    }
+    
+    func v3Config(value: resConfigUseCase?) {
+        var msg = "==V3==\n"
+        if let value = value {
+            if let n = value.data {
+                let data = DeviceSetupResultModel()
+                data.N80 = n
+                self.config = data
+            
+                msg += "mainVersion: \(n.mainVersion ?? 9999)\n subVersion: \(n.subVersion ?? 9999)\n formatVersioin: \(n.formatVersion ?? 9999)\n serverversion: \(n.serverversion ?? 9999)\n latitude: \(n.latitude ?? 0000)\n longitude: \(n.longitude ?? 0000)\n lockDirection: \(n.direction.rawValue)\n guidingCode: \(n.guidingCode.rawValue)\n virtualCode: \(n.virtualCode.rawValue)\n twoFA: \(n.twoFA.rawValue)\n vacationMode: \(n.vacationMode.rawValue)\n autoLock: \(n.isAutoLock.rawValue)\n autoLockTime: \(n.autoLockTime ?? 0000)\n autoLockMinLimit: \(n.autoLockMinLimit ?? 0000)\n autoLockMaxLimit: \(n.autoLockMaxLimit ?? 0000)\n sound:\(n.sound.rawValue)\n voiceType: \(n.voiceType.rawValue)\n voiceValue: \(n.voiceValue.name)\n fastMode: \(n.fastMode.rawValue)\n SabbathMode: \(n.sabbathMode.rawValue)"
+            }
+            
+            if let v = value.isConfigured {
+                msg += "config set successfully: \(v)"
+            }
+        } else {
+            msg += "failed"
+        }
+        
+        appendLogToTextView(logMessage: msg)
+    }
+    
+    func v3utility(value: resUtilityUseCase?) {
+        var msg = "==V3==\n"
+        if let value = value {
+            if let n = value.version {
+                msg += "version successfully: \(n.type?.rawValue), \(n.version)"
+            }
+            if let n = value.isFactoryReset {
+                msg += "FactoryReset successfully: \(n)"
+            }
+            
+            if let n = value.isMatter {
+                msg += "Matter successfully: \(n)"
+            }
+            
+            if let n = value.alert {
+                msg += "alert successfully: \(n.type)"
+            }
+        } else {
+            msg += "failed"
+        }
+        
+        appendLogToTextView(logMessage: msg)
+    }
+    
+    func v3Token(value: resTokenUseCase?) {
+        var msg = "==V3==\n"
+        if let value = value {
+            if let n = value.array {
+                msg += "array successfully: \(n)"
+            }
+            if let value = value.data {
+           
+                token = value
+                if value.isOwnerToken == .notOwner {
+                    token?.indexOfToken = tokenIndex
+                }
+                 msg += "isenable: \(value.isEnable)\n tokenmode: \(value.tokenMode.rawValue)\n isowner: \(value.isOwnerToken.rawValue)\n tokenpermission: \(value.tokenPermission.rawValue)\n token: \(value.token?.toHexString() ?? "")\n name: \(value.name ?? "")\n indexoftoken: \(value.indexOfToken ?? 0000)"
+            }
+            
+            if let value = value.created {
+                 msg += "isSuccess: \(value.isSuccess)\n token: \(value.token?.toHexString() ?? "")\n index: \(value.index ?? 0000)"
+                tokenIndex = value.index
+              
+            }
+            
+            if let n = value.isEdited {
+                msg += "edited successfully: \(n)"
+            }
+            
+            if let n = value.isDeleted {
+                msg += "deleted successfully: \(n)"
+            }
+            
+        } else {
+            msg += "failed"
+        }
+        
+        appendLogToTextView(logMessage: msg)
+    }
+    
+    func v3Log(value: resLogUseCase?) {
+        var msg = "==V3==\n"
+        if let value = value {
+            if let n = value.count {
+                msg += "count successfully: \(n)"
+            }
+            
+            if let value = value.data {
+                 msg += "timestamp: \(value.timestamp)\n event: \(value.event)\n name: \(value.name)\n message: \(value.message ?? "")"
+            }
+        } else {
+            msg += "failed"
+        }
+        appendLogToTextView(logMessage: msg)
+    }
+    
+    func v3User(value: resUserUseCase?) {
+        var msg = "==V3==\n"
+        if let value = value {
+            if let value = value.able {
+                self.able = value
+               msg += "isMatter: \(value.isMatter)\n weekday: \(value.weekdayCount ?? 9999)\n yeardat: \(value.yeardayCount ?? 9999)\n code: \(value.codeCount ?? 9999)\n card: \(value.cardCount ?? 9999) \n frigerprint: \(value.fpCount ?? 9999)\n face: \(value.faceCount ?? 9999)"
+            }
+            
+            if let value = value.array {
+                var index = 1
+                
+                while value.contains(index) {
+                    // 如果包含，则index加1
+                    index += 1
+                }
+                userCredentailEmptyIndex = index
+                msg += "array successfully: \(value)"
+            }
+            
+            if let value = value.data {
+                self.userCredentialData = value
+                var credentailStucts = ""
+                
+                value.credentialStruct.forEach({ el in
+                    var msg  = "---credentialStruct---\n type: \(el.type.description)\n index: \(el.index ?? 999)\n----\n"
+                    credentailStucts += msg
+                })
+                
+                var weeks = ""
+                value.weekDayscheduleStruct.forEach({ el in
+                    var msg = "---weekDayscheduleStruct---\n status: \(el.status.description)\n daymask: \(el.daymask?.description)\n startHour: \(el.startHour ?? "N/A")\n startMinute: \(el.startMinute ?? "N/A")\n endHour: \(el.endHour ?? "N/A")\n endMinute: \(el.endMinute ?? "N/A")\n --- \n"
+                    weeks += msg
+                })
+                
+                // 创建一个DateFormatter
+                let dateFormatter = DateFormatter()
+
+                // 设置日期和时间的样式
+                // 这里使用自定义格式
+                dateFormatter.dateFormat = "yyyy/MM/dd HH:mm:ss"
+                
+                var years = ""
+                value.yearDayscheduleStruct.forEach({ el in
+                    var msg = "---yearDayscheduleStruct---\n staus: \(el.status.description) \n start: \(dateFormatter.string(from: el.start ?? Date()))\n end: \(dateFormatter.string(from: el.end ?? Date()))"
+                    years += msg
+                })
+                
+                
+              msg += "index: \(value.index ?? 999)\n name: \(value.name ?? "N/A") \n uid: \(value.uid ?? 999)\n status: \(value.status.description)\n type: \(value.type.description)\n credential rule: \(value.credentialRule.description)\n credential structCount: \(value.credentialStruct.count)\n \(credentailStucts)\n weekDayCount: \(value.weekDayscheduleStruct.count)\n \(weeks) \n yeardayCount: \(value.yearDayscheduleStruct.count )\n \(years)"
+            }
+            
+            if let n = value.isCreatedorEdited {
+                self.able = nil
+                self.userCredentailEmptyIndex = nil
+                self.userCredentialData = nil
+                msg += "CreatedorEdited successfully: \(n)"
+            }
+            
+            if let n = value.isDeleted {
+                self.able = nil
+                self.userCredentailEmptyIndex = nil
+                self.userCredentialData = nil
+                msg += "Deleted successfully: \(n)"
+            }
+            
+            if let value = value.supportedCounts {
+                userSupportCount = value
+                msg += "Matter: \(value.matter) \n code: \(value.code) \n card: \(value.card) \n fp: \(value.fp)\n face: \(value.face)"
+            }
+       
+            
+        } else {
+            msg += "failed"
+        }
+        
+        appendLogToTextView(logMessage: msg)
+    }
+    
+    func v3Credential(value: resCredentialUseCase?) {
+        var msg = "==V3==\n"
+        if let value = value {
+            if let value = value.array {
+                var index = 1
+                
+                while value.contains(index) {
+                    // 如果包含，则index加1
+                    index += 1
+                }
+                credentailEmptyIndex = index
+                msg += "array successfully: \(value)"
+            }
+            
+            if let value = value.data {
+                if value.format == .credential {
+                    credentialData = value
+                }
+                var credentialDetailStruct = ""
+                
+                value.credentialDetailStruct?.forEach({ el in
+                    let msg = "---credentialDetailStruct---\n type: \(el.type.description)\n status: \(el.status.description) \n data: \(el.data ?? "") \n --- \n"
+                    credentialDetailStruct += msg
+                })
+                
+                
+               msg += "format: \(value.format!.description)\n CredentialIndex: \(value.credientialIndex ?? 999)\n status: \(value.status.description)\n type: \(value.type.description)\n UserIndex: \(value.userIndex ?? 999)\n dataIndex: \(value.credentialData ?? "")\n + \(credentialDetailStruct)"
+            }
+            
+            if let n = value.isCreatedorEdited {
+                self.able = nil
+                self.credentailEmptyIndex = nil
+                self.credentialData = nil
+                msg += "CreatedorEdited successfully: \(n)"
+            }
+            
+            if let n = value.isDeleted {
+                self.able = nil
+                self.credentailEmptyIndex = nil
+                self.credentialData = nil
+                msg += "Deleted successfully: \(n)"
+            }
+            
+         
+        } else {
+            msg += "failed"
+        }
+        appendLogToTextView(logMessage: msg)
     }
     
 }

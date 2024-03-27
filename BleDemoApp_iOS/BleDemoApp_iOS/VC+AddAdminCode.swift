@@ -10,7 +10,7 @@ import SunionBluetoothTool
 
 
 extension ViewController {
-    func showsetAdminCodeAlert() {
+    func showsetAdminCodeAlert(v3: Bool = false) {
         let alertController = UIAlertController(title: "Set Admin Code", message: "Please enter 4 to 8 digits", preferredStyle: .alert)
         
         alertController.addTextField { (textField) in
@@ -26,7 +26,12 @@ extension ViewController {
             guard let textField = alertController?.textFields?.first, let inputText = textField.text else { return }
             // 确认按钮的逻辑处理，可以在这里处理输入的文本
             print("输入的数字是：\(inputText)")
-            SunionBluetoothTool.shared.setupAdminCode(Code: inputText)
+            if v3 {
+                SunionBluetoothTool.shared.UseCase.adminCode.set(value: inputText)
+            } else {
+                SunionBluetoothTool.shared.setupAdminCode(Code: inputText)
+            }
+      
         }
         
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)

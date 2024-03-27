@@ -9,7 +9,7 @@ import UIKit
 import SunionBluetoothTool
 
 protocol DeviceConfigSettingViewControllerDelegate: AnyObject {
-    func config(data: DeviceSetupModel)
+    func config(data: DeviceSetupModel,v3: Bool)
 }
 
 class DeviceConfigSettingViewController: UIViewController {
@@ -52,6 +52,7 @@ class DeviceConfigSettingViewController: UIViewController {
     weak var delegate: DeviceConfigSettingViewControllerDelegate?
     
     var data: DeviceSetupResultModel?
+    var v3 = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -79,7 +80,7 @@ class DeviceConfigSettingViewController: UIViewController {
             }
         }
         
-        delegate?.config(data: model)
+        delegate?.config(data: model,v3: self.v3)
         self.dismiss(animated: true)
     }
     

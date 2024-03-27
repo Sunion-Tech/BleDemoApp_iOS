@@ -10,7 +10,7 @@ import SunionBluetoothTool
 
 
 extension ViewController {
-    func showgetLogDataAlert() {
+    func showgetLogDataAlert(v3: Bool = false) {
         let alertController = UIAlertController(title: "Get Log Data", message: "Please enter log position", preferredStyle: .alert)
         
         alertController.addTextField { (textField) in
@@ -24,7 +24,12 @@ extension ViewController {
             guard let textField = alertController?.textFields?.first, let inputText = textField.text else { return }
             // 确认按钮的逻辑处理，可以在这里处理输入的文本
             print("输入的数字是：\(inputText)")
-            SunionBluetoothTool.shared.getLog(count: Int(inputText)!)
+            if v3 {
+                SunionBluetoothTool.shared.UseCase.log.data(position: Int(inputText)!)
+            } else {
+                SunionBluetoothTool.shared.getLog(count: Int(inputText)!)
+            }
+           
         }
         
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)

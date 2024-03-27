@@ -9,7 +9,7 @@ import UIKit
 import SunionBluetoothTool
 
 protocol UserOptionViewControllerDelegate: AnyObject {
-    func optionData(add: AddTokenModel?, edit: EditTokenModel?)
+    func optionData(add: AddTokenModel?, edit: EditTokenModel?, v3: Bool)
 }
 
 class UserOptionViewController: UIViewController {
@@ -21,6 +21,7 @@ class UserOptionViewController: UIViewController {
     weak var delegate: UserOptionViewControllerDelegate?
     
     var data: TokenModel?
+    var v3 = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -51,11 +52,11 @@ class UserOptionViewController: UIViewController {
             // edit
        
             let model = EditTokenModel(tokenName: nameTextField.text!, tokenPermission: permissionSegment.selectedSegmentIndex == 0 ? .all : .limit, tokenIndex: data.indexOfToken!)
-            delegate?.optionData(add: nil, edit: model)
+            delegate?.optionData(add: nil, edit: model,v3: self.v3)
         } else {
             // add
             let model = AddTokenModel(tokenName: nameTextField.text!, tokenPermission: permissionSegment.selectedSegmentIndex == 0 ? .all : .limit)
-            delegate?.optionData(add: model, edit: nil)
+            delegate?.optionData(add: model, edit: nil,v3: self.v3)
         }
         
         self.dismiss(animated: true)

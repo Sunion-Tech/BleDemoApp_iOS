@@ -235,7 +235,7 @@ enum Picker3Option: CaseIterable, CustomStringConvertible {
     case getCredentialData
     case addCredential
     case editCredentail
-    case deviceRetrieveCredential
+
     case delCredential
     case disconnected
     
@@ -307,8 +307,7 @@ enum Picker3Option: CaseIterable, CustomStringConvertible {
             return "Add Credentail"
         case .editCredentail:
             return "Edit Credentail"
-        case .deviceRetrieveCredential:
-            return "Device Retrieve Credential"
+  
         case .delCredential:
             return "Delete Credential"
         case .disconnected:

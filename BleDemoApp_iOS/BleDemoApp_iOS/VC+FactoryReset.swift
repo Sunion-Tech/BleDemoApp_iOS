@@ -11,7 +11,7 @@ import SunionBluetoothTool
 
 
 extension ViewController {
-    func showfactoryResetAlert() {
+    func showfactoryResetAlert(v3: Bool = false) {
         let alertController = UIAlertController(title: "Factory Reset", message: "Please enter Admin Code", preferredStyle: .alert)
         
         alertController.addTextField { (textField) in
@@ -28,7 +28,12 @@ extension ViewController {
             // 确认按钮的逻辑处理，可以在这里处理输入的文本
             print("输入的数字是：\(inputText)")
             let digit = inputText.compactMap{Int(String($0))}
-            SunionBluetoothTool.shared.factoryReset(adminCode: digit)
+            if v3 {
+                SunionBluetoothTool.shared.UseCase.utility.factoryResetDevice(adminCode: digit)
+            } else {
+                SunionBluetoothTool.shared.factoryReset(adminCode: digit)
+            }
+            
         }
         
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)

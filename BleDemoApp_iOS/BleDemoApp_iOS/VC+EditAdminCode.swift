@@ -9,7 +9,7 @@ import UIKit
 import SunionBluetoothTool
 
 extension ViewController {
-    func showEditAdminCodeAlert() {
+    func showEditAdminCodeAlert(v3: Bool = false) {
         let alertController = UIAlertController(title: "Edit Admin Code", message: nil, preferredStyle: .alert)
         
         alertController.addTextField { (textField) in
@@ -31,7 +31,12 @@ extension ViewController {
             let oldPassword = textFields[0].text ?? ""
             let newPassword = textFields[1].text ?? ""
             // 在这里处理密码更新逻辑
-            SunionBluetoothTool.shared.editAdminCode(oldCode: oldPassword, newCode: newPassword)
+            if v3 {
+                SunionBluetoothTool.shared.UseCase.adminCode.edit(old: oldPassword, new: newPassword)
+            } else {
+                SunionBluetoothTool.shared.editAdminCode(oldCode: oldPassword, newCode: newPassword)
+            }
+          
         }
         
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)

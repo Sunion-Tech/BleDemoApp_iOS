@@ -25,7 +25,8 @@ extension ViewController {
             guard let textField = alertController?.textFields?.first, let inputText = textField.text else { return }
             // 确认按钮的逻辑处理，可以在这里处理输入的文本
             print("输入的数字是：\(inputText)")
-            SunionBluetoothTool.shared.delCredential(position: Int(inputText)!)
+          
+            SunionBluetoothTool.shared.UseCase.credential.delete(position: Int(inputText)!)
         }
         
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
