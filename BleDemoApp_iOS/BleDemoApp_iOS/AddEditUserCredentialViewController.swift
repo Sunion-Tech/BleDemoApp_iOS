@@ -11,7 +11,7 @@ import SunionBluetoothTool
 class AddEditUserCredentialViewController: UIViewController {
 
     @IBOutlet weak var segmentType: UISegmentedControl! // 0: unrest //1: year // 2: week // 3: forced // 4: disposed
-    @IBOutlet weak var segmentStatus: UISegmentedControl! //0: av // 1: ocen // 2: ocDis
+  
     @IBOutlet weak var textFieldName: UITextField!
     @IBOutlet weak var labelTitle: UILabel!
     var index: Int?
@@ -19,7 +19,7 @@ class AddEditUserCredentialViewController: UIViewController {
     
     var able: UserableResponseModel?
     var data: UserCredentialModel?
-    var v3 = false
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -43,14 +43,7 @@ class AddEditUserCredentialViewController: UIViewController {
                 break
             }
             
-            switch data.status {
-            case .occupiedEnabled:
-                segmentStatus.selectedSegmentIndex = 0
-            case .occupiedDisabled:
-                segmentStatus.selectedSegmentIndex = 1
-            default:
-                break
-            }
+
         } else {
             labelTitle.text = "add User Credential"
         }
@@ -92,16 +85,7 @@ class AddEditUserCredentialViewController: UIViewController {
     }
     
     @IBAction func buttonActionConfirm(_ sender: UIButton) {
-        var statu: UserCredentialModel.UserStatusEnum = .occupiedEnabled
-        switch segmentStatus.selectedSegmentIndex {
-        case 0:
-            statu = .occupiedEnabled
-        case 1:
-            statu = .occupiedDisabled
- 
-        default:
-            break
-        }
+
         
         var type: UserCredentialModel.UserTypeEnum = .unrestrictedUser
         switch segmentType.selectedSegmentIndex {
@@ -165,12 +149,10 @@ class AddEditUserCredentialViewController: UIViewController {
         }
         
         
-        let model = UserCredentialRequestModel(isCreate: isCreate!, index: self.index!, name: textFieldName.text!, uid: 0, status: statu, type: type, credentialRule: .single, credentialStruct: ss, weekDayscheduleStruct: weeks, yearDayscheduleStruct: years)
-        if v3 {
+        let model = UserCredentialRequestModel(isCreate: isCreate!, index: self.index!, name: textFieldName.text!, uid: 0, status: .occupiedEnabled, type: type, credentialRule: .single, credentialStruct: ss, weekDayscheduleStruct: weeks, yearDayscheduleStruct: years)
+        
             SunionBluetoothTool.shared.UseCase.user.createorEdit(model: model)
-        } else {
-            SunionBluetoothTool.shared.userCredentialAction(model: model)
-        }
+        
 
         self.dismiss(animated: true)
     }

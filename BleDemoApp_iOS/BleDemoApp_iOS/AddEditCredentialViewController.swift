@@ -16,7 +16,6 @@ class AddEditCredentialViewController: UIViewController {
 
     @IBOutlet weak var textFieldValue: UITextField!
     @IBOutlet weak var segmentType: UISegmentedControl!
-    @IBOutlet weak var segmentStatus: UISegmentedControl!
     
     
     weak var delegate: AddEditCredentialViewControllerDelegate?
@@ -80,15 +79,7 @@ class AddEditCredentialViewController: UIViewController {
             default:
                 break
             }
-            
-            switch data.status {
-            case .occupiedEnabled:
-                segmentStatus.selectedSegmentIndex = 0
-            case .occupiedDisabled:
-                segmentStatus.selectedSegmentIndex = 1
-            default:
-                break
-            }
+      
         }
     }
     
@@ -159,19 +150,10 @@ class AddEditCredentialViewController: UIViewController {
             break
         }
         
-        var statu: UserCredentialModel.UserStatusEnum = .occupiedEnabled
-        switch segmentStatus.selectedSegmentIndex {
-        case 0:
-            statu = .occupiedEnabled
-        case 1:
-            statu = .occupiedDisabled
- 
-        default:
-            break
-        }
+        
         let creIndex = data?.credientialIndex ?? self.credientialIndex ?? 1
         let useri = data?.userIndex ?? self.userIndex ?? 1
-        var model = CredentialRequestModel(credientialIndex: creIndex, userIndex:  useri, status: statu, type: type, credentialData: textFieldValue.text!, isCreate: data == nil ? true : false)
+        var model = CredentialRequestModel(credientialIndex: creIndex, userIndex:  useri, status: .occupiedEnabled, type: type, credentialData: textFieldValue.text!, isCreate: data == nil ? true : false)
         delegate?.addEditCredential(model: model)
         self.dismiss(animated: true)
     }

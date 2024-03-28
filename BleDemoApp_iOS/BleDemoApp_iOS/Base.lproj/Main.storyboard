@@ -1421,15 +1421,8 @@
                                     </textField>
                                 </subviews>
                             </stackView>
-                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="Uah-Cu-IAA">
-                                <rect key="frame" x="64" y="204" width="265" height="32"/>
-                                <segments>
-                                    <segment title="OccupiedEnabled"/>
-                                    <segment title="OccupiedDisabled"/>
-                                </segments>
-                            </segmentedControl>
                             <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="Jja-8v-FCw">
-                                <rect key="frame" x="39.333333333333343" y="274" width="314.33333333333326" height="32"/>
+                                <rect key="frame" x="39.333333333333343" y="232" width="314.33333333333326" height="32"/>
                                 <segments>
                                     <segment title="Unrestricted"/>
                                     <segment title="YearDay"/>
@@ -1439,7 +1432,7 @@
                                 </segments>
                             </segmentedControl>
                             <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" alignment="center" spacing="126" translatesAutoresizingMaskIntoConstraints="NO" id="S5w-Ne-zqJ">
-                                <rect key="frame" x="48.666666666666657" y="403" width="296" height="34.333333333333314"/>
+                                <rect key="frame" x="48.666666666666657" y="361" width="296" height="34.333333333333314"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ztb-rd-NQO">
                                         <rect key="frame" x="0.0" y="0.0" width="85" height="34.333333333333336"/>
@@ -1469,12 +1462,10 @@
                         <viewLayoutGuide key="safeArea" id="0gY-fW-984"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="Uah-Cu-IAA" firstAttribute="top" secondItem="3ey-cd-Y24" secondAttribute="bottom" constant="32" id="0bH-Hu-epi"/>
                             <constraint firstItem="S5w-Ne-zqJ" firstAttribute="top" secondItem="Jja-8v-FCw" secondAttribute="bottom" constant="98" id="4Ej-yy-Ee4"/>
                             <constraint firstItem="3ey-cd-Y24" firstAttribute="centerX" secondItem="0gY-fW-984" secondAttribute="centerX" id="BJg-TB-l1I"/>
-                            <constraint firstItem="Uah-Cu-IAA" firstAttribute="centerX" secondItem="3ey-cd-Y24" secondAttribute="centerX" id="JLc-C5-yqD"/>
                             <constraint firstItem="Jja-8v-FCw" firstAttribute="width" secondItem="0gY-fW-984" secondAttribute="width" multiplier="0.8" id="U1m-A0-kLL"/>
-                            <constraint firstItem="Jja-8v-FCw" firstAttribute="top" secondItem="Uah-Cu-IAA" secondAttribute="bottom" constant="39" id="Yue-6D-EpG"/>
+                            <constraint firstItem="Jja-8v-FCw" firstAttribute="top" secondItem="3ey-cd-Y24" secondAttribute="bottom" constant="60" id="XdA-MN-yPg"/>
                             <constraint firstItem="PPV-4O-oJ8" firstAttribute="centerX" secondItem="0gY-fW-984" secondAttribute="centerX" id="jAg-iP-ynF"/>
                             <constraint firstItem="PPV-4O-oJ8" firstAttribute="top" secondItem="0gY-fW-984" secondAttribute="top" constant="12" id="k1H-SU-jbT"/>
                             <constraint firstItem="Jja-8v-FCw" firstAttribute="centerX" secondItem="3ey-cd-Y24" secondAttribute="centerX" id="n32-yr-hhE"/>
@@ -1485,7 +1476,6 @@
                     </view>
                     <connections>
                         <outlet property="labelTitle" destination="PPV-4O-oJ8" id="zqV-TY-v3z"/>
-                        <outlet property="segmentStatus" destination="Uah-Cu-IAA" id="3li-Ad-OCF"/>
                         <outlet property="segmentType" destination="Jja-8v-FCw" id="T0u-FV-BdB"/>
                         <outlet property="textFieldName" destination="VMc-ty-w9j" id="HD7-VX-N1p"/>
                     </connections>
@@ -1598,15 +1588,8 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="ofk-q1-Qb4">
-                                <rect key="frame" x="64" y="96.333333333333329" width="265" height="31.999999999999986"/>
-                                <segments>
-                                    <segment title="OccupiedEnabled"/>
-                                    <segment title="OccupiedDisabled"/>
-                                </segments>
-                            </segmentedControl>
                             <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="Txq-1z-xC1">
-                                <rect key="frame" x="74.666666666666686" y="196.33333333333334" width="244" height="32"/>
+                                <rect key="frame" x="74.666666666666686" y="92.333333333333329" width="244" height="32"/>
                                 <segments>
                                     <segment title="Pin"/>
                                     <segment title="Rfid"/>
@@ -1616,7 +1599,7 @@
                                 </segments>
                             </segmentedControl>
                             <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" alignment="center" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="we5-mE-MHx">
-                                <rect key="frame" x="39.333333333333343" y="291.33333333333331" width="314.33333333333326" height="34"/>
+                                <rect key="frame" x="39.333333333333343" y="187.33333333333334" width="314.33333333333326" height="34"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="value" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HD1-UK-NHd">
                                         <rect key="frame" x="0.0" y="6.9999999999999982" width="153.33333333333334" height="20.333333333333329"/>
@@ -1632,7 +1615,7 @@
                                 </subviews>
                             </stackView>
                             <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" alignment="center" spacing="126" translatesAutoresizingMaskIntoConstraints="NO" id="Da8-fR-iCS">
-                                <rect key="frame" x="48.666666666666657" y="433" width="296" height="34.333333333333314"/>
+                                <rect key="frame" x="48.666666666666657" y="329" width="296" height="34.333333333333314"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2iW-x9-mJc">
                                         <rect key="frame" x="0.0" y="0.0" width="85" height="34.333333333333336"/>
@@ -1671,16 +1654,13 @@
                             <constraint firstItem="bUI-Fe-uaz" firstAttribute="top" secondItem="PFr-vV-GTt" secondAttribute="top" constant="12" id="8bu-1J-tnQ"/>
                             <constraint firstItem="Da8-fR-iCS" firstAttribute="centerX" secondItem="we5-mE-MHx" secondAttribute="centerX" id="9Jn-EX-uE1"/>
                             <constraint firstItem="bUI-Fe-uaz" firstAttribute="centerX" secondItem="PFr-vV-GTt" secondAttribute="centerX" id="HTt-lY-lYk"/>
-                            <constraint firstItem="Txq-1z-xC1" firstAttribute="top" secondItem="ofk-q1-Qb4" secondAttribute="bottom" constant="69" id="Kpl-Qw-xFm"/>
+                            <constraint firstItem="Txq-1z-xC1" firstAttribute="top" secondItem="bUI-Fe-uaz" secondAttribute="bottom" constant="60" id="Qtg-YF-g6K"/>
+                            <constraint firstItem="Txq-1z-xC1" firstAttribute="centerX" secondItem="bUI-Fe-uaz" secondAttribute="centerX" id="ShH-UU-icb"/>
                             <constraint firstItem="we5-mE-MHx" firstAttribute="top" secondItem="Txq-1z-xC1" secondAttribute="bottom" constant="64" id="j6P-Qc-RQv"/>
-                            <constraint firstItem="Txq-1z-xC1" firstAttribute="centerX" secondItem="ofk-q1-Qb4" secondAttribute="centerX" id="npJ-XU-PwX"/>
                             <constraint firstItem="we5-mE-MHx" firstAttribute="centerX" secondItem="Txq-1z-xC1" secondAttribute="centerX" id="uDx-Xp-Grn"/>
-                            <constraint firstItem="ofk-q1-Qb4" firstAttribute="centerX" secondItem="bUI-Fe-uaz" secondAttribute="centerX" id="xDv-0R-d5D"/>
-                            <constraint firstItem="ofk-q1-Qb4" firstAttribute="top" secondItem="bUI-Fe-uaz" secondAttribute="bottom" constant="64" id="zQr-SP-sgd"/>
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="segmentStatus" destination="ofk-q1-Qb4" id="r5e-bR-ce9"/>
                         <outlet property="segmentType" destination="Txq-1z-xC1" id="E8e-8L-QYi"/>
                         <outlet property="textFieldValue" destination="rDK-Vt-Yta" id="5ME-eh-O53"/>
                     </connections>

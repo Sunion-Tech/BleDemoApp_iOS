@@ -609,9 +609,14 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
                 case .getUserCredentialArray:
                     SunionBluetoothTool.shared.UseCase.user.array()
                 case .getUserCredentialData:
-                    showgetusercredentialDataAlert(v3: true)
+                    showgetusercredentialDataAlert()
                 
                 case .addUserCredential:
+                    
+                    if let data = userCredentialData {
+                        self.userCredentialData = nil
+                    }
+                    
                     if let userCredentailEmptyIndex = userCredentailEmptyIndex, let able = able {
                       
                         self.performSegue(withIdentifier: "usercredential", sender: nil)
@@ -626,7 +631,7 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
                         showAlert(title: "Please Get UserCredentialData first", message: "")
                     }
                 case .delUserCredential:
-                    showuserCredentialDeleteAlert(v3: true)
+                    showuserCredentialDeleteAlert()
                 case .getUserSupportedCount:
                     SunionBluetoothTool.shared.UseCase.user.supportCount()
                 case .getCredentialArray:
@@ -634,6 +639,11 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
                 case .getCredentialData:
                     self.performSegue(withIdentifier: "searchC", sender: nil)
                 case .addCredential:
+                    
+                    if let data = credentialData  {
+                        self.credentialData = nil
+                    }
+                    
                     if let credentailEmptyIndex = credentailEmptyIndex, let able = able {
                       
                         self.performSegue(withIdentifier: "addeditC", sender: nil)
@@ -763,7 +773,10 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
             vc.able = able
             vc.data = userCredentialData
             vc.isCreate = userCredentialData == nil
-            vc.v3 = self.isV3
+            
+            
+ 
+       
         }
         
         if let id = segue.identifier, id == "searchC",
@@ -778,6 +791,8 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
             vc.userIndex = userCredentialData?.index!
             vc.able = self.able
             vc.data = self.credentialData
+            
+           
         }
         
     }
@@ -1523,7 +1538,7 @@ extension ViewController: SunionBluetoothToolDelegate {
             })
             
             
-            appendLogToTextView(logMessage: "format: \(value.format!.description)\n CredentialIndex: \(value.credientialIndex ?? 999)\n status: \(value.status.description)\n type: \(value.type.description)\n UserIndex: \(value.userIndex ?? 999)\n dataIndex: \(value.credentialData ?? "")\n + \(credentialDetailStruct)")
+            appendLogToTextView(logMessage: "format: \(value.format!.description)\n CredentialIndex: \(value.credientialIndex ?? 999)\n status: \(value.status.description)\n type: \(value.type.description)\n UserIndex: \(value.userIndex ?? 999)\n credentialData: \(value.credentialData ?? "")\n + \(credentialDetailStruct)")
         } else {
             appendLogToTextView(logMessage: "searchCredential failed")
         }
