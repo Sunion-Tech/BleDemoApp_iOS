@@ -28,6 +28,7 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
     
     var modelName = ""
     var config: DeviceSetupResultModel?
+    var n80: DeviceSetupResultModelN80?
     var status: DeviceStatusModel?
     var token: TokenModel?
     var tokenIndex: Int?
@@ -70,7 +71,7 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
            let name = model?.modelName {
             isAdminCode = false
             let msg = "token: \(token.toHexString())\n aes1Key: \(aes1.toHexString())\n macAddress: \(mac)\n modelName: \(name)"
-            SunionBluetoothTool.shared.initBluetooth(macAddress: mac, aes1Key: Array(aes1), token: Array(token), v3udid: nil)
+            SunionBluetoothTool.shared.initBluetooth(macAddress: mac, aes1Key: Array(aes1), token: Array(token), v3uuid: nil)
             if SunionBluetoothTool.shared.delegate == nil {
                 SunionBluetoothTool.shared.delegate = self
             }
@@ -109,7 +110,7 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
                          //   let token = (jsonObject["token"] as! String).data(using: .utf8)
                             let aes1 =   Data.init((jsonObject["key"] as! String).hexStringTobyteArray).bytes
                             let token = Data.init((jsonObject["token"] as! String).hexStringTobyteArray).bytes
-                            SunionBluetoothTool.shared.initBluetooth(macAddress: nil, aes1Key: Array(aes1), token: Array(token), v3udid: uuid)
+                            SunionBluetoothTool.shared.initBluetooth(macAddress: nil, aes1Key: Array(aes1), token: Array(token), v3uuid: uuid)
                             if SunionBluetoothTool.shared.delegate == nil {
                                 SunionBluetoothTool.shared.delegate = self
                             }
@@ -680,6 +681,7 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
             vc.data = self.config
             vc.delegate = self
             vc.v3 = self.isV3
+            vc.n80 = self.n80
         }
         
         if let id = segue.identifier, id == "user",
@@ -960,16 +962,15 @@ extension ViewController: UserOptionViewControllerDelegate {
 }
 
 extension ViewController: DeviceConfigSettingViewControllerDelegate {
-    func config(data: DeviceSetupModel, v3: Bool) {
+    func config(data: DeviceSetupModel?, v3: Bool, N81: DeviceSetupModelN81?) {
         if v3 {
-            SunionBluetoothTool.shared.UseCase.config.set(model: data.N81!)
+            SunionBluetoothTool.shared.UseCase.config.set(model: N81!)
         } else {
-            SunionBluetoothTool.shared.setupDeviceConfig(data: data)
+            SunionBluetoothTool.shared.setupDeviceConfig(data: data!)
         }
     }
     
 
-    
 }
 
 
@@ -1057,9 +1058,6 @@ extension ViewController: SunionBluetoothToolDelegate {
             msg = "lockDirection: \(d.lockDirection.rawValue)\n soundOn: \(d.soundOn)\n vacationMode: \(d.vacationModeOn)\n autoLockOn: \(d.autoLockOn)\n autoLockTime: \(d.autoLockTime ?? 0000)\n guidingCode: \(d.guidingCode)\n isLocked: \(d.isLocked)\n battery: \(d.battery ?? 0000)\n batteryWarning: \(d.batteryWarning.rawValue)\n timestamp: \(d.timestamp ?? 0000)"
         }
         
-        if let n = value?.N82 {
-            msg = "mainVersion: \(n.mainVersion ?? 9999)\n subVersion: \(n.subVersion ?? 9999)\n lockDirection: \(n.lockDirection.rawValue)\n vacationMode: \(n.vacationModeOn.rawValue)\n deadbolt: \(n.deadBolt.rawValue)\n doorState: \(n.doorState.rawValue)\n lockState: \(n.lockState.rawValue)\n securitybole: \(n.securityBolt.rawValue) \n battery: \(n.battery ?? 0000)\n batteryWarning: \(n.batteryWarning.rawValue)"
-        }
         
         appendLogToTextView(logMessage: msg)
     }
@@ -1137,9 +1135,6 @@ extension ViewController: SunionBluetoothToolDelegate {
                 msg = "latitude: \(a.latitude ?? 0000)\n longitude: \(a.longitude ?? 0000)\n lockDirection: \(a.direction.rawValue)\n guidingCode: \(a.guidingCode.rawValue)\n virtualCode: \(a.virtualCode.rawValue)\n twoFA: \(a.twoFA.rawValue)\n vacationMode: \(a.vacationMode.rawValue)\n autoLock: \(a.isAutoLock.rawValue)\n autoLockTime: \(a.autoLockTime ?? 0000)\n autoLockMinLimit: \(a.autoLockMinLimit ?? 0000)\n autoLockMaxLimit: \(a.autoLockMaxLimit ?? 0000)\n sound:\(a.sound.rawValue)\n voiceType: \(a.voiceType.rawValue)\n voiceValue: \(a.voiceValue.name)\n fastMode: \(a.fastMode.rawValue)"
             }
             
-            if let n = value.N80 {
-                msg = "mainVersion: \(n.mainVersion ?? 9999)\n subVersion: \(n.subVersion ?? 9999)\n formatVersioin: \(n.formatVersion ?? 9999)\n serverversion: \(n.serverversion ?? 9999)\n latitude: \(n.latitude ?? 0000)\n longitude: \(n.longitude ?? 0000)\n lockDirection: \(n.direction.rawValue)\n guidingCode: \(n.guidingCode.rawValue)\n virtualCode: \(n.virtualCode.rawValue)\n twoFA: \(n.twoFA.rawValue)\n vacationMode: \(n.vacationMode.rawValue)\n autoLock: \(n.isAutoLock.rawValue)\n autoLockTime: \(n.autoLockTime ?? 0000)\n autoLockMinLimit: \(n.autoLockMinLimit ?? 0000)\n autoLockMaxLimit: \(n.autoLockMaxLimit ?? 0000)\n sound:\(n.sound.rawValue)\n voiceType: \(n.voiceType.rawValue)\n voiceValue: \(n.voiceValue.name)\n fastMode: \(n.fastMode.rawValue)\n SabbathMode: \(n.sabbathMode.rawValue)"
-            }
             
             appendLogToTextView(logMessage: msg)
         } else {
@@ -1410,170 +1405,7 @@ extension ViewController: SunionBluetoothToolDelegate {
             appendLogToTextView(logMessage: "add/edit access failed")
         }
     }
-    
-    func userAble(value: UserableResponseModel?) {
-        if let value = value {
-            self.able = value
-            appendLogToTextView(logMessage: "isMatter: \(value.isMatter)\n weekday: \(value.weekdayCount ?? 9999)\n yeardat: \(value.yeardayCount ?? 9999)\n code: \(value.codeCount ?? 9999)\n card: \(value.cardCount ?? 9999) \n frigerprint: \(value.fpCount ?? 9999)\n face: \(value.faceCount ?? 9999)")
-        } else {
-            appendLogToTextView(logMessage: "get user able failed")
-        }
-    }
-    
-    func isMatter(value: Bool?) {
-        if let value = value {
-            appendLogToTextView(logMessage: "is matter device successfully: \(value)")
-        } else {
-            appendLogToTextView(logMessage: "is matter device failed")
-        }
-    }
-    
-    func userCredentialArray(value: [Int]?) {
-        if let value = value {
-            
-            var index = 1
-            
-            while value.contains(index) {
-                // 如果包含，则index加1
-                index += 1
-            }
-            userCredentailEmptyIndex = index
-            
-            
-            
-            appendLogToTextView(logMessage: "get user credential Array successfully: \(value)")
-        } else {
-            appendLogToTextView(logMessage: "get user credential Array failed")
-        }
-    }
-    
-    func userCredentialData(value: UserCredentialModel?) {
-        if let value = value {
-            self.userCredentialData = value
-            var credentailStucts = ""
-            
-            value.credentialStruct.forEach({ el in
-                var msg  = "---credentialStruct---\n type: \(el.type.description)\n index: \(el.index ?? 999)\n----\n"
-                credentailStucts += msg
-            })
-            
-            var weeks = ""
-            value.weekDayscheduleStruct.forEach({ el in
-                var msg = "---weekDayscheduleStruct---\n status: \(el.status.description)\n daymask: \(el.daymask?.description)\n startHour: \(el.startHour ?? "N/A")\n startMinute: \(el.startMinute ?? "N/A")\n endHour: \(el.endHour ?? "N/A")\n endMinute: \(el.endMinute ?? "N/A")\n --- \n"
-                weeks += msg
-            })
-            
-            // 创建一个DateFormatter
-            let dateFormatter = DateFormatter()
 
-            // 设置日期和时间的样式
-            // 这里使用自定义格式
-            dateFormatter.dateFormat = "yyyy/MM/dd HH:mm:ss"
-            
-            var years = ""
-            value.yearDayscheduleStruct.forEach({ el in
-                var msg = "---yearDayscheduleStruct---\n staus: \(el.status.description) \n start: \(dateFormatter.string(from: el.start ?? Date()))\n end: \(dateFormatter.string(from: el.end ?? Date()))"
-                years += msg
-            })
-            
-            
-            appendLogToTextView(logMessage: "index: \(value.index ?? 999)\n name: \(value.name ?? "N/A") \n uid: \(value.uid ?? 999)\n status: \(value.status.description)\n type: \(value.type.description)\n credential rule: \(value.credentialRule.description)\n credential structCount: \(value.credentialStruct.count)\n \(credentailStucts)\n weekDayCount: \(value.weekDayscheduleStruct.count)\n \(weeks) \n yeardayCount: \(value.yearDayscheduleStruct.count )\n \(years)")
-        } else {
-            appendLogToTextView(logMessage: "get user credential Data failed")
-        }
-    }
-    
-    func userCredentialAction(value: N9ResponseModel?) {
-        if let value = value {
-            self.able = nil
-            self.userCredentailEmptyIndex = nil
-            self.userCredentialData = nil
-            appendLogToTextView(logMessage: "index: \(value.index ?? 999)\n isSuccess: \(value.isSuccess ?? false)")
-        } else {
-            appendLogToTextView(logMessage: "add/edit usercredential  failed")
-        }
-    }
-    
-    func delUserCredentialAction(value: N9ResponseModel?) {
-        if let value = value {
-            self.able = nil
-            self.userCredentailEmptyIndex = nil
-            self.userCredentialData = nil
-            appendLogToTextView(logMessage: "index: \(value.index ?? 999)\n isSuccess: \(value.isSuccess ?? false)")
-        } else {
-            appendLogToTextView(logMessage: "deleted usercredential  failed")
-        }
-    }
-
-    func getCredentialArray(value: [Int]?) {
-        if let value = value {
-            
-            var index = 1
-            
-            while value.contains(index) {
-                // 如果包含，则index加1
-                index += 1
-            }
-            credentailEmptyIndex = index
-            
-            
-            
-            appendLogToTextView(logMessage: "get Credential Array successfully: \(value)")
-        
-        } else {
-            appendLogToTextView(logMessage: "get Credential Array  failed")
-        }
-    }
-    
-    func searchCredential(value: CredentialModel?) {
-        if let value = value {
-            if value.format == .credential {
-                credentialData = value
-            }
-            var credentialDetailStruct = ""
-            
-            value.credentialDetailStruct?.forEach({ el in
-                let msg = "---credentialDetailStruct---\n type: \(el.type.description)\n status: \(el.status.description) \n data: \(el.data ?? "") \n --- \n"
-                credentialDetailStruct += msg
-            })
-            
-            
-            appendLogToTextView(logMessage: "format: \(value.format!.description)\n CredentialIndex: \(value.credientialIndex ?? 999)\n status: \(value.status.description)\n type: \(value.type.description)\n UserIndex: \(value.userIndex ?? 999)\n credentialData: \(value.credentialData ?? "")\n + \(credentialDetailStruct)")
-        } else {
-            appendLogToTextView(logMessage: "searchCredential failed")
-        }
-    }
-    
-    func usersupportedCount(value: resUserSupportedCountModel?) {
-        if let value = value {
-            userSupportCount = value
-            appendLogToTextView(logMessage: "Matter: \(value.matter) \n code: \(value.code) \n card: \(value.card) \n fp: \(value.fp)\n face: \(value.face)")
-        } else {
-            appendLogToTextView(logMessage: "get User Suppored Count failed")
-        }
-    }
-    
-    func credentialAction(value: N9ResponseModel?) {
-        if let value = value {
-            self.able = nil
-            self.credentailEmptyIndex = nil
-            self.credentialData = nil
-            appendLogToTextView(logMessage: "index: \(value.index ?? 999)\n isSuccess: \(value.isSuccess ?? false)")
-        } else {
-            appendLogToTextView(logMessage: "add/edit credential  failed")
-        }
-    }
-    
-    func delCredential(value: N9ResponseModel?) {
-        if let value = value {
-            self.able = nil
-            self.credentailEmptyIndex = nil
-            self.credentialData = nil
-            appendLogToTextView(logMessage: "index: \(value.index ?? 999)\n isSuccess: \(value.isSuccess ?? false)")
-        } else {
-            appendLogToTextView(logMessage: "deleted credential  failed")
-        }
-    }
     
     
     // MARK: - V3
@@ -1648,9 +1480,8 @@ extension ViewController: SunionBluetoothToolDelegate {
         var msg = "==V3==\n"
         if let value = value {
             if let n = value.data {
-                let data = DeviceSetupResultModel()
-                data.N80 = n
-                self.config = data
+           
+                self.n80 = n
             
                 msg += "mainVersion: \(n.mainVersion ?? 9999)\n subVersion: \(n.subVersion ?? 9999)\n formatVersioin: \(n.formatVersion ?? 9999)\n serverversion: \(n.serverversion ?? 9999)\n latitude: \(n.latitude ?? 0000)\n longitude: \(n.longitude ?? 0000)\n lockDirection: \(n.direction.rawValue)\n guidingCode: \(n.guidingCode.rawValue)\n virtualCode: \(n.virtualCode.rawValue)\n twoFA: \(n.twoFA.rawValue)\n vacationMode: \(n.vacationMode.rawValue)\n autoLock: \(n.isAutoLock.rawValue)\n autoLockTime: \(n.autoLockTime ?? 0000)\n autoLockMinLimit: \(n.autoLockMinLimit ?? 0000)\n autoLockMaxLimit: \(n.autoLockMaxLimit ?? 0000)\n sound:\(n.sound.rawValue)\n voiceType: \(n.voiceType.rawValue)\n voiceValue: \(n.voiceValue.name)\n fastMode: \(n.fastMode.rawValue)\n SabbathMode: \(n.sabbathMode.rawValue)"
             }
@@ -1845,7 +1676,7 @@ extension ViewController: SunionBluetoothToolDelegate {
                 })
                 
                 
-               msg += "format: \(value.format!.description)\n CredentialIndex: \(value.credientialIndex ?? 999)\n status: \(value.status.description)\n type: \(value.type.description)\n UserIndex: \(value.userIndex ?? 999)\n dataIndex: \(value.credentialData ?? "")\n + \(credentialDetailStruct)"
+                msg += "format: \(value.format!.description)\n CredentialIndex: \(value.credientialIndex ?? 999)\n userIndex: \(value.userIndex ?? 999)\n \(credentialDetailStruct)"
             }
             
             if let n = value.isCreatedorEdited {

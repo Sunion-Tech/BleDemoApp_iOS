@@ -9,7 +9,7 @@ import UIKit
 import SunionBluetoothTool
 
 protocol DeviceConfigSettingViewControllerDelegate: AnyObject {
-    func config(data: DeviceSetupModel,v3: Bool)
+    func config(data: DeviceSetupModel?,v3: Bool, N81: DeviceSetupModelN81?)
 }
 
 class DeviceConfigSettingViewController: UIViewController {
@@ -52,6 +52,7 @@ class DeviceConfigSettingViewController: UIViewController {
     weak var delegate: DeviceConfigSettingViewControllerDelegate?
     
     var data: DeviceSetupResultModel?
+    var n80: DeviceSetupResultModelN80?
     var v3 = false
     
     override func viewDidLoad() {
@@ -62,6 +63,7 @@ class DeviceConfigSettingViewController: UIViewController {
     
     @IBAction func confirmAction(_ sender: UIButton) {
         let model = DeviceSetupModel()
+    
         if let data = data {
             if let d = data.D4 {
                
@@ -74,13 +76,15 @@ class DeviceConfigSettingViewController: UIViewController {
                 model.A1 = amodel
             }
             
-            if let a = data.N80 {
+            delegate?.config(data: model,v3: self.v3, N81: nil)
+            
+            if let a = self.n80 {
                 let nmodel = DeviceSetupModelN81(latitude: Double(latTextField.text!) ?? 0.0, longitude: Double(lonTextField.text!) ?? 0.0, guidingCode: getCodeStatusValue(value: stackViewGuiding, element: guidingSwitch), virtualCode: getCodeStatusValue(value: stackViewVirtualCode, element: switchVirtualCode), twoFA: getCodeStatusValue(value: stackViewTwoFA, element: swtichTwoFA), vacationModeOn: getCodeStatusValue(value: stackViewVacation, element: vacationSwitch), autoLockOn: getCodeStatusValue(value: stackViewAutoLock, element: autoLockSwitch), autoLockTime: Int(autoLockTimeTextField.text!) ?? 10, soundOn: getCodeStatusValue(value: stackViewSound, element: soundSwitch), fastMode: getCodeStatusValue(value: stackViewFastMode, element: switchFastMode), voiceValue: getVoiceData(), direction: a.direction, sabbathMode: getCodeStatusValue(value: stackViewSabbathMode, element: switchSabbathMode))
-                model.N81 = nmodel
+                delegate?.config(data: nil,v3: self.v3, N81: nmodel)
             }
         }
         
-        delegate?.config(data: model,v3: self.v3)
+   
         self.dismiss(animated: true)
     }
     
@@ -245,7 +249,7 @@ class DeviceConfigSettingViewController: UIViewController {
                 
             }
             
-            if let a = data.N80 {
+            if let a = self.n80 {
                 stackViewV2.isHidden = false
                 stackViewSabbathMode.isHidden = false
                 lonTextField.text = String(a.longitude ?? 0.0)

@@ -56,10 +56,10 @@ class AddEditCredentialViewController: UIViewController {
             segmentType.selectedSegmentIndex = 0
         }
         
-        if let data = data {
-            textFieldValue.text = data.credentialData
+        if let data = data, let type = data.credentialDetailStruct?.first?.type, let data = data.credentialDetailStruct?.first?.data {
+            textFieldValue.text = data
             
-            switch data.type {
+            switch type {
             case .pin:
                 if let index = indexOfSegment(withTitle: "Code", inSegmentedControl: segmentType) {
                     segmentType.selectedSegmentIndex = index
@@ -153,7 +153,8 @@ class AddEditCredentialViewController: UIViewController {
         
         let creIndex = data?.credientialIndex ?? self.credientialIndex ?? 1
         let useri = data?.userIndex ?? self.userIndex ?? 1
-        var model = CredentialRequestModel(credientialIndex: creIndex, userIndex:  useri, status: .occupiedEnabled, type: type, credentialData: textFieldValue.text!, isCreate: data == nil ? true : false)
+        let CredentialDetailStructRequestModel = CredentialDetailStructRequestModel(status: .occupiedEnabled, type: type, data: textFieldValue.text!)
+        let model = CredentialRequestModel(credientialIndex: creIndex, userIndex:  useri, credentialData: CredentialDetailStructRequestModel, isCreate: data == nil ? true : false)
         delegate?.addEditCredential(model: model)
         self.dismiss(animated: true)
     }
