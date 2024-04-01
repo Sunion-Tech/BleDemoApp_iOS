@@ -1676,7 +1676,7 @@ extension ViewController: SunionBluetoothToolDelegate {
                 })
                 
                 
-                msg += "format: \(value.format!.description)\n CredentialIndex: \(value.credientialIndex ?? 999)\n userIndex: \(value.userIndex ?? 999)\n \(credentialDetailStruct)"
+                msg += "format: \(value.format!.description)\n CredentialIndex: \(value.credientialIndex ?? 999)\n userIndex: \(value.userIndex ?? 999)\n status: \(value.status.description)\n type: \(value.type.description)\n \(credentialDetailStruct)"
             }
             
             if let n = value.isCreatedorEdited {
