@@ -29,7 +29,7 @@ extension ViewController {
             print("输入的数字是：\(inputText)")
             let digit = inputText.compactMap{Int(String($0))}
             if v3 {
-                SunionBluetoothTool.shared.UseCase.utility.factoryResetDevice(adminCode: digit)
+                SunionBluetoothTool.shared.UseCase.utility.factoryResetDevice(adminCode: inputText)
             } else {
                 SunionBluetoothTool.shared.factoryReset(adminCode: digit)
             }

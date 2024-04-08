@@ -568,7 +568,7 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
                     } else {
                         lockMode = .lock
                     }
-                    SunionBluetoothTool.shared.UseCase.direction.lockorUnlock(value: lockMode)
+                    SunionBluetoothTool.shared.UseCase.deviceStatus.lockorUnlock(value: lockMode)
                 case .getLogCount:
                     SunionBluetoothTool.shared.UseCase.log.count()
                 case .getLogData:

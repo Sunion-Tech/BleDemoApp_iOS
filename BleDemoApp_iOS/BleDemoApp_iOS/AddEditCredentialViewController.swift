@@ -153,7 +153,7 @@ class AddEditCredentialViewController: UIViewController {
         
         let creIndex = data?.credientialIndex ?? self.credientialIndex ?? 1
         let useri = data?.userIndex ?? self.userIndex ?? 1
-        let CredentialDetailStructRequestModel = CredentialDetailStructRequestModel(status: .occupiedEnabled, type: type, data: textFieldValue.text!)
+        let CredentialDetailStructRequestModel = CredentialDetailStructRequestModel(credientialIndex: creIndex, status: .occupiedEnabled, type: type, data: textFieldValue.text!)
         let model = CredentialRequestModel(credientialIndex: creIndex, userIndex:  useri, credentialData: CredentialDetailStructRequestModel, isCreate: data == nil ? true : false)
         delegate?.addEditCredential(model: model)
         self.dismiss(animated: true)
