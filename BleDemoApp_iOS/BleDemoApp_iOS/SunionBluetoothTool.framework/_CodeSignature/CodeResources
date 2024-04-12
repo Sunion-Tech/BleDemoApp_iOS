@@ -18,7 +18,7 @@
 		</data>
 		<key>Modules/SunionBluetoothTool.swiftmodule/Project/arm64-apple-ios.swiftsourceinfo</key>
 		<data>
-		fgp3mqtCB/EBzAVom2YAQeZpPXU=
+		UdgPp1vbzNYdAz4g3drK4Snikg0=
 		</data>
 		<key>Modules/SunionBluetoothTool.swiftmodule/arm64-apple-ios.abi.json</key>
 		<data>
@@ -30,7 +30,7 @@
 		</data>
 		<key>Modules/SunionBluetoothTool.swiftmodule/arm64-apple-ios.swiftmodule</key>
 		<data>
-		Q8gDr0NClmOm2bZjYfp/884hneA=
+		Ltjtpq4r/DXL/zu51Y1tzBTSyeE=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -65,11 +65,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			fgp3mqtCB/EBzAVom2YAQeZpPXU=
+			UdgPp1vbzNYdAz4g3drK4Snikg0=
 			</data>
 			<key>hash2</key>
 			<data>
-			HPLraDoNQ3DohDLc/VOcFm1ygNUNdfsyU8otSeSCjgw=
+			LnvDrot0NXFrwFJ9ttTr1cGeu7Rdk3pqw9rE1Y8wRhc=
 			</data>
 		</dict>
 		<key>Modules/SunionBluetoothTool.swiftmodule/arm64-apple-ios.abi.json</key>
@@ -98,11 +98,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			Q8gDr0NClmOm2bZjYfp/884hneA=
+			Ltjtpq4r/DXL/zu51Y1tzBTSyeE=
 			</data>
 			<key>hash2</key>
 			<data>
-			We5nYZt5jy6NNSN6y5t2Hlu46mRX2aKwqKryKWifdM8=
+			QavSJmQUUKbFlAn8VIlNDCGe1Io4oXl38/guEMuQWVU=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>

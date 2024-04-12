@@ -508,6 +508,7 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
             }
         }
       
+        // MARK: -V3 Action
         if let data = data as? Picker3Option {
             if data == .adminCodeExist ||
                 data == .setAdminCode ||
@@ -552,7 +553,7 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
                     SunionBluetoothTool.shared.UseCase.config.data()
                 case .setDeviceConfig:
                     
-                    if let config = config {
+                    if let config = n80 {
                         self.performSegue(withIdentifier: "config", sender: true)
                     } else {
                         showAlert(title: "Please Get Device Config first", message: "")
