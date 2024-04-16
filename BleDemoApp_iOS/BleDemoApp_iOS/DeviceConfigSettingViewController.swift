@@ -77,7 +77,6 @@ class DeviceConfigSettingViewController: UIViewController {
             }
             
             delegate?.config(data: model,v3: self.v3, N81: nil)
-
         }
         
         
