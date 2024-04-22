@@ -49,12 +49,15 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
     
     var isV2 = false
     var isV3 = false
+    var isWifi = false
     
     var able: UserableResponseModel?
     
     var userCredentialData: UserCredentialModel?
     var userSupportCount: resUserSupportedCountModel?
     var credentialData: CredentialModel?
+    
+    var plugmode: CommandService.plugMode = .off
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -521,11 +524,26 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
                     SunionBluetoothTool.shared.UseCase.adminCode.exists()
                 case .setAdminCode:
                     showsetAdminCodeAlert(v3: true)
+             
                 default:
                     break
                 }
             } else if !isAdminCode{
-                showAlert(title: "Please Set Admin Code first", message: "")
+                if isWifi {
+                    switch data {
+                    case.conectedWifi:
+                        self.performSegue(withIdentifier: "wifi", sender: nil)
+                    case .plugstatus:
+                        SunionBluetoothTool.shared.UseCase.plug.status()
+                    case .setPlugStatus:
+                        SunionBluetoothTool.shared.UseCase.plug.set(mode: plugmode)
+                    default:
+                        break
+                    }
+                } else {
+                    showAlert(title: "Please Set Admin Code first", message: "")
+                }
+        
             } else {
                 switch data {
                 case .adminCodeExist:
@@ -661,8 +679,8 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
                     }
                 case .delCredential:
                     showDelCredentialAlert()
-                case .plugstatus:
-                    SunionBluetoothTool.shared.UseCase.plug.status()
+           
+       
                 case .disconnected:
                     SunionBluetoothTool.shared.disconnectBluetooth()
                     appendLogToTextView(logMessage: "Disconnected")
@@ -800,6 +818,12 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
            
         }
         
+        if let id = segue.identifier, id == "wifi",
+           let vc = segue.destination as? WifiViewController {
+            vc.delegate = self
+
+        }
+        
     }
     
     
@@ -874,6 +898,19 @@ extension ViewController: SearchCredentialViewControllerDelegate {
 extension ViewController: DelAccessDataViewControllerDelegate {
     func delAccessData(model:DelAccessRequestModel) {
         SunionBluetoothTool.shared.delAccess(model: model)
+    }
+    
+    
+}
+
+extension ViewController: WifiViewControllerDelegate {
+    func setupWifi(Bool: Bool) {
+        SunionBluetoothTool.shared.delegate = self
+        
+        var msg = "==V3==\n"
+        msg += "wifiSetting: \(Bool)"
+        
+        appendLogToTextView(logMessage: msg)
     }
     
     
@@ -1706,7 +1743,10 @@ extension ViewController: SunionBluetoothToolDelegate {
     func v3Plug(value: plugStatusResponseModel?) {
         var msg = "==V3==\n"
         if let value = value {
+            self.isWifi = true
             msg += "isWifiSetting: \(value.isWifiSetting) \n isWifiConnecting: \(value.isWifiConnecting)\n isOn: \(value.isOn)"
+            
+            plugmode = value.isOn ? .off : .on
           
         } else {
             msg += "failed"
@@ -1714,6 +1754,8 @@ extension ViewController: SunionBluetoothToolDelegate {
         
         appendLogToTextView(logMessage: msg)
     }
+    
+
     
 }
 

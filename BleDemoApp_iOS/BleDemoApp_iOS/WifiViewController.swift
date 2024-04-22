@@ -8,11 +8,17 @@
 import UIKit
 import SunionBluetoothTool
 
+protocol WifiViewControllerDelegate: AnyObject {
+    func setupWifi(Bool: Bool)
+  
+}
+
 class WifiViewController: UIViewController {
     
     @IBOutlet weak var tableView: UITableView!
     private var ssids:[SSIDModel] = []
 
+    weak var delegate: WifiViewControllerDelegate?
     override func viewDidLoad() {
         super.viewDidLoad()
         SunionBluetoothTool.shared.delegate = self
@@ -37,8 +43,16 @@ extension WifiViewController: UITableViewDelegate, UITableViewDataSource{
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
         let ssid = ssids[indexPath.row].name!
-        promptForPassword(ssid: ssid)
+        if ssids[indexPath.row].passwordLevel == .required {
+            promptForPassword(ssid: ssid)
+        } else {
+            // connected
+            SunionBluetoothTool.shared.UseCase.wifi.configureWiFi(SSIDName: ssid, password: "")
+     
+        }
+       
     }
     
     func promptForPassword(ssid: String) {
@@ -52,7 +66,7 @@ extension WifiViewController: UITableViewDelegate, UITableViewDataSource{
         let connectAction = UIAlertAction(title: "Connect", style: .default) { [weak alertController] _ in
             guard let textField = alertController?.textFields?.first, let password = textField.text else { return }
             print("Password for \(ssid): \(password)") // 实际应用中这里可以做进一步处理，如尝试连接网络等
-            
+            SunionBluetoothTool.shared.UseCase.wifi.configureWiFi(SSIDName: ssid, password: password)
             
         }
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
@@ -75,15 +89,30 @@ extension WifiViewController: SunionBluetoothToolDelegate {
     func v3Wifi(value: resWifiUseCase?) {
         if let value = value {
             if let list = value.list {
+     
+                
                 if let _ = list.name {
                     ssids.append(list)
+                    
+         
+                }
+                
+                
+                if list.passwordLevel == .completed {
+                    let ssidsorted = ssids.sorted { $0.signal! > $1.signal! }
+                    ssids = ssidsorted
+
                     DispatchQueue.main.async {
                         self.tableView.reloadData()
                     }
                 }
             }
             
-         
+            if let isWifi = value.isWifi {
+                delegate?.setupWifi(Bool: isWifi)
+                self.navigationController?.popViewController(animated: true)
+            }
+
         }
     }
     
