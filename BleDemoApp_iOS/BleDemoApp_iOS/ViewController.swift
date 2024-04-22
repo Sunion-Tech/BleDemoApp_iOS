@@ -661,6 +661,8 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
                     }
                 case .delCredential:
                     showDelCredentialAlert()
+                case .plugstatus:
+                    SunionBluetoothTool.shared.UseCase.plug.status()
                 case .disconnected:
                     SunionBluetoothTool.shared.disconnectBluetooth()
                     appendLogToTextView(logMessage: "Disconnected")
@@ -1698,6 +1700,18 @@ extension ViewController: SunionBluetoothToolDelegate {
         } else {
             msg += "failed"
         }
+        appendLogToTextView(logMessage: msg)
+    }
+    
+    func v3Plug(value: plugStatusResponseModel?) {
+        var msg = "==V3==\n"
+        if let value = value {
+            msg += "isWifiSetting: \(value.isWifiSetting) \n isWifiConnecting: \(value.isWifiConnecting)\n isOn: \(value.isOn)"
+          
+        } else {
+            msg += "failed"
+        }
+        
         appendLogToTextView(logMessage: msg)
     }
     

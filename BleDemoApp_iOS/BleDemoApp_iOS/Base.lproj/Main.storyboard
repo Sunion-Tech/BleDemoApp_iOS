@@ -83,6 +83,7 @@
                         <segue destination="jym-Ij-8r7" kind="presentation" identifier="usercredential" id="WR9-Zg-AWv"/>
                         <segue destination="Zyo-I1-umt" kind="presentation" identifier="searchC" id="Z0W-jO-1JV"/>
                         <segue destination="gPo-lg-dYf" kind="presentation" identifier="addeditC" id="Fv5-ga-dbv"/>
+                        <segue destination="3C2-zQ-1xY" kind="show" identifier="wifi" id="PYB-0w-EHC"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -294,6 +295,41 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="LIt-pa-lPv" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="136.64122137404578" y="4.9295774647887329"/>
+        </scene>
+        <!--Wifi View Controller-->
+        <scene sceneID="xIC-VY-oQv">
+            <objects>
+                <viewController id="3C2-zQ-1xY" customClass="WifiViewController" customModule="BleDemoApp_iOS" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="Mlm-zK-LuW">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="N9x-aO-1ka">
+                                <rect key="frame" x="0.0" y="103" width="393" height="715"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <connections>
+                                    <outlet property="dataSource" destination="3C2-zQ-1xY" id="EIB-6I-PUo"/>
+                                    <outlet property="delegate" destination="3C2-zQ-1xY" id="AwW-H1-8Bo"/>
+                                </connections>
+                            </tableView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="Wrx-tf-ma8"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="Wrx-tf-ma8" firstAttribute="bottom" secondItem="N9x-aO-1ka" secondAttribute="bottom" id="6p8-wF-EwM"/>
+                            <constraint firstItem="N9x-aO-1ka" firstAttribute="leading" secondItem="Wrx-tf-ma8" secondAttribute="leading" id="L8d-yS-rif"/>
+                            <constraint firstItem="N9x-aO-1ka" firstAttribute="top" secondItem="Wrx-tf-ma8" secondAttribute="top" id="cez-Qr-QsP"/>
+                            <constraint firstItem="Wrx-tf-ma8" firstAttribute="trailing" secondItem="N9x-aO-1ka" secondAttribute="trailing" id="xte-7r-9Z5"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" id="Enh-Cq-VIg"/>
+                    <connections>
+                        <outlet property="tableView" destination="N9x-aO-1ka" id="jJa-jA-h4a"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="HnA-4M-GjN" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1063" y="-1404"/>
         </scene>
         <!--Device Config Setting View Controller-->
         <scene sceneID="zaZ-FE-Zbv">
