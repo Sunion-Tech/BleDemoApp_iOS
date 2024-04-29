@@ -30,6 +30,7 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
     var config: DeviceSetupResultModel?
     var n80: DeviceSetupResultModelN80?
     var status: DeviceStatusModel?
+    var statusV3: DeviceStatusModelN82?
     var token: TokenModel?
     var tokenIndex: Int?
     var accessFirstEmptyIndex: Int?
@@ -582,7 +583,7 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
                     SunionBluetoothTool.shared.UseCase.deviceStatus.data()
                 case .switchDevice:
                     var lockMode: CommandService.DeviceMode = .unlock
-                    if status?.A2?.lockState == .lockedUnlinked {
+                    if statusV3?.lockState == .lockedUnlinked {
                         lockMode = .unlock
                     } else {
                         lockMode = .lock
@@ -1452,6 +1453,7 @@ extension ViewController: SunionBluetoothToolDelegate {
     func v3deviceStatus(value: DeviceStatusModelN82?) {
         var msg = "==V3==\n"
         if let n = value {
+            statusV3 = n
             msg += "mainVersion: \(n.mainVersion ?? 9999)\n subVersion: \(n.subVersion ?? 9999)\n lockDirection: \(n.lockDirection.rawValue)\n vacationMode: \(n.vacationModeOn.rawValue)\n deadbolt: \(n.deadBolt.rawValue)\n doorState: \(n.doorState.rawValue)\n lockState: \(n.lockState.rawValue)\n securitybole: \(n.securityBolt.rawValue) \n battery: \(n.battery ?? 0000)\n batteryWarning: \(n.batteryWarning.rawValue)"
         } else {
             msg += "failed"
@@ -1744,7 +1746,7 @@ extension ViewController: SunionBluetoothToolDelegate {
         var msg = "==V3==\n"
         if let value = value {
             self.isWifi = true
-            msg += "isWifiSetting: \(value.isWifiSetting) \n isWifiConnecting: \(value.isWifiConnecting)\n isOn: \(value.isOn)"
+            msg += "mainVersion: \(value.mainVersion)\n subVersion: \(value.subVersion)\nisWifiSetting: \(value.isWifiSetting) \n isWifiConnecting: \(value.isWifiConnecting)\n isOn: \(value.isOn)"
             
             plugmode = value.isOn ? .off : .on
           
