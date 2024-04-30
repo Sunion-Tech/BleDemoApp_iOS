@@ -58,6 +58,8 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
     var userSupportCount: resUserSupportedCountModel?
     var credentialData: CredentialModel?
     
+    var cardFpFaceCredentialRequestModel: CredentialRequestModel?
+    
     var plugmode: CommandService.plugMode = .off
     
     override func viewDidLoad() {
@@ -880,10 +882,19 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
 }
 
 extension ViewController: AddEditCredentialViewControllerDelegate {
+    func setupCardFpFace(model: SetupCredentialRequestModel, credentialreq: CredentialRequestModel) {
+        SunionBluetoothTool.shared.UseCase.credential.setCardFpFace(model: model)
+        cardFpFaceCredentialRequestModel = credentialreq
+    }
+    
+
+    
     func addEditCredential(model: CredentialRequestModel) {
         SunionBluetoothTool.shared.UseCase.credential.createorEdit(model: model)
         
     }
+    
+
     
     
 }
@@ -1492,6 +1503,9 @@ extension ViewController: SunionBluetoothToolDelegate {
             }
             
             if let exi = value.isExisted {
+                if exi {
+                    isAdminCode = true
+                }
                 msg += "adminCode Existied successfully: \(exi)"
             }
         } else {
@@ -1733,6 +1747,25 @@ extension ViewController: SunionBluetoothToolDelegate {
                 self.credentailEmptyIndex = nil
                 self.credentialData = nil
                 msg += "Deleted successfully: \(n)"
+            }
+            
+            if let setup = value.setup {
+                
+                msg += "Setup status: \(setup.status.description), data: \(setup.data?.toHexString()), index: \(setup.index), state: \(setup.state.description), type: \(setup.type.description)"
+                
+                if setup.status == .success, let data =  setup.data, setup.type == .rfid {
+                  
+                    cardFpFaceCredentialRequestModel?.credentialData.data = setup.data?.toHexString() ?? ""
+                    
+                    let model = SetupCredentialRequestModel(type: setup.type, index: setup.index!, state: .quit)
+                    
+                    
+                    SunionBluetoothTool.shared.UseCase.credential.setCardFpFace(model: model)
+                }
+                
+                if setup.state == .quit, let model = cardFpFaceCredentialRequestModel {
+                    SunionBluetoothTool.shared.UseCase.credential.createorEdit(model: model)
+                }
             }
             
          

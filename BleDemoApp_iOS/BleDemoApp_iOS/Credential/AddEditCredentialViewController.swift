@@ -10,12 +10,14 @@ import SunionBluetoothTool
 
 protocol AddEditCredentialViewControllerDelegate: AnyObject {
     func addEditCredential(model: CredentialRequestModel)
+    func setupCardFpFace(model: SetupCredentialRequestModel, credentialreq: CredentialRequestModel)
 }
 
 class AddEditCredentialViewController: UIViewController {
 
     @IBOutlet weak var textFieldValue: UITextField!
     @IBOutlet weak var segmentType: UISegmentedControl!
+    @IBOutlet weak var scanButton: UIButton!
     
     
     weak var delegate: AddEditCredentialViewControllerDelegate?
@@ -29,7 +31,7 @@ class AddEditCredentialViewController: UIViewController {
       
         configureTextField()
         
-
+        
         
         if let supportCount = able {
             segmentType.removeAllSegments()
@@ -97,6 +99,58 @@ class AddEditCredentialViewController: UIViewController {
         }
         // 如果没有找到匹配的段，返回nil
         return nil
+    }
+    
+    @IBAction func segmentAction(_ sender: UISegmentedControl) {
+        let typeName = sender.titleForSegment(at: sender.selectedSegmentIndex)
+        textFieldValue.isEnabled = typeName == "Code"
+        scanButton.isHidden = typeName == "Code"
+    }
+    
+    
+    @IBAction func scanButtonAction(_ sender: UIButton) {
+        var type: CredentialStructModel.CredentialTypeEnum = .rfid
+        
+        switch segmentType.titleForSegment(at: segmentType.selectedSegmentIndex) {
+        case "Card":
+            type = .rfid
+        case "Fingerprint":
+            type = .fingerprint
+        case "Face":
+            type = .face
+        default:
+            break
+        }
+        
+        let creIndex = data?.credientialIndex ?? self.credientialIndex ?? 1
+        
+        let model = SetupCredentialRequestModel(type: type, index: creIndex, state: .start)
+        
+        
+        var credentialrequesttype: CredentialStructModel.CredentialTypeEnum = .pin
+        let segmentValue = segmentType.titleForSegment(at: segmentType.selectedSegmentIndex)
+        
+        switch segmentValue {
+        case "Code":
+            credentialrequesttype = .pin
+        case "Card":
+            credentialrequesttype = .rfid
+        case "Fingerprint":
+            credentialrequesttype = .fingerprint
+        case "Face":
+            credentialrequesttype = .face
+        default:
+            break
+        }
+        
+        
+      
+        let useri = data?.userIndex ?? self.userIndex ?? 1
+        let CredentialDetailStructRequestModel = CredentialDetailStructRequestModel(credientialIndex: creIndex, status: .occupiedEnabled, type: credentialrequesttype, data: String(creIndex))
+        let credentialrequestModel = CredentialRequestModel(userIndex:  useri, credentialData: CredentialDetailStructRequestModel, isCreate: data == nil ? true : false)
+        
+        self.delegate?.setupCardFpFace(model: model, credentialreq: credentialrequestModel)
+        self.dismiss(animated: true)
     }
     
     func configureTextField() {

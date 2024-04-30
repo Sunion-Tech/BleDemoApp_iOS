@@ -1643,6 +1643,9 @@
                                     <segment title="FV"/>
                                     <segment title="Face"/>
                                 </segments>
+                                <connections>
+                                    <action selector="segmentAction:" destination="gPo-lg-dYf" eventType="valueChanged" id="Tlf-ho-FdX"/>
+                                </connections>
                             </segmentedControl>
                             <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" alignment="center" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="we5-mE-MHx">
                                 <rect key="frame" x="39.333333333333343" y="187.33333333333334" width="314.33333333333326" height="34"/>
@@ -1691,6 +1694,14 @@
                                     </button>
                                 </subviews>
                             </stackView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="S4r-pl-1ib">
+                                <rect key="frame" x="166.66666666666666" y="233.33333333333334" width="60" height="34.333333333333343"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="filled" title="scan"/>
+                                <connections>
+                                    <action selector="scanButtonAction:" destination="gPo-lg-dYf" eventType="touchUpInside" id="iiQ-o2-Ou6"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="PFr-vV-GTt"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -1699,14 +1710,17 @@
                             <constraint firstItem="Da8-fR-iCS" firstAttribute="top" secondItem="we5-mE-MHx" secondAttribute="bottom" constant="107.66666666666669" id="7Aa-9q-IDT"/>
                             <constraint firstItem="bUI-Fe-uaz" firstAttribute="top" secondItem="PFr-vV-GTt" secondAttribute="top" constant="12" id="8bu-1J-tnQ"/>
                             <constraint firstItem="Da8-fR-iCS" firstAttribute="centerX" secondItem="we5-mE-MHx" secondAttribute="centerX" id="9Jn-EX-uE1"/>
+                            <constraint firstItem="S4r-pl-1ib" firstAttribute="centerX" secondItem="we5-mE-MHx" secondAttribute="centerX" id="GL0-bo-alx"/>
                             <constraint firstItem="bUI-Fe-uaz" firstAttribute="centerX" secondItem="PFr-vV-GTt" secondAttribute="centerX" id="HTt-lY-lYk"/>
                             <constraint firstItem="Txq-1z-xC1" firstAttribute="top" secondItem="bUI-Fe-uaz" secondAttribute="bottom" constant="60" id="Qtg-YF-g6K"/>
                             <constraint firstItem="Txq-1z-xC1" firstAttribute="centerX" secondItem="bUI-Fe-uaz" secondAttribute="centerX" id="ShH-UU-icb"/>
+                            <constraint firstItem="S4r-pl-1ib" firstAttribute="top" secondItem="we5-mE-MHx" secondAttribute="bottom" constant="12" id="ehg-jp-yAg"/>
                             <constraint firstItem="we5-mE-MHx" firstAttribute="top" secondItem="Txq-1z-xC1" secondAttribute="bottom" constant="64" id="j6P-Qc-RQv"/>
                             <constraint firstItem="we5-mE-MHx" firstAttribute="centerX" secondItem="Txq-1z-xC1" secondAttribute="centerX" id="uDx-Xp-Grn"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="scanButton" destination="S4r-pl-1ib" id="tbN-Vl-7X6"/>
                         <outlet property="segmentType" destination="Txq-1z-xC1" id="E8e-8L-QYi"/>
                         <outlet property="textFieldValue" destination="rDK-Vt-Yta" id="5ME-eh-O53"/>
                     </connections>
