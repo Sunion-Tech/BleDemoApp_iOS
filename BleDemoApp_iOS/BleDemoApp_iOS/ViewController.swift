@@ -1651,10 +1651,7 @@ extension ViewController: SunionBluetoothToolDelegate {
                 self.userCredentialData = value
                 var credentailStucts = ""
                 
-                value.credentialStruct.forEach({ el in
-                    var msg  = "---credentialStruct---\n type: \(el.type.description)\n index: \(el.index ?? 999)\n----\n"
-                    credentailStucts += msg
-                })
+     
                 
                 var weeks = ""
                 value.weekDayscheduleStruct.forEach({ el in
@@ -1676,7 +1673,7 @@ extension ViewController: SunionBluetoothToolDelegate {
                 })
                 
                 
-              msg += "index: \(value.index ?? 999)\n name: \(value.name ?? "N/A") \n uid: \(value.uid ?? 999)\n status: \(value.status.description)\n type: \(value.type.description)\n credential rule: \(value.credentialRule.description)\n credential structCount: \(value.credentialStruct.count)\n \(credentailStucts)\n weekDayCount: \(value.weekDayscheduleStruct.count)\n \(weeks) \n yeardayCount: \(value.yearDayscheduleStruct.count )\n \(years)"
+              msg += "index: \(value.index ?? 999)\n name: \(value.name ?? "N/A") \n status: \(value.status.description)\n type: \(value.type.description)\n credential rule: \(value.credentialRule.description)\n weekDayCount: \(value.weekDayscheduleStruct.count)\n \(weeks) \n yeardayCount: \(value.yearDayscheduleStruct.count )\n \(years)"
             }
             
             if let n = value.isCreatedorEdited {

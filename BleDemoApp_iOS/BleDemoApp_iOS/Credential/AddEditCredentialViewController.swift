@@ -143,8 +143,6 @@ class AddEditCredentialViewController: UIViewController {
             break
         }
         
-        
-      
         let useri = data?.userIndex ?? self.userIndex ?? 1
         let CredentialDetailStructRequestModel = CredentialDetailStructRequestModel(credientialIndex: creIndex, status: .occupiedEnabled, type: credentialrequesttype, data: String(creIndex))
         let credentialrequestModel = CredentialRequestModel(userIndex:  useri, credentialData: CredentialDetailStructRequestModel, isCreate: data == nil ? true : false)

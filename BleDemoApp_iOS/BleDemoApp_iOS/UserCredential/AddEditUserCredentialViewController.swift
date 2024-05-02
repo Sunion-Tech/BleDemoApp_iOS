@@ -142,14 +142,11 @@ class AddEditUserCredentialViewController: UIViewController {
                 let value = WeekDayscheduleStructRequestModel(status: el.status, daymask: el.daymask!, startHour: el.startHour!, startMinute: el.startMinute!, endHour: el.endHour!, endMinute: el.endMinute!)
                 weeks.append(value)
             }
-            data.credentialStruct.forEach { el in
-                let value = CredentialStructRequestModel(type: el.type, index: el.index!)
-                ss.append(value)
-            }
+       
         }
         
         
-        let model = UserCredentialRequestModel(isCreate: isCreate!, index: self.index!, name: textFieldName.text!, uid: 0, status: .occupiedEnabled, type: type, credentialRule: .single, credentialStruct: ss, weekDayscheduleStruct: weeks, yearDayscheduleStruct: years)
+        let model = UserCredentialRequestModel(isCreate: isCreate!, index: self.index!, name: textFieldName.text!, status: .occupiedEnabled, type: type, credentialRule: .single,  weekDayscheduleStruct: weeks, yearDayscheduleStruct: years)
         
             SunionBluetoothTool.shared.UseCase.user.createorEdit(model: model)
         
