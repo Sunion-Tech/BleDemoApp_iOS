@@ -32,6 +32,7 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
     var status: DeviceStatusModel?
     var statusV3: DeviceStatusModelN82?
     var token: TokenModel?
+    var v3Token: BleUserModel?
     var tokenIndex: Int?
     var accessFirstEmptyIndex: Int?
     var userCredentailEmptyIndex: Int?
@@ -603,7 +604,7 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
                     self.performSegue(withIdentifier: "user", sender: "add")
                     
                 case .edittoken:
-                    if let token = token {
+                    if let token = v3Token {
                         if token.isOwnerToken == .owner {
                             showAlert(title: "Editing of the Owner is not allowed", message: "")
                         } else {
@@ -615,7 +616,7 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
                     }
                     
                 case .deltoken:
-                    if let token = token {
+                    if let token = v3Token {
                         if token.isOwnerToken == .owner {
                             showAlert(title: "deleting the Owner is not allowed", message: "")
                         } else {
@@ -712,6 +713,7 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
            let vc = segue.destination as? UserOptionViewController {
             if sender as! String == "edit" {
                 vc.data = self.token
+                vc.v3data = self.v3Token
             }
             vc.delegate = self
             vc.v3 = self.isV3
@@ -988,25 +990,32 @@ extension ViewController: AccessCodeViewControllerDelegate {
 }
 
 extension ViewController: UserOptionViewControllerDelegate {
-    func optionData(add: AddTokenModel?, edit: EditTokenModel?, v3: Bool) {
+    func optionData(add: AddTokenModel?, edit: EditTokenModel?) {
         if let add = add {
-            if v3 {
-                SunionBluetoothTool.shared.UseCase.token.create(model: add)
-            } else {
-                SunionBluetoothTool.shared.createToken(model: add)
-            }
+        
+            SunionBluetoothTool.shared.createToken(model: add)
           
         }
         
         if let edit = edit {
-            if v3 {
-                SunionBluetoothTool.shared.UseCase.token.edit(model: edit)
-            } else {
-                SunionBluetoothTool.shared.editToken(model: edit)
-            }
+      
+            SunionBluetoothTool.shared.editToken(model: edit)
           
         }
     }
+    
+    func v3optionData(add: addBleUserModel?, edit: EditBleUserModel?) {
+        if let add = add {
+            SunionBluetoothTool.shared.UseCase.token.create(model: add)
+          
+        }
+        
+        if let edit = edit {
+            SunionBluetoothTool.shared.UseCase.token.edit(model: edit)
+        }
+    }
+    
+
     
 
     
@@ -1584,11 +1593,11 @@ extension ViewController: SunionBluetoothToolDelegate {
             }
             if let value = value.data {
            
-                token = value
+                v3Token = value
                 if value.isOwnerToken == .notOwner {
-                    token?.indexOfToken = tokenIndex
+                    v3Token?.indexOfToken = tokenIndex
                 }
-                 msg += "isenable: \(value.isEnable)\n tokenmode: \(value.tokenMode.rawValue)\n isowner: \(value.isOwnerToken.rawValue)\n tokenpermission: \(value.tokenPermission.rawValue)\n token: \(value.token?.toHexString() ?? "")\n name: \(value.name ?? "")\n indexoftoken: \(value.indexOfToken ?? 0000)"
+                msg += "isenable: \(value.isEnable)\n tokenmode: \(value.tokenMode.rawValue)\n isowner: \(value.isOwnerToken.rawValue)\n tokenpermission: \(value.tokenPermission.rawValue)\n token: \(value.token?.toHexString() ?? "")\n name: \(value.name ?? "")\n indexoftoken: \(value.indexOfToken ?? 0000) \n identiy: \(value.idenity)"
             }
             
             if let value = value.created {
