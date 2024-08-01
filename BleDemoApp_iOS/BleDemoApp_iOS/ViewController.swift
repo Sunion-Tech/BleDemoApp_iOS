@@ -274,6 +274,7 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
                     SunionBluetoothTool.shared.getDeviceName()
                 case .setTimeZone:
                     SunionBluetoothTool.shared.setupTimeZone(timezone: "Asia/Taipei")
+              
                 case .setDeviceTime:
                     SunionBluetoothTool.shared.setupDeviceTime()
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
@@ -566,6 +567,10 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
                     SunionBluetoothTool.shared.UseCase.name.data()
                 case .setTimeZone:
                     SunionBluetoothTool.shared.UseCase.time.setTimeZone(value: "Asia/Taipei")
+                case .setWIFIDeviceTimeZone:
+                    SunionBluetoothTool.shared.UseCase.time.setTimeZoneForWIFIDevice(value: "America/Toronto")
+                case .getTimeZone:
+                    SunionBluetoothTool.shared.UseCase.time.getTimeZoneValue()
                 case .setDeviceTime:
                     SunionBluetoothTool.shared.UseCase.time.syncCurrentTime()
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
@@ -597,7 +602,7 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
                 case .getLogData:
                     showgetLogDataAlert(v3: true)
                 case .gettokenArray:
-                    SunionBluetoothTool.shared.UseCase.token.array()
+                    SunionBluetoothTool.shared.UseCase.bleUser.array()
                 case .gettokenData:
                     showgetUserDataAlert(v3: true)
                 case .addtoken:
@@ -620,7 +625,7 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
                         if token.isOwnerToken == .owner {
                             showAlert(title: "deleting the Owner is not allowed", message: "")
                         } else {
-                            SunionBluetoothTool.shared.UseCase.token.delete(model: token)
+                            SunionBluetoothTool.shared.UseCase.bleUser.delete(model: token)
                         }
                         
                     } else {
@@ -836,7 +841,7 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
     
 
     func fetchProductionData(code: String, completion: @escaping (Result<Data, Error>) -> Void) {
-        guard let url = URL(string: "https://apii.ikey-lock.com/v1/production/get") else {
+        guard let url = URL(string: "https://apii-beta.ikey-lock.com/v1-beta/production/get") else {
             print("Invalid URL")
             return
         }
@@ -844,7 +849,7 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         // 设置请求头部
-        request.setValue("ifUgJuF98l2eIUMy50sM118j3itVOewO8YF9xztJ", forHTTPHeaderField: "x-api-key")
+        request.setValue("NluZnX8N6s65B62uHqWv63Hy6yyKvdonaEp7YaKl", forHTTPHeaderField: "x-api-key")
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
 
         // 准备你的JSON数据
@@ -1006,12 +1011,12 @@ extension ViewController: UserOptionViewControllerDelegate {
     
     func v3optionData(add: addBleUserModel?, edit: EditBleUserModel?) {
         if let add = add {
-            SunionBluetoothTool.shared.UseCase.token.create(model: add)
+            SunionBluetoothTool.shared.UseCase.bleUser.create(model: add)
           
         }
         
         if let edit = edit {
-            SunionBluetoothTool.shared.UseCase.token.edit(model: edit)
+            SunionBluetoothTool.shared.UseCase.bleUser.edit(model: edit)
         }
     }
     
@@ -1491,6 +1496,14 @@ extension ViewController: SunionBluetoothToolDelegate {
             
             if let timezone = value.isSavedTimeZone {
                 msg += "timeZone saved successfully: \(timezone)"
+            }
+            
+            if let wifitimezone = value.isSavedTimeZoneWIFI {
+                msg += "wifi timezone saved successfully: \(wifitimezone)"
+            }
+            
+            if let val = value.timezoneValue {
+                msg += "get Value successfully: offset - \(val.Offset), data - \(val.data)"
             }
         } else {
             msg += "failed"

@@ -28,7 +28,7 @@ extension ViewController {
             print("输入的数字是：\(inputText)")
             self.tokenIndex = Int(inputText)
             if v3 {
-                SunionBluetoothTool.shared.UseCase.token.data(position: Int(inputText)!)
+                SunionBluetoothTool.shared.UseCase.bleUser.data(position: Int(inputText)!)
             } else {
                 SunionBluetoothTool.shared.getToken(position: Int(inputText)!)
             }

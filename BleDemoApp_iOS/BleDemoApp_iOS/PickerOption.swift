@@ -25,6 +25,7 @@ enum Picker1Option: CaseIterable, CustomStringConvertible {
     case setDeviceName
     case getDeviceName
     case setTimeZone
+
     case setDeviceTime
     case getDeviceConfig
     case setDeviceConfig
@@ -62,6 +63,7 @@ enum Picker1Option: CaseIterable, CustomStringConvertible {
             return "Set Device Name"
         case .setTimeZone:
             return "Set Timezone to Asia/Taipei"
+
         case .setDeviceTime:
             return "Set Device Time"
         case .getDeviceName:
@@ -211,6 +213,8 @@ enum Picker3Option: CaseIterable, CustomStringConvertible {
     case setDeviceName
     case getDeviceName
     case setTimeZone
+    case setWIFIDeviceTimeZone
+    case getTimeZone
     case setDeviceTime
     case getDeviceConfig
     case setDeviceConfig
@@ -260,6 +264,10 @@ enum Picker3Option: CaseIterable, CustomStringConvertible {
             return "Set Device Name"
         case .setTimeZone:
             return "Set Timezone to Asia/Taipei"
+        case .setWIFIDeviceTimeZone:
+            return "Set Timezone to America/Toronto for WIFI"
+        case .getTimeZone:
+            return "Get Timezone"
         case .setDeviceTime:
             return "Set Device Time"
         case .getDeviceName:
