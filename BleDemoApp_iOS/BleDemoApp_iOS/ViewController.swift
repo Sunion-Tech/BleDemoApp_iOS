@@ -689,7 +689,8 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
                 case .delCredential:
                     showDelCredentialAlert()
            
-       
+                case .endpoint:
+                    SunionBluetoothTool.shared.UseCase.utility.setEndpoint(type: .api, data: [0x00,0x01,0x02])
                 case .disconnected:
                     SunionBluetoothTool.shared.disconnectBluetooth()
                     appendLogToTextView(logMessage: "Disconnected")
@@ -1083,6 +1084,11 @@ extension ViewController: UIPickerViewDelegate, UIPickerViewDataSource {
 
 
 extension ViewController: SunionBluetoothToolDelegate {
+    
+    func debug(level: LogLevel, value: String) {
+        print(value)
+    }
+    
     func BluetoothState(State: bluetoothState) {
         switch State {
         case .enable:
@@ -1809,6 +1815,16 @@ extension ViewController: SunionBluetoothToolDelegate {
         appendLogToTextView(logMessage: msg)
     }
     
+    func v3Endpoint(value: resEndpointUseCase?) {
+        var msg = "==V3==\n"
+        if let value = value {
+            msg += "type: \(value.type), data: \(value.data)"
+        } else {
+            msg += "failed"
+        }
+        
+        appendLogToTextView(logMessage: msg)
+    }
 
     
 }

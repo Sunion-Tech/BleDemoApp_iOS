@@ -246,6 +246,8 @@ enum Picker3Option: CaseIterable, CustomStringConvertible {
     case delCredential
     case disconnected
     
+    case endpoint
+    
     var description: String {
         switch self {
         case .connecting:
@@ -328,6 +330,8 @@ enum Picker3Option: CaseIterable, CustomStringConvertible {
             return "Delete Credential"
         case .disconnected:
             return "Disconnected"
+        case .endpoint:
+            return "Endpoint"
         }
     }
 }
