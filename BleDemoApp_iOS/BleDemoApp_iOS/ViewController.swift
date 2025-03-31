@@ -419,16 +419,25 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
                 case .setDeviceTime:
                     SunionBluetoothTool.shared.setupDeviceTime()
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
-                        self.appendLogToTextView(logMessage: "set Device Time successfully")
+                        self.appendLogToTextView(logMessage: "✅ Set Device Time successfully")
                     }
                 case .getDeviceConfig:
                     SunionBluetoothTool.shared.getDeviceConfigA0()
                 case .setDeviceConfig:
                     
+                    
+                    
                     if let config = config {
                         self.performSegue(withIdentifier: "config", sender: nil)
                     } else {
-                        showAlert(title: "❌ Please Get Device Config first", message: "")
+                        SunionBluetoothTool.shared.getDeviceConfigA0()
+                        timerManager.start(interval: 0.7) {
+                            if let config = self.config {
+                                self.timerManager.stop()
+                                self.performSegue(withIdentifier: "config", sender: nil)
+                            }
+                        }
+                    
                     }
                     
                     
@@ -478,10 +487,23 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
                     }
                 
                 case .getAccessArray:
-                    if let card = supportCard, let code = supportCode, let face = supportFace, let finger = supportFinger {
+                    if let card = supportCard,
+                       let code = supportCode,
+                        let face = supportFace,
+                        let finger = supportFinger {
                         self.performSegue(withIdentifier: "accessarray", sender: nil)
                     } else {
-                        showAlert(title: "❌ Please Get Supported Access first", message: "")
+                        SunionBluetoothTool.shared.getSupportType()
+                        timerManager.start(interval: 0.7) {
+                            if let card = self.supportCard,
+                               let code = self.supportCode,
+                               let face = self.supportFace,
+                               let finger = self.supportFinger {
+                                self.timerManager.stop()
+                                self.performSegue(withIdentifier: "accessarray", sender: nil)
+                            }
+                        }
+                    
                     }
                    
                     
@@ -490,18 +512,38 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
                   
                 case .getAccessData:
                     
-                    if let card = supportCard, let code = supportCode, let face = supportFace, let finger = supportFinger {
+                    if let card = supportCard,
+                       let code = supportCode,
+                       let face = supportFace,
+                        let finger = supportFinger {
                         self.performSegue(withIdentifier: "accessdata", sender: nil)
                     } else {
-                        showAlert(title: "❌ Please Get Supported Access first", message: "")
+                        SunionBluetoothTool.shared.getSupportType()
+                        timerManager.start(interval: 0.7) {
+                            if let card = self.supportCard,
+                               let code = self.supportCode,
+                               let face = self.supportFace,
+                               let finger = self.supportFinger {
+                                self.timerManager.stop()
+                                self.performSegue(withIdentifier: "accessdata", sender: nil)
+                            }
+                        }
+                       
                     }
                 
                 case .addAccess:
                     
-                    if accessFirstEmptyIndex != nil, accessData2 == nil, let card = supportCard, let code = supportCode, let face = supportFace, let finger = supportFinger {
+                    if accessFirstEmptyIndex != nil,
+                       accessData2 == nil,
+                        let card = supportCard,
+                       let code = supportCode,
+                        let face = supportFace,
+                        let finger = supportFinger {
                         self.performSegue(withIdentifier: "access", sender: true)
                     } else {
-                        showAlert(title: "❌ Please Get Access Array/ Supported Access first", message: "")
+                        SunionBluetoothTool.shared.getSupportType()
+                        
+                        showAlert(title: "❌ Please Get Access Array first", message: "")
                     }
                  
 
@@ -515,7 +557,10 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
                 case .delAccess:
               
                 
-                    if let card = supportCard, let code = supportCode, let face = supportFace, let finger = supportFinger {
+                    if let card = supportCard,
+                        let code = supportCode,
+                        let face = supportFace,
+                        let finger = supportFinger {
                         self.performSegue(withIdentifier: "del", sender: nil)
                     } else {
                         showAlert(title: "❌ Please Get Supported Access first", message: "")
