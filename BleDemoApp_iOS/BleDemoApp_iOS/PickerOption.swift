@@ -63,7 +63,6 @@ enum Picker1Option: CaseIterable, CustomStringConvertible {
             return "Set Device Name"
         case .setTimeZone:
             return "Set Timezone to Asia/Taipei"
-
         case .setDeviceTime:
             return "Set Device Time"
         case .getDeviceName:
@@ -141,7 +140,7 @@ enum Picker2Option: CaseIterable, CustomStringConvertible {
     var description: String {
         switch self {
         case .connecting:
-            return "Connecting"
+            return "Connect"
         case .adminCodeExist:
             return "Admin Code Exist"
         case .setAdminCode:

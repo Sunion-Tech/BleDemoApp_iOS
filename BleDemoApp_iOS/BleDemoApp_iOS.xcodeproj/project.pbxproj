@@ -17,6 +17,7 @@
 		6006D5DC2B981469004AC7CC /* Ex+UIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6006D5DB2B981469004AC7CC /* Ex+UIView.swift */; };
 		6006D5E02B9838EC004AC7CC /* Ex+UIViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6006D5DF2B9838EC004AC7CC /* Ex+UIViewController.swift */; };
 		6006D5E42B9840F3004AC7CC /* PickerOption.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6006D5E32B9840F3004AC7CC /* PickerOption.swift */; };
+		601D52812D9A2981002782EE /* SunionBluetoothTool.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 601D52802D9A2981002782EE /* SunionBluetoothTool.framework */; };
 		603F980C2BA1840000E6E4E5 /* VC+AccessData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 603F980B2BA1840000E6E4E5 /* VC+AccessData.swift */; };
 		606A4E732BAC1274009AAA2D /* VC+UserCredential.swift in Sources */ = {isa = PBXBuildFile; fileRef = 606A4E722BAC1274009AAA2D /* VC+UserCredential.swift */; };
 		606A4E812BAD1068009AAA2D /* AddEditUserCredentialViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 606A4E802BAD1068009AAA2D /* AddEditUserCredentialViewController.swift */; };
@@ -27,8 +28,8 @@
 		606B249D2BA80BA7008DBC35 /* GetAccessArrayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 606B249C2BA80BA7008DBC35 /* GetAccessArrayViewController.swift */; };
 		606B249F2BA81993008DBC35 /* GetAccessDataViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 606B249E2BA81993008DBC35 /* GetAccessDataViewController.swift */; };
 		606B24A92BA93A9D008DBC35 /* DelAccessDataViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 606B24A82BA93A9D008DBC35 /* DelAccessDataViewController.swift */; };
+		60A5E22E2D9A6B3D00169423 /* TimerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60A5E22D2D9A6B3900169423 /* TimerManager.swift */; };
 		60BE21A92BB146F8003AD4E8 /* VC+DelCredential.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60BE21A82BB146F8003AD4E8 /* VC+DelCredential.swift */; };
-		60D4C1A52C913342008CD17A /* SunionBluetoothTool.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 60D4C1A42C913342008CD17A /* SunionBluetoothTool.framework */; };
 		60EF0D0F2B99A63000819AF4 /* VC+AddAdminCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60EF0D0E2B99A63000819AF4 /* VC+AddAdminCode.swift */; };
 		60EF0D112B99A8FD00819AF4 /* VC+EditAdminCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60EF0D102B99A8FD00819AF4 /* VC+EditAdminCode.swift */; };
 		60EF0D132B99AC1B00819AF4 /* VC+FactoryReset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60EF0D122B99AC1B00819AF4 /* VC+FactoryReset.swift */; };
@@ -54,6 +55,7 @@
 		6006D5DB2B981469004AC7CC /* Ex+UIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Ex+UIView.swift"; sourceTree = "<group>"; };
 		6006D5DF2B9838EC004AC7CC /* Ex+UIViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Ex+UIViewController.swift"; sourceTree = "<group>"; };
 		6006D5E32B9840F3004AC7CC /* PickerOption.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickerOption.swift; sourceTree = "<group>"; };
+		601D52802D9A2981002782EE /* SunionBluetoothTool.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SunionBluetoothTool.framework; sourceTree = "<group>"; };
 		603F980B2BA1840000E6E4E5 /* VC+AccessData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VC+AccessData.swift"; sourceTree = "<group>"; };
 		606A4E722BAC1274009AAA2D /* VC+UserCredential.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VC+UserCredential.swift"; sourceTree = "<group>"; };
 		606A4E802BAD1068009AAA2D /* AddEditUserCredentialViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddEditUserCredentialViewController.swift; sourceTree = "<group>"; };
@@ -64,8 +66,8 @@
 		606B249C2BA80BA7008DBC35 /* GetAccessArrayViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetAccessArrayViewController.swift; sourceTree = "<group>"; };
 		606B249E2BA81993008DBC35 /* GetAccessDataViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetAccessDataViewController.swift; sourceTree = "<group>"; };
 		606B24A82BA93A9D008DBC35 /* DelAccessDataViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DelAccessDataViewController.swift; sourceTree = "<group>"; };
+		60A5E22D2D9A6B3900169423 /* TimerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerManager.swift; sourceTree = "<group>"; };
 		60BE21A82BB146F8003AD4E8 /* VC+DelCredential.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VC+DelCredential.swift"; sourceTree = "<group>"; };
-		60D4C1A42C913342008CD17A /* SunionBluetoothTool.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SunionBluetoothTool.framework; sourceTree = "<group>"; };
 		60EF0D0E2B99A63000819AF4 /* VC+AddAdminCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VC+AddAdminCode.swift"; sourceTree = "<group>"; };
 		60EF0D102B99A8FD00819AF4 /* VC+EditAdminCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VC+EditAdminCode.swift"; sourceTree = "<group>"; };
 		60EF0D122B99AC1B00819AF4 /* VC+FactoryReset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VC+FactoryReset.swift"; sourceTree = "<group>"; };
@@ -83,7 +85,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				60D4C1A52C913342008CD17A /* SunionBluetoothTool.framework in Frameworks */,
+				601D52812D9A2981002782EE /* SunionBluetoothTool.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -109,6 +111,7 @@
 		6006D57E2B97FB29004AC7CC /* BleDemoApp_iOS */ = {
 			isa = PBXGroup;
 			children = (
+				60A5E22D2D9A6B3900169423 /* TimerManager.swift */,
 				60F124112BD603E70055F11D /* Credential */,
 				60F124102BD603CE0055F11D /* UserCredential */,
 				60F1240F2BD603B20055F11D /* Access */,
@@ -136,7 +139,7 @@
 				606A4E722BAC1274009AAA2D /* VC+UserCredential.swift */,
 				606A4E922BAD50F0009AAA2D /* VC+UserCredentialDelete.swift */,
 				60BE21A82BB146F8003AD4E8 /* VC+DelCredential.swift */,
-				60D4C1A42C913342008CD17A /* SunionBluetoothTool.framework */,
+				601D52802D9A2981002782EE /* SunionBluetoothTool.framework */,
 			);
 			path = BleDemoApp_iOS;
 			sourceTree = "<group>";
@@ -258,6 +261,7 @@
 				606A4E812BAD1068009AAA2D /* AddEditUserCredentialViewController.swift in Sources */,
 				606B249D2BA80BA7008DBC35 /* GetAccessArrayViewController.swift in Sources */,
 				60EF0D132B99AC1B00819AF4 /* VC+FactoryReset.swift in Sources */,
+				60A5E22E2D9A6B3D00169423 /* TimerManager.swift in Sources */,
 				6006D5E42B9840F3004AC7CC /* PickerOption.swift in Sources */,
 				606A4E732BAC1274009AAA2D /* VC+UserCredential.swift in Sources */,
 				60BE21A92BB146F8003AD4E8 /* VC+DelCredential.swift in Sources */,

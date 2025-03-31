@@ -63,6 +63,8 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
     
     var plugmode: CommandService.plugMode = .off
     
+    private let timerManager = TimerManager()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -77,7 +79,7 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
            let mac = model?.macAddress,
            let name = model?.modelName {
             isAdminCode = false
-            let msg = "token: \(token.toHexString())\n aes1Key: \(aes1.toHexString())\n macAddress: \(mac)\n modelName: \(name)"
+            let msg = "qrCode資料\ntoken: \(token.toHexString())\n aes1Key: \(aes1.toHexString())\n macAddress: \(mac)\n modelName: \(name)"
             SunionBluetoothTool.shared.initBluetooth(macAddress: mac, aes1Key: Array(aes1), token: Array(token), v3uuid: nil)
             if SunionBluetoothTool.shared.delegate == nil {
                 SunionBluetoothTool.shared.delegate = self
@@ -245,7 +247,7 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
                 data == .connecting {
                 switch data {
                 case .connecting:
-                    appendLogToTextView(logMessage: "Connecting...")
+                    appendLogToTextView(logMessage: "⚠️ Connecting...")
                     SunionBluetoothTool.shared.connectingBluetooth()
                 case .adminCodeExist:
                     SunionBluetoothTool.shared.isAdminCode()
@@ -255,7 +257,7 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
                     break
                 }
             } else if !isAdminCode{
-                showAlert(title: "Please Set Admin Code first", message: "")
+                showAlert(title: "❌ Please Set Admin Code first", message: "")
             } else {
                 switch data {
                 case .adminCodeExist:
@@ -283,11 +285,18 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
                 case .getDeviceConfig:
                     SunionBluetoothTool.shared.getDeviceConfigD4()
                 case .setDeviceConfig:
-                    
+
                     if let config = config {
                         self.performSegue(withIdentifier: "config", sender: nil)
                     } else {
-                        showAlert(title: "Please Get Device Config first", message: "")
+                        SunionBluetoothTool.shared.getDeviceConfigD4()
+                        timerManager.start(interval: 0.7) {
+                            if let config = self.config {
+                                self.timerManager.stop()
+                                self.performSegue(withIdentifier: "config", sender: nil)
+                            }
+                        }
+                 
                     }
                     
                     
@@ -315,25 +324,25 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
                 case .edittoken:
                     if let token = token {
                         if token.isOwnerToken == .owner {
-                            showAlert(title: "Editing of the Owner is not allowed", message: "")
+                            showAlert(title: "❌ Editing of the Owner is not allowed", message: "")
                         } else {
                             self.performSegue(withIdentifier: "user", sender: "edit")
                         }
                         
                     } else {
-                        showAlert(title: "Please Get User Data first", message: "")
+                        showAlert(title: "❌ Please Get User Data first", message: "")
                     }
                     
                 case .deltoken:
                     if let token = token {
                         if token.isOwnerToken == .owner {
-                            showAlert(title: "deleting the Owner is not allowed", message: "")
+                            showAlert(title: "❌ Deleting the Owner is not allowed", message: "")
                         } else {
                             SunionBluetoothTool.shared.delToken(model: token)
                         }
                         
                     } else {
-                        showAlert(title: "Please Get User Data first", message: "")
+                        showAlert(title: "❌ Please Get User Data first", message: "")
                     }
                 
                 case .getAccessArray:
@@ -342,18 +351,22 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
                 case .getAccessData:
                     showgetAccessDataAlert()
                 case .addAccess:
-                    if let firstEmptyIndex = accessFirstEmptyIndex, accessData == nil {
-                        self.performSegue(withIdentifier: "access", sender: true)
-                    } else {
-                        showAlert(title: "Please Get Access Array first", message: "")
+                    
+                    SunionBluetoothTool.shared.getPinCodeArray()
+                    timerManager.start(interval: 0.7) {
+                        if let firstEmptyIndex = self.accessFirstEmptyIndex, self.accessData == nil {
+                            self.timerManager.stop()
+                            self.performSegue(withIdentifier: "access", sender: true)
+                        }
                     }
+                  
                  
 
                 case .editAccess:
                     if let data = accessData {
                         self.performSegue(withIdentifier: "access", sender: false)
                     } else {
-                        showAlert(title: "Please Get Access Data first", message: "")
+                        showAlert(title: "❌ Please Get Access Data first", message: "")
                     }
 
                 case .delAccess:
@@ -361,7 +374,7 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
                 
                 case .disconnected:
                     SunionBluetoothTool.shared.disconnectBluetooth()
-                    appendLogToTextView(logMessage: "Disconnected")
+                    appendLogToTextView(logMessage: "⚠️ Disconnected")
                 default:
                     break
                 }
@@ -374,7 +387,7 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
                 data == .connecting {
                 switch data {
                 case .connecting:
-                    appendLogToTextView(logMessage: "Connecting...")
+                    appendLogToTextView(logMessage: "⚠️ Connecting...")
                     SunionBluetoothTool.shared.connectingBluetooth()
                 case .adminCodeExist:
                     SunionBluetoothTool.shared.isAdminCode()
@@ -384,7 +397,7 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
                     break
                 }
             } else if !isAdminCode{
-                showAlert(title: "Please Set Admin Code first", message: "")
+                showAlert(title: "❌ Please Set Admin Code first", message: "")
             } else {
                 switch data {
                 case .adminCodeExist:
@@ -415,7 +428,7 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
                     if let config = config {
                         self.performSegue(withIdentifier: "config", sender: nil)
                     } else {
-                        showAlert(title: "Please Get Device Config first", message: "")
+                        showAlert(title: "❌ Please Get Device Config first", message: "")
                     }
                     
                     
@@ -443,32 +456,32 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
                 case .edittoken:
                     if let token = token {
                         if token.isOwnerToken == .owner {
-                            showAlert(title: "Editing of the Owner is not allowed", message: "")
+                            showAlert(title: "❌ Editing of the Owner is not allowed", message: "")
                         } else {
                             self.performSegue(withIdentifier: "user", sender: "edit")
                         }
                         
                     } else {
-                        showAlert(title: "Please Get User Data first", message: "")
+                        showAlert(title: "❌ Please Get User Data first", message: "")
                     }
                     
                 case .deltoken:
                     if let token = token {
                         if token.isOwnerToken == .owner {
-                            showAlert(title: "deleting the Owner is not allowed", message: "")
+                            showAlert(title: "❌ Deleting the Owner is not allowed", message: "")
                         } else {
                             SunionBluetoothTool.shared.delToken(model: token)
                         }
                         
                     } else {
-                        showAlert(title: "Please Get User Data first", message: "")
+                        showAlert(title: "❌ Please Get User Data first", message: "")
                     }
                 
                 case .getAccessArray:
                     if let card = supportCard, let code = supportCode, let face = supportFace, let finger = supportFinger {
                         self.performSegue(withIdentifier: "accessarray", sender: nil)
                     } else {
-                        showAlert(title: "Please Get Supported Access first", message: "")
+                        showAlert(title: "❌ Please Get Supported Access first", message: "")
                     }
                    
                     
@@ -480,7 +493,7 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
                     if let card = supportCard, let code = supportCode, let face = supportFace, let finger = supportFinger {
                         self.performSegue(withIdentifier: "accessdata", sender: nil)
                     } else {
-                        showAlert(title: "Please Get Supported Access first", message: "")
+                        showAlert(title: "❌ Please Get Supported Access first", message: "")
                     }
                 
                 case .addAccess:
@@ -488,7 +501,7 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
                     if accessFirstEmptyIndex != nil, accessData2 == nil, let card = supportCard, let code = supportCode, let face = supportFace, let finger = supportFinger {
                         self.performSegue(withIdentifier: "access", sender: true)
                     } else {
-                        showAlert(title: "Please Get Access Array/ Supported Access first", message: "")
+                        showAlert(title: "❌ Please Get Access Array/ Supported Access first", message: "")
                     }
                  
 
@@ -496,7 +509,7 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
                     if let data = accessData2 {
                         self.performSegue(withIdentifier: "access", sender: false)
                     } else {
-                        showAlert(title: "Please Get Access Data first", message: "")
+                        showAlert(title: "❌ Please Get Access Data first", message: "")
                     }
 
                 case .delAccess:
@@ -505,11 +518,11 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
                     if let card = supportCard, let code = supportCode, let face = supportFace, let finger = supportFinger {
                         self.performSegue(withIdentifier: "del", sender: nil)
                     } else {
-                        showAlert(title: "Please Get Supported Access first", message: "")
+                        showAlert(title: "❌ Please Get Supported Access first", message: "")
                     }
                 case .disconnected:
                     SunionBluetoothTool.shared.disconnectBluetooth()
-                    appendLogToTextView(logMessage: "Disconnected")
+                    appendLogToTextView(logMessage: "⚠️ Disconnected")
                 default:
                     break
                 }
@@ -523,7 +536,7 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
                 data == .connecting {
                 switch data {
                 case .connecting:
-                    appendLogToTextView(logMessage: "Connecting...")
+                    appendLogToTextView(logMessage: "⚠️ Connecting...")
                     SunionBluetoothTool.shared.connectingBluetooth()
                 case .adminCodeExist:
                     SunionBluetoothTool.shared.UseCase.adminCode.exists()
@@ -546,7 +559,7 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
                         break
                     }
                 } else {
-                    showAlert(title: "Please Set Admin Code first", message: "")
+                    showAlert(title: "❌ Please Set Admin Code first", message: "")
                 }
         
             } else {
@@ -574,7 +587,7 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
                 case .setDeviceTime:
                     SunionBluetoothTool.shared.UseCase.time.syncCurrentTime()
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
-                        self.appendLogToTextView(logMessage: "set Device Time successfully")
+                        self.appendLogToTextView(logMessage: "✅ Set Device Time successfully")
                     }
                 case .getDeviceConfig:
                     SunionBluetoothTool.shared.UseCase.config.data()
@@ -583,7 +596,7 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
                     if let config = n80 {
                         self.performSegue(withIdentifier: "config", sender: true)
                     } else {
-                        showAlert(title: "Please Get Device Config first", message: "")
+                        showAlert(title: "❌ Please Get Device Config first", message: "")
                     }
                     
                     
@@ -611,25 +624,25 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
                 case .edittoken:
                     if let token = v3Token {
                         if token.isOwnerToken == .owner {
-                            showAlert(title: "Editing of the Owner is not allowed", message: "")
+                            showAlert(title: "❌ Editing of the Owner is not allowed", message: "")
                         } else {
                             self.performSegue(withIdentifier: "user", sender: "edit")
                         }
                         
                     } else {
-                        showAlert(title: "Please Get User Data first", message: "")
+                        showAlert(title: "❌ Please Get User Data first", message: "")
                     }
                     
                 case .deltoken:
                     if let token = v3Token {
                         if token.isOwnerToken == .owner {
-                            showAlert(title: "deleting the Owner is not allowed", message: "")
+                            showAlert(title: "❌ Deleting the Owner is not allowed", message: "")
                         } else {
                             SunionBluetoothTool.shared.UseCase.bleUser.delete(model: token)
                         }
                         
                     } else {
-                        showAlert(title: "Please Get User Data first", message: "")
+                        showAlert(title: "❌ Please Get User Data first", message: "")
                     }
                 case .getUserCapabilities:
                     SunionBluetoothTool.shared.UseCase.user.able()
@@ -651,13 +664,13 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
                         self.performSegue(withIdentifier: "usercredential", sender: nil)
                       
                     } else {
-                        showAlert(title: "Please Get UserCredentialArray/ UserCapabilities first", message: "")
+                        showAlert(title: "❌ Please Get UserCredentialArray/ UserCapabilities first", message: "")
                     }
                 case .editUserCredential:
                     if let data = userCredentialData {
                         self.performSegue(withIdentifier: "usercredential", sender: nil)
                     } else {
-                        showAlert(title: "Please Get UserCredentialData first", message: "")
+                        showAlert(title: "❌ Please Get UserCredentialData first", message: "")
                     }
                 case .delUserCredential:
                     showuserCredentialDeleteAlert()
@@ -678,22 +691,23 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
                         self.performSegue(withIdentifier: "addeditC", sender: nil)
                       
                     } else {
-                        showAlert(title: "Please Get CredentialArray/ UserCapabilities first", message: "")
+                        showAlert(title: "❌ Please Get CredentialArray/ UserCapabilities first", message: "")
                     }
                 case .editCredentail:
                     if let data = credentialData, let able = able {
                         self.performSegue(withIdentifier: "addeditC", sender: nil)
                     } else {
-                        showAlert(title: "Please Get CredentialData/ UserCapabilities first", message: "")
+                        showAlert(title: "❌ Please Get CredentialData/ UserCapabilities first", message: "")
                     }
                 case .delCredential:
                     showDelCredentialAlert()
            
                 case .endpoint:
-                    SunionBluetoothTool.shared.UseCase.utility.setEndpoint(type: .api, data: [0x00,0x01,0x02])
+//                    SunionBluetoothTool.shared.UseCase.utility.setEndpoint(type: .api, data: [0x00,0x01,0x02])
+                    break
                 case .disconnected:
                     SunionBluetoothTool.shared.disconnectBluetooth()
-                    appendLogToTextView(logMessage: "Disconnected")
+                    appendLogToTextView(logMessage: "⚠️ Disconnected")
                 default:
                     break
                 }
@@ -989,7 +1003,9 @@ extension ViewController: AccessCodeViewControllerDelegate {
     func optionData(model: PinCodeManageModel) {
         accessFirstEmptyIndex = nil
         accessData = nil
+        SunionBluetoothTool.shared.delegate = self
         SunionBluetoothTool.shared.pinCodeOption(model: model)
+    
     }
     
     
@@ -1096,7 +1112,7 @@ extension ViewController: SunionBluetoothToolDelegate {
         case .connecting:
             break
         case .connected(_):
-            appendLogToTextView(logMessage: "Connected")
+            appendLogToTextView(logMessage: "⚠️ Connected")
             BLEIMG.tintColor = .blue
             BLEIMG.isEnabled = true
         case .disable:
@@ -1107,13 +1123,13 @@ extension ViewController: SunionBluetoothToolDelegate {
             switch error {
             case .deviceRefused:
                 
-                appendLogToTextView(logMessage: "Connection failed")
+                appendLogToTextView(logMessage: "❌ Connection failed")
             case .illegalToken:
-                appendLogToTextView(logMessage: "You don\'t have access to this lock")
+                appendLogToTextView(logMessage: "❌ You don't have access to this lock")
             case .normal:
                 break
             default:
-                appendLogToTextView(logMessage: "Disconnected")
+                appendLogToTextView(logMessage: "⚠️ Disconnected")
                 
             }
         }
@@ -1123,11 +1139,11 @@ extension ViewController: SunionBluetoothToolDelegate {
         status = value
         var msg = ""
         if let a = value?.A2 {
-            msg = "lockDirection: \(a.lockDirection.rawValue)\n vacationMode: \(a.vacationModeOn)\n deadbolt: \(a.deadBolt.rawValue)\n doorState: \(a.doorState.rawValue)\n isLocked: \(a.lockState.rawValue)\n securitybolt: \(a.securityBolt.rawValue)\n battery: \(a.battery ?? 0000)\n batteryWarning: \(a.batteryWarning.rawValue)"
+            msg = "Status A2:\nlockDirection: \(a.lockDirection.rawValue)\n vacationMode: \(a.vacationModeOn)\n deadbolt: \(a.deadBolt.rawValue)\n doorState: \(a.doorState.rawValue)\n isLocked: \(a.lockState.rawValue)\n securitybolt: \(a.securityBolt.rawValue)\n battery: \(a.battery ?? 0000)\n batteryWarning: \(a.batteryWarning.rawValue)"
         }
         
         if let d = value?.D6 {
-            msg = "lockDirection: \(d.lockDirection.rawValue)\n soundOn: \(d.soundOn)\n vacationMode: \(d.vacationModeOn)\n autoLockOn: \(d.autoLockOn)\n autoLockTime: \(d.autoLockTime ?? 0000)\n guidingCode: \(d.guidingCode)\n isLocked: \(d.isLocked)\n battery: \(d.battery ?? 0000)\n batteryWarning: \(d.batteryWarning.rawValue)\n timestamp: \(d.timestamp ?? 0000)"
+            msg = "Status D6:\nlockDirection: \(d.lockDirection.rawValue)\n soundOn: \(d.soundOn)\n vacationMode: \(d.vacationModeOn)\n autoLockOn: \(d.autoLockOn)\n autoLockTime: \(d.autoLockTime ?? 0000)\n guidingCode: \(d.guidingCode)\n isLocked: \(d.isLocked)\n battery: \(d.battery ?? 0000)\n batteryWarning: \(d.batteryWarning.rawValue)\n timestamp: \(d.timestamp ?? 0000)"
         }
         
         
@@ -1139,25 +1155,25 @@ extension ViewController: SunionBluetoothToolDelegate {
     func AdminCode(bool: Bool?) {
         if let bool = bool, bool {
             isAdminCode = true
-            appendLogToTextView(logMessage: "adminCode set successfully")
+            appendLogToTextView(logMessage: "✅ AdminCode set successfully")
         } else {
-            appendLogToTextView(logMessage: "adminCode setting failed")
+            appendLogToTextView(logMessage: "❌ AdminCode setting failed")
         }
     }
     
     func EditAdminCode(bool: Bool?) {
         if let bool = bool, bool {
-            appendLogToTextView(logMessage: "adminCode edit successfully")
+            appendLogToTextView(logMessage: "✅ AdminCode edit successfully")
         } else {
-            appendLogToTextView(logMessage: "adminCode edit failed")
+            appendLogToTextView(logMessage: "❌ AdminCode edit failed")
         }
     }
     
     func AdminCodeExist(bool: Bool?) {
         if let bool = bool, bool {
-            appendLogToTextView(logMessage: "adminCode exists")
+            appendLogToTextView(logMessage: "✅ AdminCode exists")
         } else {
-            appendLogToTextView(logMessage: "adminCode does not exist")
+            appendLogToTextView(logMessage: "❌ AdminCode does not exist")
         }
     }
     
@@ -1165,33 +1181,33 @@ extension ViewController: SunionBluetoothToolDelegate {
     
     func FactoryReset(bool: Bool?) {
         if let bool = bool, bool {
-            appendLogToTextView(logMessage: "factoryRest successfully")
+            appendLogToTextView(logMessage: "✅ FactoryRest successfully")
         } else {
-            appendLogToTextView(logMessage: "factoryRest failed")
+            appendLogToTextView(logMessage: "❌ FactoryRest failed")
         }
     }
     
     func DeviceName(bool: Bool?) {
         if let bool = bool, bool {
-            appendLogToTextView(logMessage: "set device name successfully")
+            appendLogToTextView(logMessage: "✅ Set device name successfully")
         } else {
-            appendLogToTextView(logMessage: "set device name failed")
+            appendLogToTextView(logMessage: "❌ Set device name failed")
         }
     }
     
     func DeviceNameData(value: String?) {
         if let value = value {
-            appendLogToTextView(logMessage: "get device name successfully: \(value)")
+            appendLogToTextView(logMessage: "✅ Get device name successfully: \(value)")
         } else {
-            appendLogToTextView(logMessage: "get device name failed")
+            appendLogToTextView(logMessage: "❌ Get device name failed")
         }
     }
     
     func TimeZone(bool: Bool?) {
         if let bool = bool, bool {
-            appendLogToTextView(logMessage: "set timezone successfully")
+            appendLogToTextView(logMessage: "✅ Set timezone successfully")
         } else {
-            appendLogToTextView(logMessage: "set timezone failed")
+            appendLogToTextView(logMessage: "❌ Set timezone failed")
         }
     }
     
@@ -1200,50 +1216,50 @@ extension ViewController: SunionBluetoothToolDelegate {
         var msg = ""
         if let value = value {
             if let d = value.D4 {
-                msg = "lockDirection: \(d.lockDirection.rawValue)\n soundOn: \(d.soundOn)\n vacationMode: \(d.vacationModeOn)\n autoLockOn: \(d.autoLockOn)\n autoLockTime: \(d.autoLockTime ?? 0000)\n guidingCode: \(d.guidingCode)\n latitude: \(d.latitude ?? 0000)\n longitude: \(d.longitude ?? 0000)"
+                msg = "Config D4:\nlockDirection: \(d.lockDirection.rawValue)\n soundOn: \(d.soundOn)\n vacationMode: \(d.vacationModeOn)\n autoLockOn: \(d.autoLockOn)\n autoLockTime: \(d.autoLockTime ?? 0000)\n guidingCode: \(d.guidingCode)\n latitude: \(d.latitude ?? 0000)\n longitude: \(d.longitude ?? 0000)"
             }
             
             if let a = value.A0 {
-                msg = "latitude: \(a.latitude ?? 0000)\n longitude: \(a.longitude ?? 0000)\n lockDirection: \(a.direction.rawValue)\n guidingCode: \(a.guidingCode.rawValue)\n virtualCode: \(a.virtualCode.rawValue)\n twoFA: \(a.twoFA.rawValue)\n vacationMode: \(a.vacationMode.rawValue)\n autoLock: \(a.isAutoLock.rawValue)\n autoLockTime: \(a.autoLockTime ?? 0000)\n autoLockMinLimit: \(a.autoLockMinLimit ?? 0000)\n autoLockMaxLimit: \(a.autoLockMaxLimit ?? 0000)\n sound:\(a.sound.rawValue)\n voiceType: \(a.voiceType.rawValue)\n voiceValue: \(a.voiceValue.name)\n fastMode: \(a.fastMode.rawValue)"
+                msg = "Config A0:\nlatitude: \(a.latitude ?? 0000)\n longitude: \(a.longitude ?? 0000)\n lockDirection: \(a.direction.rawValue)\n guidingCode: \(a.guidingCode.rawValue)\n virtualCode: \(a.virtualCode.rawValue)\n twoFA: \(a.twoFA.rawValue)\n vacationMode: \(a.vacationMode.rawValue)\n autoLock: \(a.isAutoLock.rawValue)\n autoLockTime: \(a.autoLockTime ?? 0000)\n autoLockMinLimit: \(a.autoLockMinLimit ?? 0000)\n autoLockMaxLimit: \(a.autoLockMaxLimit ?? 0000)\n sound:\(a.sound.rawValue)\n voiceType: \(a.voiceType.rawValue)\n voiceValue: \(a.voiceValue.name)\n fastMode: \(a.fastMode.rawValue)"
             }
             
             
             appendLogToTextView(logMessage: msg)
         } else {
-            appendLogToTextView(logMessage: "get device config failed")
+            appendLogToTextView(logMessage: "❌ Get device config failed")
         }
     }
     
     func Config(bool: Bool?) {
         if let bool = bool, bool {
-            appendLogToTextView(logMessage: "set device config successfully")
+            appendLogToTextView(logMessage: "✅ Set device config successfully")
         } else {
-            appendLogToTextView(logMessage: "set device config failed")
+            appendLogToTextView(logMessage: "❌ Set device config failed")
         }
     }
     
     func LogCount(value: Int?) {
         if let value = value {
-            appendLogToTextView(logMessage: "get log count successfully: \(value)")
+            appendLogToTextView(logMessage: "✅ Get log count successfully: \(value)")
         } else {
-            appendLogToTextView(logMessage: "get log count failed")
+            appendLogToTextView(logMessage: "❌ Get log count failed")
         }
     }
     
     func LogData(value: LogModel?) {
         if let value = value {
-            let msg = "timestamp: \(value.timestamp)\n event: \(value.event)\n name: \(value.name)\n message: \(value.message ?? "")"
+            let msg = "Log: \ntimestamp: \(value.timestamp)\n event: \(value.event)\n name: \(value.name)\n message: \(value.message ?? "")"
             appendLogToTextView(logMessage: msg)
         } else {
-            appendLogToTextView(logMessage: "get log data failed")
+            appendLogToTextView(logMessage: "❌ Get log data failed")
         }
     }
     
     func TokenArray(value: [Int]?) {
         if let value = value {
-            appendLogToTextView(logMessage: "get user array successfully: \(value)")
+            appendLogToTextView(logMessage: "✅ Get user array successfully: \(value)")
         } else {
-            appendLogToTextView(logMessage: "get user array failed")
+            appendLogToTextView(logMessage: "❌ Get user array failed")
         }
     }
     
@@ -1253,48 +1269,48 @@ extension ViewController: SunionBluetoothToolDelegate {
             if value.isOwnerToken == .notOwner {
                 token?.indexOfToken = tokenIndex
             }
-            let msg = "isenable: \(value.isEnable)\n tokenmode: \(value.tokenMode.rawValue)\n isowner: \(value.isOwnerToken.rawValue)\n tokenpermission: \(value.tokenPermission.rawValue)\n token: \(value.token?.toHexString() ?? "")\n name: \(value.name ?? "")\n indexoftoken: \(value.indexOfToken ?? 0000)"
+            let msg = "TokenData: \nisenable: \(value.isEnable)\n tokenmode: \(value.tokenMode.rawValue)\n isowner: \(value.isOwnerToken.rawValue)\n tokenpermission: \(value.tokenPermission.rawValue)\n token: \(value.token?.toHexString() ?? "")\n name: \(value.name ?? "")\n indexoftoken: \(value.indexOfToken ?? 0000)"
             
             appendLogToTextView(logMessage: msg)
         } else {
-            appendLogToTextView(logMessage: "get user data failed")
+            appendLogToTextView(logMessage: "❌ Get user data failed")
         }
     }
     
     func TokenOption(value: AddTokenResult?) {
         if let value = value {
-            let msg = "isSuccess: \(value.isSuccess)\n token: \(value.token?.toHexString() ?? "")\n index: \(value.index ?? 0000)"
+            let msg = "TokenOption: \nisSuccess: \(value.isSuccess)\n token: \(value.token?.toHexString() ?? "")\n index: \(value.index ?? 0000)"
             tokenIndex = value.index
             appendLogToTextView(logMessage: msg)
         } else {
-            appendLogToTextView(logMessage: "add user failed")
+            appendLogToTextView(logMessage: "❌ Add user failed")
         }
     }
     
     func Token(bool: Bool?) {
         if let bool = bool, bool {
-            appendLogToTextView(logMessage: "del user successfully")
+            appendLogToTextView(logMessage: "✅ Del user successfully")
         } else {
-            appendLogToTextView(logMessage: "del user failed")
+            appendLogToTextView(logMessage: "❌ Del user failed")
         }
     }
     
     func EditToken(bool: Bool?) {
         if let bool = bool, bool {
-            appendLogToTextView(logMessage: "edit user successfully")
+            appendLogToTextView(logMessage: "✅ Edit user successfully")
         } else {
-            appendLogToTextView(logMessage: "edit user failed")
+            appendLogToTextView(logMessage: "❌ Edit user failed")
         }
     }
     
     func PinCodeArray(value: PinCodeArrayModel?) {
         if let value = value {
             accessData = nil
-            let msg = "count: \(value.count)\n data: \(value.data)\n firstemptyindex: \(value.firstEmptyIndex)"
+            let msg = "PinCodeArray: \ncount: \(value.count)\n data: \(value.data)\n firstemptyindex: \(value.firstEmptyIndex)"
             self.accessFirstEmptyIndex = value.firstEmptyIndex
             appendLogToTextView(logMessage: msg)
         } else {
-            appendLogToTextView(logMessage: "get access array failed")
+            appendLogToTextView(logMessage: "❌ Get access array failed")
         }
     }
     
@@ -1333,11 +1349,11 @@ extension ViewController: SunionBluetoothToolDelegate {
                 }
             }
             
-            let msg = "index: \(value.index) \nisenable: \(value.isEnable)\n code: \(value.PinCode ?? [0000])\n length: \(value.PinCodeLength ?? 0x00)\n name: \(value.name ?? "")\n schedule: \(value.schedule?.scheduleOption.scheduleName ?? "")\n" + schemsg
+            let msg = "PinCodeData: \nindex: \(value.index) \nisenable: \(value.isEnable)\n code: \(value.PinCode ?? [0000])\n length: \(value.PinCodeLength ?? 0x00)\n name: \(value.name ?? "")\n schedule: \(value.schedule?.scheduleOption.scheduleName ?? "")\n" + schemsg
           
             appendLogToTextView(logMessage: msg)
         } else {
-            appendLogToTextView(logMessage: "get access data failed")
+            appendLogToTextView(logMessage: "❌  Get access data failed")
         }
     }
     
@@ -1361,10 +1377,10 @@ extension ViewController: SunionBluetoothToolDelegate {
     }
     
     func PinCode(bool: Bool?) {
-        if let bool = bool {
-            appendLogToTextView(logMessage: "add/edit/del access data successfully")
+        if let bool = bool, bool {
+            appendLogToTextView(logMessage: "✅ Add/Edit/Del access data successfully")
         } else {
-            appendLogToTextView(logMessage: "add/edit/edl access data failed")
+            appendLogToTextView(logMessage: "❌ Add/Edit/Del access data failed")
         }
     }
     
@@ -1396,9 +1412,9 @@ extension ViewController: SunionBluetoothToolDelegate {
             }
             
             
-            appendLogToTextView(logMessage: "code: \(supportCode!) \ncard: \(supportCard!)\n finger: \(supportFinger!)\n face: \(supportFace!)")
+            appendLogToTextView(logMessage: "Support Type: \ncode: \(supportCode!) \ncard: \(supportCard!)\n finger: \(supportFinger!)\n face: \(supportFace!)")
         } else {
-            appendLogToTextView(logMessage: "get supported access failed")
+            appendLogToTextView(logMessage: "❌ Get supported access failed")
         }
     }
     
@@ -1423,9 +1439,9 @@ extension ViewController: SunionBluetoothToolDelegate {
                 break
             }
             
-            appendLogToTextView(logMessage: "type: \(value.type.rawValue)\n hasDataIndex:\(value.hasDataAIndex)")
+            appendLogToTextView(logMessage: "AccessArray: \ntype: \(value.type.rawValue)\n hasDataIndex:\(value.hasDataAIndex)")
         } else {
-            appendLogToTextView(logMessage: "get access array failed")
+            appendLogToTextView(logMessage: "❌ Get access array failed")
         }
     }
     
@@ -1464,15 +1480,15 @@ extension ViewController: SunionBluetoothToolDelegate {
                 }
             }
             
-            appendLogToTextView(logMessage: "type: \(value.type.rawValue)\n index: \(value.index)\n enable: \(value.isEnable)\n name: \(value.name) \n data:\(value.codeCard)\n schedule: \(value.schedule?.scheduleOption.scheduleName ?? "")\n" + schemsg)
+            appendLogToTextView(logMessage: "AccessData: \ntype: \(value.type.rawValue)\n index: \(value.index)\n enable: \(value.isEnable)\n name: \(value.name) \n data:\(value.codeCard)\n schedule: \(value.schedule?.scheduleOption.scheduleName ?? "")\n" + schemsg)
         } else {
-            appendLogToTextView(logMessage: "get access data failed")
+            appendLogToTextView(logMessage: "❌ Get access data failed")
         }
     }
     
     func AccessAction(value: AccessResponseModel?) {
         if let value = value, value.isSuccess {
-            appendLogToTextView(logMessage: "type:\(value.type.rawValue)\n index:\(value.index)")
+            appendLogToTextView(logMessage: "AccessOption: \ntype:\(value.type.rawValue)\n index:\(value.index)")
         } else {
             appendLogToTextView(logMessage: "add/edit access failed")
         }
@@ -1485,9 +1501,9 @@ extension ViewController: SunionBluetoothToolDelegate {
         var msg = "==V3==\n"
         if let n = value {
             statusV3 = n
-            msg += "mainVersion: \(n.mainVersion ?? 9999)\n subVersion: \(n.subVersion ?? 9999)\n lockDirection: \(n.lockDirection.rawValue)\n vacationMode: \(n.vacationModeOn.rawValue)\n deadbolt: \(n.deadBolt.rawValue)\n doorState: \(n.doorState.rawValue)\n lockState: \(n.lockState.rawValue)\n securitybole: \(n.securityBolt.rawValue) \n battery: \(n.battery ?? 0000)\n batteryWarning: \(n.batteryWarning.rawValue)"
+            msg += "Status: \nmainVersion: \(n.mainVersion ?? 9999)\n subVersion: \(n.subVersion ?? 9999)\n lockDirection: \(n.lockDirection.rawValue)\n vacationMode: \(n.vacationModeOn.rawValue)\n deadbolt: \(n.deadBolt.rawValue)\n doorState: \(n.doorState.rawValue)\n lockState: \(n.lockState.rawValue)\n securitybole: \(n.securityBolt.rawValue) \n battery: \(n.battery ?? 0000)\n batteryWarning: \(n.batteryWarning.rawValue)"
         } else {
-            msg += "failed"
+            msg += "❌ Get status Failed"
         }
     
         appendLogToTextView(logMessage: msg)
@@ -1497,22 +1513,22 @@ extension ViewController: SunionBluetoothToolDelegate {
         var msg = "==V3==\n"
         if let value = value {
             if let time = value.isSavedTime {
-                msg += "time saved successfully: \(time)"
+                msg += "✅ Time saved successfully: \(time)"
             }
             
             if let timezone = value.isSavedTimeZone {
-                msg += "timeZone saved successfully: \(timezone)"
+                msg += "✅ TimeZone saved successfully: \(timezone)"
             }
             
             if let wifitimezone = value.isSavedTimeZoneWIFI {
-                msg += "wifi timezone saved successfully: \(wifitimezone)"
+                msg += "✅ WiFi timezone saved successfully: \(wifitimezone)"
             }
             
             if let val = value.timezoneValue {
-                msg += "get Value successfully: offset - \(val.Offset), data - \(val.data)"
+                msg += "✅ Get Value successfully: offset - \(val.Offset), data - \(val.data)"
             }
         } else {
-            msg += "failed"
+            msg += "❌ Time failed"
         }
         
         appendLogToTextView(logMessage: msg)
@@ -1523,21 +1539,21 @@ extension ViewController: SunionBluetoothToolDelegate {
         if let value = value {
             if let c = value.isCreated {
                 isAdminCode = true
-                msg += "adminCode Created successfully: \(c)"
+                msg += "✅ AdminCode Created successfully: \(c)"
             }
             
             if let e = value.isEdited {
-                msg += "adminCode Edited successfully: \(e)"
+                msg += "✅ AdminCode Edited successfully: \(e)"
             }
             
             if let exi = value.isExisted {
                 if exi {
                     isAdminCode = true
                 }
-                msg += "adminCode Existied successfully: \(exi)"
+                msg += "✅ AdminCode Existied successfully: \(exi)"
             }
         } else {
-           msg += "failed"
+           msg += "❌ AdminCode failed"
         }
         
         appendLogToTextView(logMessage: msg)
@@ -1547,14 +1563,14 @@ extension ViewController: SunionBluetoothToolDelegate {
         var msg = "==V3==\n"
         if let value = value {
             if let v = value.data {
-                msg += "name Created successfully: \(v)"
+                msg += "✅ name Created successfully: \(v)"
             }
             
             if let v = value.isConfigured {
-                msg += "name set successfully: \(v)"
+                msg += "✅ name set successfully: \(v)"
             }
         } else {
-            msg += "failed"
+            msg += "❌ Name failed"
         }
         
         appendLogToTextView(logMessage: msg)
@@ -1567,14 +1583,14 @@ extension ViewController: SunionBluetoothToolDelegate {
            
                 self.n80 = n
             
-                msg += "mainVersion: \(n.mainVersion ?? 9999)\n subVersion: \(n.subVersion ?? 9999)\n formatVersioin: \(n.formatVersion ?? 9999)\n serverversion: \(n.serverversion ?? 9999)\n latitude: \(n.latitude ?? 0000)\n longitude: \(n.longitude ?? 0000)\n lockDirection: \(n.direction.rawValue)\n guidingCode: \(n.guidingCode.rawValue)\n virtualCode: \(n.virtualCode.rawValue)\n twoFA: \(n.twoFA.rawValue)\n vacationMode: \(n.vacationMode.rawValue)\n autoLock: \(n.isAutoLock.rawValue)\n autoLockTime: \(n.autoLockTime ?? 0000)\n autoLockMinLimit: \(n.autoLockMinLimit ?? 0000)\n autoLockMaxLimit: \(n.autoLockMaxLimit ?? 0000)\n sound:\(n.sound.rawValue)\n voiceType: \(n.voiceType.rawValue)\n voiceValue: \(n.voiceValue.name)\n fastMode: \(n.fastMode.rawValue)\n SabbathMode: \(n.sabbathMode.rawValue)\n language: \(n.language)\n supportLanguages: \(n.supportLanguages)"
+                msg += "Config: \nmainVersion: \(n.mainVersion ?? 9999)\n subVersion: \(n.subVersion ?? 9999)\n formatVersioin: \(n.formatVersion ?? 9999)\n serverversion: \(n.serverversion ?? 9999)\n latitude: \(n.latitude ?? 0000)\n longitude: \(n.longitude ?? 0000)\n lockDirection: \(n.direction.rawValue)\n guidingCode: \(n.guidingCode.rawValue)\n virtualCode: \(n.virtualCode.rawValue)\n twoFA: \(n.twoFA.rawValue)\n vacationMode: \(n.vacationMode.rawValue)\n autoLock: \(n.isAutoLock.rawValue)\n autoLockTime: \(n.autoLockTime ?? 0000)\n autoLockMinLimit: \(n.autoLockMinLimit ?? 0000)\n autoLockMaxLimit: \(n.autoLockMaxLimit ?? 0000)\n sound:\(n.sound.rawValue)\n voiceType: \(n.voiceType.rawValue)\n voiceValue: \(n.voiceValue.name)\n fastMode: \(n.fastMode.rawValue)\n SabbathMode: \(n.sabbathMode.rawValue)\n language: \(n.language)\n supportLanguages: \(n.supportLanguages)"
             }
             
             if let v = value.isConfigured {
-                msg += "config set successfully: \(v)"
+                msg += "✅ Config set successfully: \(v)"
             }
         } else {
-            msg += "failed"
+            msg += "❌ Config failed"
         }
         
         appendLogToTextView(logMessage: msg)
@@ -1584,21 +1600,21 @@ extension ViewController: SunionBluetoothToolDelegate {
         var msg = "==V3==\n"
         if let value = value {
             if let n = value.version {
-                msg += "version successfully: \(n.type?.rawValue), \(n.version)"
+                msg += "✅ Version successfully: \(n.type?.rawValue), \(n.version)"
             }
             if let n = value.isFactoryReset {
-                msg += "FactoryReset successfully: \(n)"
+                msg += "✅ FactoryReset successfully: \(n)"
             }
             
             if let n = value.isMatter {
-                msg += "Matter successfully: \(n)"
+                msg += "✅ Matter successfully: \(n)"
             }
             
             if let n = value.alert {
-                msg += "alert successfully: \(n.type)"
+                msg += "✅ Alert successfully: \(n.type)"
             }
         } else {
-            msg += "failed"
+            msg += "❌ Version/FactoryReset/Matter/Alert failed"
         }
         
         appendLogToTextView(logMessage: msg)
@@ -1608,7 +1624,7 @@ extension ViewController: SunionBluetoothToolDelegate {
         var msg = "==V3==\n"
         if let value = value {
             if let n = value.array {
-                msg += "array successfully: \(n)"
+                msg += "✅ Token array successfully: \(n)"
             }
             if let value = value.data {
            
@@ -1616,25 +1632,25 @@ extension ViewController: SunionBluetoothToolDelegate {
                 if value.isOwnerToken == .notOwner {
                     v3Token?.indexOfToken = tokenIndex
                 }
-                msg += "isenable: \(value.isEnable)\n tokenmode: \(value.tokenMode.rawValue)\n isowner: \(value.isOwnerToken.rawValue)\n tokenpermission: \(value.tokenPermission.rawValue)\n token: \(value.token?.toHexString() ?? "")\n name: \(value.name ?? "")\n indexoftoken: \(value.indexOfToken ?? 0000) \n identiy: \(value.idenity)"
+                msg += "TokenData: \nisenable: \(value.isEnable)\n tokenmode: \(value.tokenMode.rawValue)\n isowner: \(value.isOwnerToken.rawValue)\n tokenpermission: \(value.tokenPermission.rawValue)\n token: \(value.token?.toHexString() ?? "")\n name: \(value.name ?? "")\n indexoftoken: \(value.indexOfToken ?? 0000) \n identiy: \(value.idenity)"
             }
             
             if let value = value.created {
-                 msg += "isSuccess: \(value.isSuccess)\n token: \(value.token?.toHexString() ?? "")\n index: \(value.index ?? 0000)"
+                 msg += "TokenOption: \nisSuccess: \(value.isSuccess)\n token: \(value.token?.toHexString() ?? "")\n index: \(value.index ?? 0000)"
                 tokenIndex = value.index
               
             }
             
             if let n = value.isEdited {
-                msg += "edited successfully: \(n)"
+                msg += "✅ Token edited successfully: \(n)"
             }
             
             if let n = value.isDeleted {
-                msg += "deleted successfully: \(n)"
+                msg += "✅ Token deleted successfully: \(n)"
             }
             
         } else {
-            msg += "failed"
+            msg += "❌ Token failed"
         }
         
         appendLogToTextView(logMessage: msg)
@@ -1644,14 +1660,14 @@ extension ViewController: SunionBluetoothToolDelegate {
         var msg = "==V3==\n"
         if let value = value {
             if let n = value.count {
-                msg += "count successfully: \(n)"
+                msg += "✅ Log count successfully: \(n)"
             }
             
             if let value = value.data {
-                 msg += "timestamp: \(value.timestamp)\n event: \(value.event)\n name: \(value.name)\n message: \(value.message ?? "")"
+                 msg += "LogData: \ntimestamp: \(value.timestamp)\n event: \(value.event)\n name: \(value.name)\n message: \(value.message ?? "")"
             }
         } else {
-            msg += "failed"
+            msg += "❌ Log failed"
         }
         appendLogToTextView(logMessage: msg)
     }
@@ -1661,7 +1677,7 @@ extension ViewController: SunionBluetoothToolDelegate {
         if let value = value {
             if let value = value.able {
                 self.able = value
-               msg += "isMatter: \(value.isMatter)\n weekday: \(value.weekdayCount ?? 9999)\n yeardat: \(value.yeardayCount ?? 9999)\n code: \(value.codeCount ?? 9999)\n card: \(value.cardCount ?? 9999) \n frigerprint: \(value.fpCount ?? 9999)\n face: \(value.faceCount ?? 9999)"
+               msg += "Able: \nisMatter: \(value.isMatter)\n weekday: \(value.weekdayCount ?? 9999)\n yeardat: \(value.yeardayCount ?? 9999)\n code: \(value.codeCount ?? 9999)\n card: \(value.cardCount ?? 9999) \n frigerprint: \(value.fpCount ?? 9999)\n face: \(value.faceCount ?? 9999)"
             }
             
             if let value = value.array {
@@ -1672,7 +1688,7 @@ extension ViewController: SunionBluetoothToolDelegate {
                     index += 1
                 }
                 userCredentailEmptyIndex = index
-                msg += "array successfully: \(value)"
+                msg += "✅ User array successfully: \(value)"
             }
             
             if let value = value.data {
@@ -1694,38 +1710,40 @@ extension ViewController: SunionBluetoothToolDelegate {
                 // 这里使用自定义格式
                 dateFormatter.dateFormat = "yyyy/MM/dd HH:mm:ss"
                 
+             
+                
                 var years = ""
                 value.yearDayscheduleStruct.forEach({ el in
-                    var msg = "---yearDayscheduleStruct---\n staus: \(el.status.description) \n start: \(dateFormatter.string(from: el.start ?? Date()))\n end: \(dateFormatter.string(from: el.end ?? Date()))"
+                    var msg = "---yearDayscheduleStruct---\n staus: \(el.status.description) \n start: \(dateFormatter.string(from: el.start ?? Date()))\n end: \(dateFormatter.string(from: el.end ?? Date()))\n"
                     years += msg
                 })
                 
                 
-              msg += "index: \(value.index ?? 999)\n name: \(value.name ?? "N/A") \n status: \(value.status.description)\n type: \(value.type.description)\n credential rule: \(value.credentialRule.description)\n weekDayCount: \(value.weekDayscheduleStruct.count)\n \(weeks) \n yeardayCount: \(value.yearDayscheduleStruct.count )\n \(years)"
+              msg += "UserData: \nindex: \(value.index ?? 999)\n name: \(value.name ?? "N/A") \n status: \(value.status.description)\n type: \(value.type.description)\n credential rule: \(value.credentialRule.description)\n weekDayCount: \(value.weekDayscheduleStruct.count)\n \(weeks) \n yeardayCount: \(value.yearDayscheduleStruct.count )\n \(years)"
             }
             
             if let n = value.isCreatedorEdited {
                 self.able = nil
                 self.userCredentailEmptyIndex = nil
                 self.userCredentialData = nil
-                msg += "CreatedorEdited successfully: \(n)"
+                msg += "✅ User CreatedorEdited successfully: \(n)"
             }
             
             if let n = value.isDeleted {
                 self.able = nil
                 self.userCredentailEmptyIndex = nil
                 self.userCredentialData = nil
-                msg += "Deleted successfully: \(n)"
+                msg += "✅ User Deleted successfully: \(n)"
             }
             
             if let value = value.supportedCounts {
                 userSupportCount = value
-                msg += "Matter: \(value.matter) \n code: \(value.code) \n card: \(value.card) \n fp: \(value.fp)\n face: \(value.face)"
+                msg += "UserSupport: \nMatter: \(value.matter) \n code: \(value.code) \n card: \(value.card) \n fp: \(value.fp)\n face: \(value.face)"
             }
        
             
         } else {
-            msg += "failed"
+            msg += "❌ User failed"
         }
         
         appendLogToTextView(logMessage: msg)
@@ -1742,7 +1760,7 @@ extension ViewController: SunionBluetoothToolDelegate {
                     index += 1
                 }
                 credentailEmptyIndex = index
-                msg += "array successfully: \(value)"
+                msg += "✅ Credential array successfully: \(value)"
             }
             
             if let value = value.data {
@@ -1757,26 +1775,26 @@ extension ViewController: SunionBluetoothToolDelegate {
                 })
                 
                 
-                msg += "format: \(value.format!.description)\n CredentialIndex: \(value.credientialIndex ?? 999)\n userIndex: \(value.userIndex ?? 999)\n status: \(value.status.description)\n type: \(value.type.description)\n \(credentialDetailStruct)"
+                msg += "CredentialData: \nformat: \(value.format!.description)\n CredentialIndex: \(value.credientialIndex ?? 999)\n userIndex: \(value.userIndex ?? 999)\n status: \(value.status.description)\n type: \(value.type.description)\n \(credentialDetailStruct)"
             }
             
             if let n = value.isCreatedorEdited {
                 self.able = nil
                 self.credentailEmptyIndex = nil
                 self.credentialData = nil
-                msg += "CreatedorEdited successfully: \(n)"
+                msg += "✅ CredentialData CreatedorEdited successfully: \(n)"
             }
             
             if let n = value.isDeleted {
                 self.able = nil
                 self.credentailEmptyIndex = nil
                 self.credentialData = nil
-                msg += "Deleted successfully: \(n)"
+                msg += "✅ CredentialData deleted successfully: \(n)"
             }
             
             if let setup = value.setup {
                 
-                msg += "Setup status: \(setup.status.description), data: \(setup.data?.toHexString()), index: \(setup.index), state: \(setup.state.description), type: \(setup.type.description)"
+                msg += "CredentialData: \nSetup status: \(setup.status.description), data: \(setup.data?.toHexString()), index: \(setup.index), state: \(setup.state.description), type: \(setup.type.description)"
                 
                 if setup.status == .success, let data =  setup.data, setup.type == .rfid {
                   
@@ -1795,7 +1813,7 @@ extension ViewController: SunionBluetoothToolDelegate {
             
          
         } else {
-            msg += "failed"
+            msg += "❌ CredentialData failed"
         }
         appendLogToTextView(logMessage: msg)
     }
@@ -1804,12 +1822,12 @@ extension ViewController: SunionBluetoothToolDelegate {
         var msg = "==V3==\n"
         if let value = value {
             self.isWifi = true
-            msg += "mainVersion: \(value.mainVersion)\n subVersion: \(value.subVersion)\nisWifiSetting: \(value.isWifiSetting) \n isWifiConnecting: \(value.isWifiConnecting)\n isOn: \(value.isOn)"
+            msg += "Plug: \nmainVersion: \(value.mainVersion)\n subVersion: \(value.subVersion)\nisWifiSetting: \(value.isWifiSetting) \n isWifiConnecting: \(value.isWifiConnecting)\n isOn: \(value.isOn)"
             
             plugmode = value.isOn ? .off : .on
           
         } else {
-            msg += "failed"
+            msg += "❌ Plug failed"
         }
         
         appendLogToTextView(logMessage: msg)
@@ -1818,9 +1836,9 @@ extension ViewController: SunionBluetoothToolDelegate {
     func v3Endpoint(value: resEndpointUseCase?) {
         var msg = "==V3==\n"
         if let value = value {
-            msg += "type: \(value.type), data: \(value.data)"
+            msg += "Endpoint: \ntype: \(value.type), data: \(value.data)"
         } else {
-            msg += "failed"
+            msg += "❌ Endpoint failed"
         }
         
         appendLogToTextView(logMessage: msg)
