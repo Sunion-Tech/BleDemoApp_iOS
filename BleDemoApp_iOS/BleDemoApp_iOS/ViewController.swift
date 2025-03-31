@@ -641,7 +641,14 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
                     if let config = n80 {
                         self.performSegue(withIdentifier: "config", sender: true)
                     } else {
-                        showAlert(title: "❌ Please Get Device Config first", message: "")
+                        SunionBluetoothTool.shared.UseCase.config.data()
+                        timerManager.start(interval: 0.7) {
+                            if let config = self.n80 {
+                                self.timerManager.stop()
+                                self.performSegue(withIdentifier: "config", sender: true)
+                            }
+                        }
+                       
                     }
                     
                     
@@ -704,12 +711,26 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
                         self.userCredentialData = nil
                     }
                     
-                    if let userCredentailEmptyIndex = userCredentailEmptyIndex, let able = able {
+                    if let userCredentailEmptyIndex = userCredentailEmptyIndex,
+                       let able = able {
                       
                         self.performSegue(withIdentifier: "usercredential", sender: nil)
                       
                     } else {
-                        showAlert(title: "❌ Please Get UserCredentialArray/ UserCapabilities first", message: "")
+                        SunionBluetoothTool.shared.UseCase.user.able()
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
+                            SunionBluetoothTool.shared.UseCase.user.array()
+                        }
+                        
+                        timerManager.start(interval: 0.7) {
+                            if let userCredentailEmptyIndex = self.userCredentailEmptyIndex,
+                               let able = self.able {
+                                self.timerManager.stop()
+                                self.performSegue(withIdentifier: "usercredential", sender: nil)
+                              
+                            }
+                        }
+                       
                     }
                 case .editUserCredential:
                     if let data = userCredentialData {
@@ -731,25 +752,42 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
                         self.credentialData = nil
                     }
                     
-                    if let credentailEmptyIndex = credentailEmptyIndex, let able = able {
+                    if let credentailEmptyIndex = credentailEmptyIndex,
+                        let able = able {
                       
                         self.performSegue(withIdentifier: "addeditC", sender: nil)
                       
                     } else {
-                        showAlert(title: "❌ Please Get CredentialArray/ UserCapabilities first", message: "")
+                        
+                        SunionBluetoothTool.shared.UseCase.user.able()
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
+                            SunionBluetoothTool.shared.UseCase.credential.array()
+                        }
+                        
+                        timerManager.start(interval: 0.7) {
+                            if let credentailEmptyIndex = self.credentailEmptyIndex,
+                               let able = self.able {
+                                self.timerManager.stop()
+                                self.performSegue(withIdentifier: "addeditC", sender: nil)
+                              
+                            }
+                        }
+                        
+                       
                     }
                 case .editCredentail:
                     if let data = credentialData, let able = able {
                         self.performSegue(withIdentifier: "addeditC", sender: nil)
                     } else {
-                        showAlert(title: "❌ Please Get CredentialData/ UserCapabilities first", message: "")
+                        SunionBluetoothTool.shared.UseCase.user.able()
+                        showAlert(title: "❌ Please Get CredentialData first", message: "")
                     }
                 case .delCredential:
                     showDelCredentialAlert()
            
-                case .endpoint:
-//                    SunionBluetoothTool.shared.UseCase.utility.setEndpoint(type: .api, data: [0x00,0x01,0x02])
-                    break
+//                case .endpoint:
+//                 SunionBluetoothTool.shared.UseCase.utility.setEndpoint(type: .api, data: [0x00,0x01,0x02])
+//                    break
                 case .disconnected:
                     SunionBluetoothTool.shared.disconnectBluetooth()
                     appendLogToTextView(logMessage: "⚠️ Disconnected")
@@ -1535,7 +1573,7 @@ extension ViewController: SunionBluetoothToolDelegate {
         if let value = value, value.isSuccess {
             appendLogToTextView(logMessage: "AccessOption: \ntype:\(value.type.rawValue)\n index:\(value.index)")
         } else {
-            appendLogToTextView(logMessage: "add/edit access failed")
+            appendLogToTextView(logMessage: "❌ Add/Edit access failed")
         }
     }
 
@@ -1558,19 +1596,34 @@ extension ViewController: SunionBluetoothToolDelegate {
         var msg = "==V3==\n"
         if let value = value {
             if let time = value.isSavedTime {
-                msg += "✅ Time saved successfully: \(time)"
+                if time {
+                    msg += "✅ Time saved success"
+                } else {
+                    msg += "❌ Time saved fail"
+                }
+               
             }
             
             if let timezone = value.isSavedTimeZone {
-                msg += "✅ TimeZone saved successfully: \(timezone)"
+                if timezone {
+                    msg += "✅ TimeZone saved success"
+                } else {
+                    msg += "❌ TimeZone saved fail"
+                }
+          
             }
             
             if let wifitimezone = value.isSavedTimeZoneWIFI {
-                msg += "✅ WiFi timezone saved successfully: \(wifitimezone)"
+                if wifitimezone {
+                    msg += "✅ WiFi timezone saved success"
+                } else {
+                    msg += "❌ WiFi timezone saved fail"
+                }
+              
             }
             
             if let val = value.timezoneValue {
-                msg += "✅ Get Value successfully: offset - \(val.Offset), data - \(val.data)"
+                msg += "✅ Get Value: offset - \(val.Offset), data - \(val.data)"
             }
         } else {
             msg += "❌ Time failed"
@@ -1583,19 +1636,33 @@ extension ViewController: SunionBluetoothToolDelegate {
         var msg = "==V3==\n"
         if let value = value {
             if let c = value.isCreated {
-                isAdminCode = true
-                msg += "✅ AdminCode Created successfully: \(c)"
+                if c {
+                    isAdminCode = true
+                    msg += "✅ AdminCode Created success"
+                } else {
+             
+                    msg += "❌ AdminCode Created fail"
+                }
+              
             }
             
             if let e = value.isEdited {
-                msg += "✅ AdminCode Edited successfully: \(e)"
+                if e {
+                    msg += "✅ AdminCode Edited success"
+                } else {
+                    msg += "❌ AdminCode Edited fail"
+                }
+              
             }
             
             if let exi = value.isExisted {
                 if exi {
                     isAdminCode = true
+                    msg += "✅ AdminCode Existied"
+                } else {
+                    msg += "❌ AdminCode not Existied"
                 }
-                msg += "✅ AdminCode Existied successfully: \(exi)"
+            
             }
         } else {
            msg += "❌ AdminCode failed"
@@ -1612,7 +1679,12 @@ extension ViewController: SunionBluetoothToolDelegate {
             }
             
             if let v = value.isConfigured {
-                msg += "✅ name set successfully: \(v)"
+                if v {
+                    msg += "✅ name set success"
+                } else {
+                    msg += "❌ name set fail"
+                }
+                
             }
         } else {
             msg += "❌ Name failed"
@@ -1632,7 +1704,12 @@ extension ViewController: SunionBluetoothToolDelegate {
             }
             
             if let v = value.isConfigured {
-                msg += "✅ Config set successfully: \(v)"
+                if v {
+                    msg += "✅ Config set success"
+                } else {
+                    msg += "❌ Config set fail"
+                }
+              
             }
         } else {
             msg += "❌ Config failed"
@@ -1648,15 +1725,21 @@ extension ViewController: SunionBluetoothToolDelegate {
                 msg += "✅ Version successfully: \(n.type?.rawValue), \(n.version)"
             }
             if let n = value.isFactoryReset {
-                msg += "✅ FactoryReset successfully: \(n)"
+                if n {
+                    msg += "✅ FactoryReset success"
+                } else {
+                    msg += "❌ FactoryReset fail"
+                }
+               
             }
             
             if let n = value.isMatter {
-                msg += "✅ Matter successfully: \(n)"
+                
+                msg += "✅ isMatter: \(n)"
             }
             
             if let n = value.alert {
-                msg += "✅ Alert successfully: \(n.type)"
+                msg += "✅ Alert: \(n.type)"
             }
         } else {
             msg += "❌ Version/FactoryReset/Matter/Alert failed"
@@ -1687,11 +1770,21 @@ extension ViewController: SunionBluetoothToolDelegate {
             }
             
             if let n = value.isEdited {
-                msg += "✅ Token edited successfully: \(n)"
+                if n {
+                    msg += "✅ Token edited success"
+                } else {
+                    msg += "❌ Token edited fail"
+                }
+               
             }
             
             if let n = value.isDeleted {
-                msg += "✅ Token deleted successfully: \(n)"
+                if n {
+                    msg += "✅ Token deleted success"
+                } else {
+                    msg += "❌ Token deleted fail"
+                }
+               
             }
             
         } else {
@@ -1771,14 +1864,24 @@ extension ViewController: SunionBluetoothToolDelegate {
                 self.able = nil
                 self.userCredentailEmptyIndex = nil
                 self.userCredentialData = nil
-                msg += "✅ User CreatedorEdited successfully: \(n)"
+                if n {
+                    msg += "✅ User CreatedorEdited success"
+                } else {
+                    msg += "❌ User CreatedorEdited fail"
+                }
+     
             }
             
             if let n = value.isDeleted {
                 self.able = nil
                 self.userCredentailEmptyIndex = nil
                 self.userCredentialData = nil
-                msg += "✅ User Deleted successfully: \(n)"
+                if n {
+                    msg += "✅ User Deleted success"
+                } else {
+                    msg += "❌ User Deleted fail"
+                }
+           
             }
             
             if let value = value.supportedCounts {
@@ -1827,14 +1930,24 @@ extension ViewController: SunionBluetoothToolDelegate {
                 self.able = nil
                 self.credentailEmptyIndex = nil
                 self.credentialData = nil
-                msg += "✅ CredentialData CreatedorEdited successfully: \(n)"
+                if n {
+                    msg += "✅ CredentialData CreatedorEdited success"
+                } else {
+                    msg += "❌ CredentialData CreatedorEdited fail"
+                }
+         
             }
             
             if let n = value.isDeleted {
                 self.able = nil
                 self.credentailEmptyIndex = nil
                 self.credentialData = nil
-                msg += "✅ CredentialData deleted successfully: \(n)"
+                if n {
+                    msg += "✅ CredentialData deleted success"
+                } else {
+                    msg += "❌ CredentialData deleted fail"
+                }
+              
             }
             
             if let setup = value.setup {

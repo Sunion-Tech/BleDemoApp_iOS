@@ -41,18 +41,22 @@ class AddEditCredentialViewController: UIViewController {
             if supportCount.codeCount > 0 {
                 segmentType.insertSegment(withTitle: "Code", at: index, animated: false)
                 index += 1
+                scanButton.isHidden = true
             }
             if supportCount.cardCount > 0 {
                 segmentType.insertSegment(withTitle: "Card", at: index, animated: false)
                 index += 1
+                scanButton.isHidden = false
             }
             if supportCount.fpCount > 0 {
                 segmentType.insertSegment(withTitle: "Fingerprint", at: index, animated: false)
                 index += 1
+                scanButton.isHidden = false
             }
             if supportCount.faceCount > 0 {
                 segmentType.insertSegment(withTitle: "Face", at: index, animated: false)
                 index += 1
+                scanButton.isHidden = false
             }
             
             segmentType.selectedSegmentIndex = 0
