@@ -241,7 +241,7 @@ enum Picker3Option: CaseIterable, CustomStringConvertible {
     case conectedWifi
     case plugstatus
     case setPlugStatus
-
+    case OTA
     case delCredential
     case disconnected
     
@@ -324,6 +324,8 @@ enum Picker3Option: CaseIterable, CustomStringConvertible {
             return "Get PlugStatus"
         case .setPlugStatus:
             return "Set PlugStatus"
+        case .OTA:
+            return "OTA"
         case .delCredential:
             return "Delete Credential"
         case .disconnected:

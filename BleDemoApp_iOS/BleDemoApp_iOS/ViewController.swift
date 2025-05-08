@@ -7,8 +7,9 @@
 
 import UIKit
 import SunionBluetoothTool
+import UniformTypeIdentifiers
 
-class ViewController: UIViewController, ScanViewControllerDelegate {
+class ViewController: UIViewController, ScanViewControllerDelegate, UIDocumentPickerDelegate {
     @IBOutlet weak var qrCodeBarButtonItem: UIBarButtonItem!
     @IBOutlet weak var bleBarButtonItem: UIBarButtonItem!
     @IBOutlet weak var textField: UITextField!
@@ -65,6 +66,16 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
     
     private let timerManager = TimerManager()
     
+    var otaDatas: [Data] = []
+    var otaReqModel: OTAStatusRequestModel?
+    var otaUpdateCount = 0
+    var allDataCount = 1
+    
+    var pToken: [UInt8]?
+    var pKey: [UInt8]?
+    var pMac: String?
+    var pUUID: String?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -80,6 +91,10 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
            let name = model?.modelName {
             isAdminCode = false
             let msg = "qrCode資料\ntoken: \(token.toHexString())\n aes1Key: \(aes1.toHexString())\n macAddress: \(mac)\n modelName: \(name)"
+            
+            pMac = mac
+            pKey = aes1
+            
             SunionBluetoothTool.shared.initBluetooth(macAddress: mac, aes1Key: Array(aes1), token: Array(token), v3uuid: nil)
             if SunionBluetoothTool.shared.delegate == nil {
                 SunionBluetoothTool.shared.delegate = self
@@ -104,6 +119,8 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
         }
         
         if let uuid = uuid {
+            pUUID = uuid
+
             fetchProductionData(code: uuid) { result in
                 switch result {
                 case .success(let success):
@@ -115,10 +132,12 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
                             print(jsonObject)
                             self.isV3 = true
                             self.pickerData = .cmd30
-                          //  let aes1 = (jsonObject["key"] as! String).data(using: .utf8)
-                         //   let token = (jsonObject["token"] as! String).data(using: .utf8)
+                        
                             let aes1 =   Data.init((jsonObject["key"] as! String).hexStringTobyteArray).bytes
                             let token = Data.init((jsonObject["token"] as! String).hexStringTobyteArray).bytes
+                            
+                            self.pKey = aes1
+                            
                             SunionBluetoothTool.shared.initBluetooth(macAddress: nil, aes1Key: Array(aes1), token: Array(token), v3uuid: uuid)
                             if SunionBluetoothTool.shared.delegate == nil {
                                 SunionBluetoothTool.shared.delegate = self
@@ -247,8 +266,19 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
                 data == .connecting {
                 switch data {
                 case .connecting:
-                    appendLogToTextView(logMessage: "⚠️ Connecting...")
-                    SunionBluetoothTool.shared.connectingBluetooth()
+                  
+                    if let pToken = pToken,
+                       let pKey = pKey {
+                        appendLogToTextView(logMessage: "⚠️ ReConnecting...")
+                        SunionBluetoothTool.shared.initBluetooth(macAddress: pMac, aes1Key: pKey, token: pToken, v3uuid:    pUUID)
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
+                            SunionBluetoothTool.shared.connectingBluetooth()
+                        }
+                    } else {
+                        appendLogToTextView(logMessage: "⚠️ Connecting...")
+                        SunionBluetoothTool.shared.connectingBluetooth()
+                    }
+                  
                 case .adminCodeExist:
                     SunionBluetoothTool.shared.isAdminCode()
                 case .setAdminCode:
@@ -387,8 +417,17 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
                 data == .connecting {
                 switch data {
                 case .connecting:
-                    appendLogToTextView(logMessage: "⚠️ Connecting...")
-                    SunionBluetoothTool.shared.connectingBluetooth()
+                    if let pToken = pToken,
+                       let pKey = pKey {
+                        appendLogToTextView(logMessage: "⚠️ ReConnecting...")
+                        SunionBluetoothTool.shared.initBluetooth(macAddress: pMac, aes1Key: pKey, token: pToken, v3uuid:    pUUID)
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
+                            SunionBluetoothTool.shared.connectingBluetooth()
+                        }
+                    } else {
+                        appendLogToTextView(logMessage: "⚠️ Connecting...")
+                        SunionBluetoothTool.shared.connectingBluetooth()
+                    }
                 case .adminCodeExist:
                     SunionBluetoothTool.shared.isAdminCode()
                 case .setAdminCode:
@@ -581,8 +620,17 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
                 data == .connecting {
                 switch data {
                 case .connecting:
-                    appendLogToTextView(logMessage: "⚠️ Connecting...")
-                    SunionBluetoothTool.shared.connectingBluetooth()
+                    if let pToken = pToken,
+                       let pKey = pKey {
+                        appendLogToTextView(logMessage: "⚠️ ReConnecting...")
+                        SunionBluetoothTool.shared.initBluetooth(macAddress: pMac, aes1Key: pKey, token: pToken, v3uuid:    pUUID)
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
+                            SunionBluetoothTool.shared.connectingBluetooth()
+                        }
+                    } else {
+                        appendLogToTextView(logMessage: "⚠️ Connecting...")
+                        SunionBluetoothTool.shared.connectingBluetooth()
+                    }
                 case .adminCodeExist:
                     SunionBluetoothTool.shared.UseCase.adminCode.exists()
                 case .setAdminCode:
@@ -784,7 +832,22 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
                     }
                 case .delCredential:
                     showDelCredentialAlert()
-           
+                case .OTA:
+                    if #available(iOS 14.0, *) {
+                        let picker = UIDocumentPickerViewController(forOpeningContentTypes: [UTType.data], asCopy: true)
+                        picker.delegate = self
+                        picker.allowsMultipleSelection = false
+                        present(picker, animated: true)
+                    } else {
+                        let picker = UIDocumentPickerViewController(documentTypes: ["public.data"], in: .import)
+                        picker.allowsMultipleSelection = false
+                        picker.delegate = self
+               
+                        present(picker, animated: true)
+                    }
+
+                  
+         
 //                case .endpoint:
 //                 SunionBluetoothTool.shared.UseCase.utility.setEndpoint(type: .api, data: [0x00,0x01,0x02])
 //                    break
@@ -797,6 +860,82 @@ class ViewController: UIViewController, ScanViewControllerDelegate {
             }
         }
     }
+    
+    func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
+         guard let fileURL = urls.first else { return }
+         
+         // 檢查副檔名是否為 .ota
+         if fileURL.pathExtension.lowercased() == "gbl" ||
+                fileURL.pathExtension.lowercased() == "bin" {
+             presentInputAlert(for: fileURL)
+         } else {
+             print("選擇的不是 OTA 檔案")
+         }
+     }
+    
+    private func presentInputAlert(for fileURL: URL) {
+            let alert = UIAlertController(title: "上傳 OTA 檔案", message: "請輸入  IV /Signature /Target ", preferredStyle: .alert)
+        
+
+        
+        alert.addTextField { textField in
+            textField.placeholder = "請輸入 IV"
+        }
+        
+        alert.addTextField { textField in
+            textField.placeholder = "請輸入 Signature"
+        }
+        
+        alert.addTextField { textField in
+            textField.placeholder = "請輸入 Target 1:wireless, 0:mcu"
+        }
+            
+            let confirmAction = UIAlertAction(title: "確認", style: .default) { [weak self] _ in
+                guard let iv = alert.textFields?[0].text,
+                      let signature = alert.textFields?[1].text,
+                      let target = alert.textFields?[2].text else { return }
+                
+                print("👉 IV: \(iv)")
+                print("👉 Signature: \(signature)")
+                print("👉 Target: \(target)")
+                
+                self?.readFileContent(fileURL: fileURL, iv: iv, signature: signature, target: Int(target) ?? 0)
+            }
+            
+            let cancelAction = UIAlertAction(title: "取消", style: .cancel, handler: nil)
+            
+            alert.addAction(confirmAction)
+            alert.addAction(cancelAction)
+            
+            present(alert, animated: true)
+        }
+        
+    private func readFileContent(fileURL: URL, iv: String, signature: String, target: Int) {
+            do {
+                let data = try Data(contentsOf: fileURL)
+                print("✅ 成功讀取檔案內容，大小：\(data.count) bytes")
+                
+                otaDatas = data.split(by: 128)
+                allDataCount = otaDatas.count
+                
+                let reqTarget: otaTarget = target == 0 ? .mcu : .wireless
+                let req = OTAStatusRequestModel(target: reqTarget, state: .start, fileSize: data.count, IV: nil, Signature: nil)
+                SunionBluetoothTool.shared.UseCase.ota.responseStatus(model: req)
+                
+                otaReqModel = req
+                otaReqModel?.IV = iv
+                otaReqModel?.Signature = signature
+                otaReqModel?.state = .finish
+                otaUpdateCount = 0
+                
+            } catch {
+                print("❌ 讀取檔案失敗：\(error.localizedDescription)")
+            }
+        }
+        
+        func documentPickerWasCancelled(_ controller: UIDocumentPickerViewController) {
+            print("❌ 使用者取消選擇檔案")
+        }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let id = segue.identifier, id == "qrcode",
@@ -1185,7 +1324,7 @@ extension ViewController: UIPickerViewDelegate, UIPickerViewDataSource {
 extension ViewController: SunionBluetoothToolDelegate {
     
     func debug(level: LogLevel, value: String) {
-        print(value)
+        appendLogToTextView(logMessage: value)
     }
     
     func BluetoothState(State: bluetoothState) {
@@ -1229,6 +1368,8 @@ extension ViewController: SunionBluetoothToolDelegate {
             msg = "Status D6:\nlockDirection: \(d.lockDirection.rawValue)\n soundOn: \(d.soundOn)\n vacationMode: \(d.vacationModeOn)\n autoLockOn: \(d.autoLockOn)\n autoLockTime: \(d.autoLockTime ?? 0000)\n guidingCode: \(d.guidingCode)\n isLocked: \(d.isLocked)\n battery: \(d.battery ?? 0000)\n batteryWarning: \(d.batteryWarning.rawValue)\n timestamp: \(d.timestamp ?? 0000)"
         }
         
+        pToken = SunionBluetoothTool.shared.data?.permanentToken
+      
         
         appendLogToTextView(logMessage: msg)
     }
@@ -1576,6 +1717,37 @@ extension ViewController: SunionBluetoothToolDelegate {
             appendLogToTextView(logMessage: "❌ Add/Edit access failed")
         }
     }
+    
+    func OTAData(value: OTADataResponseModel?) {
+        if let value = value {
+            
+         
+            let nextOffset = value.Offset + 128
+            otaUpdateCount += 1
+            let progress = CGFloat(Double(otaUpdateCount)/Double(allDataCount))
+            appendLogToTextView(logMessage: "OTA 進度： \(progress)")
+          
+            
+            if otaUpdateCount  >= otaDatas.count,
+            let req = otaReqModel {
+               
+                
+                SunionBluetoothTool.shared.UseCase.ota.responseStatus(model: req)
+            } else if otaUpdateCount < otaDatas.count {
+                let byteArray: [UInt8] = Array(otaDatas[otaUpdateCount])
+                let req = OTADataRequestModel(offset: nextOffset, data: byteArray)
+                SunionBluetoothTool.shared.UseCase.ota.update(model: req)
+             
+            }
+            
+           
+            
+        } else {
+            
+            appendLogToTextView(logMessage: "OTA ERROR")
+            
+        }
+    }
 
     
     
@@ -1585,6 +1757,9 @@ extension ViewController: SunionBluetoothToolDelegate {
         if let n = value {
             statusV3 = n
             msg += "Status: \nmainVersion: \(n.mainVersion ?? 9999)\n subVersion: \(n.subVersion ?? 9999)\n lockDirection: \(n.lockDirection.rawValue)\n vacationMode: \(n.vacationModeOn.rawValue)\n deadbolt: \(n.deadBolt.rawValue)\n doorState: \(n.doorState.rawValue)\n lockState: \(n.lockState.rawValue)\n securitybole: \(n.securityBolt.rawValue) \n battery: \(n.battery ?? 0000)\n batteryWarning: \(n.batteryWarning.rawValue)"
+            
+            pToken = SunionBluetoothTool.shared.data?.permanentToken
+      
         } else {
             msg += "❌ Get status Failed"
         }
@@ -2001,7 +2176,51 @@ extension ViewController: SunionBluetoothToolDelegate {
         
         appendLogToTextView(logMessage: msg)
     }
+    
+  
+    func v3OTA(value: resOTAUseCase?) {
+        if let value = value?.status {
+            if !value.isSuccess || value.state == .cancel{
+               
+                appendLogToTextView(logMessage: "OTA unSuccess or state is cancel")
+            }
+            
+            // start
+            if value.state == .start, value.isSuccess {
+                let byteArray: [UInt8] = Array(otaDatas.first!)
+                let req = OTADataRequestModel(offset: 0, data: byteArray)
+               
+                SunionBluetoothTool.shared.UseCase.ota.update(model: req)
+            }
+            
+            // end
+            if value.state == .finish, value.isSuccess {
+                otaDatas = []
+                otaReqModel = nil
+                otaUpdateCount = 0
+                appendLogToTextView(logMessage: "OTA Finish")
+            }
+        }
+        
+        if let value = value?.data {
+            
+               let nextOffset = value.Offset + 128
+               otaUpdateCount += 1
+            let progress = CGFloat(Double(otaUpdateCount)/Double(allDataCount))
+            appendLogToTextView(logMessage: "OTA 進度： \(progress)")
+             
+               
+               if otaUpdateCount  >= otaDatas.count,
+               let req = otaReqModel {
+                   SunionBluetoothTool.shared.UseCase.ota.responseStatus(model: req)
+               } else if otaUpdateCount < otaDatas.count {
+                   let byteArray: [UInt8] = Array(otaDatas[otaUpdateCount])
+                   let req = OTADataRequestModel(offset: nextOffset, data: byteArray)
+                   SunionBluetoothTool.shared.UseCase.ota.update(model: req)
 
+               }
+        }
+    }
     
 }
 
@@ -2035,4 +2254,21 @@ extension Array {
             Array(self[$0 ..< Swift.min($0 + size, count)])
         }
     }
+}
+
+extension Data {
+    func split(by chunkSize: Int) -> [Data] {
+        var chunks: [Data] = []
+        var start = startIndex
+        
+        while start < endIndex {
+            let end = self.index(start, offsetBy: chunkSize, limitedBy: endIndex) ?? endIndex
+            chunks.append(self[start..<end])
+            start = end
+        }
+        
+        return chunks
+    }
+    
+ 
 }
